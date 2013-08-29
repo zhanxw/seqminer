@@ -1,0 +1,36 @@
+2013-08-28  Xiaowei Zhan  <zhanxw@amd.csgstat.sph.umich.edu>
+
+	* Fix crashing when loding meta analysis files
+
+2013-08-01  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support loading HWE from all samples / cases only / controls only.
+
+2013-07-28  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Allow loading score statistics only (skipping covariance files)
+
+2013-07-26  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support site only VCF files
+
+2013-05-25  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Add support for binary trait
+
+2013-05-24  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Fix a bug when merging regions
+
+2013-04-12  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Add examples and documentations
+
+2013-03-24  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Keep gene/region order consistent
+	* Remove excessive prompt message
+
+2013-03-19  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* New version

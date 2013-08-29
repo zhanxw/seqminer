@@ -1,0 +1,12 @@
+CC=@CC@
+CXX=@CXX@
+PKG_CFLAGS=@PKG_CFLAGS@
+PKG_CXXFLAGS=@PKG_CPPFLAGS@
+PKG_LIBS=@PKG_LIBS@
+
+## Regular expression
+## we first check regex.h provided by libc, 
+## NOTE: we will not use PCRE posix because of potential
+## linking problem. E.g. we include <pcreposix.h> but we
+## linking we may use libc library instead of pcre
+## library. That will crash our program. So we wont use PCRE(@LIB_PCRE@)
