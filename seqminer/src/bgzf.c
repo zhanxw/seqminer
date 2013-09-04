@@ -143,7 +143,11 @@ BGZF *bgzf_open(const char *path, const char *mode)
 	BGZF *fp = 0;
 	if (strchr(mode, 'r') || strchr(mode, 'R')) {
 		_bgzf_file_t fpr;
-		if ((fpr = _bgzf_open(path, "r")) == 0) return 0;
+#ifdef _WIN32        
+		if ((fpr = _bgzf_open(path, "rb")) == 0) return 0;
+#else
+        if ((fpr = _bgzf_open(path, "r")) == 0) return 0;
+#endif
 		fp = bgzf_read_init();
 		fp->fp = fpr;
 	} else if (strchr(mode, 'w') || strchr(mode, 'W')) {
@@ -500,7 +504,11 @@ int bgzf_is_bgzf(const char *fn)
 	uint8_t buf[16];
 	int n;
 	_bgzf_file_t fp;
+#ifdef _WIN32
+	if ((fp = _bgzf_open(fn, "rb")) == 0) return 0;
+#else
 	if ((fp = _bgzf_open(fn, "r")) == 0) return 0;
+#endif
 	n = _bgzf_read(fp, buf, 16);
 	_bgzf_close(fp);
 	if (n != 16) return 0;

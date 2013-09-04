@@ -1,3 +1,7 @@
+2013-08-29  Xiaowei Zhan  <zhanxw@amd.csgstat.sph.umich.edu>
+
+	* Add automatic test cases
+
 2013-08-28  Xiaowei Zhan  <zhanxw@amd.csgstat.sph.umich.edu>
 
 	* Fix crashing when loding meta analysis files

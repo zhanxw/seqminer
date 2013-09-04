@@ -125,14 +125,15 @@ SEXP impl_readVCFToMatrixByRange(SEXP arg_fileName, SEXP arg_range, SEXP arg_ann
   SEXP ans = R_NilValue;
 
   std::string FLAG_fileName = CHAR(STRING_ELT(arg_fileName,0));
-  std::string FLAG_range = CHAR(STRING_ELT(arg_range,0));
+  std::vector<std::string> FLAG_range;
+  extractStringArray(arg_range, &FLAG_range);
   std::string FLAG_annoType = CHAR(STRING_ELT(arg_annoType,0));
 
   if (FLAG_fileName.size() == 0) {
     error("Please provide VCF file name");
     return ans;
   }
-  if (FLAG_range.size() == 0) {
+  if (FLAG_range.empty()) {
     error("Please provide a given range, e.g. '1:100-200'");
     return ans;
   }
@@ -142,17 +143,28 @@ SEXP impl_readVCFToMatrixByRange(SEXP arg_fileName, SEXP arg_range, SEXP arg_ann
     REprintf("Prefer using ANNO from https://github.com/zhanxw/anno  \n");
     return ans;
   }
+
+  int nGene = FLAG_range.size();
+  Rprintf("%d region to be extracted.\n", nGene);
+  int numAllocated = 0;
   
-  // REprintf("range = %s\n", FLAG_range.c_str());
-  VCFExtractor vin(FLAG_fileName.c_str());
-  vin.setRangeList(FLAG_range.c_str());
+  // allocate return value
+  numAllocated += createList(nGene, &ans);
+  numAllocated += setListNames(FLAG_range, &ans);
+  
+  for (int i = 0; i < nGene; ++i) {
+    // REprintf("range = %s\n", FLAG_range.c_str());
+    VCFExtractor vin(FLAG_fileName.c_str());
+    vin.setRangeList(FLAG_range[i].c_str());
 
-  if (FLAG_annoType.size()) {
-    vin.setAnnoType(FLAG_annoType.c_str());
+    if (FLAG_annoType.size()) {
+      vin.setAnnoType(FLAG_annoType.c_str());
+    }
+    // real working part
+    SET_VECTOR_ELT(ans, i, readVCF2Matrix(&vin));
   }
-
-  // real working part
-  return readVCF2Matrix(&vin);
+  UNPROTECT(numAllocated);
+  return ans;
 } //end impl_readVCFToMatrixByRange
 
 /**
@@ -166,7 +178,8 @@ SEXP impl_readVCFToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_g
 
   std::string FLAG_fileName = CHAR(STRING_ELT(arg_fileName,0));
   std::string FLAG_geneFile = CHAR(STRING_ELT(arg_geneFile,0));
-  std::string FLAG_geneName = CHAR(STRING_ELT(arg_geneName,0));
+  std::vector<std::string> FLAG_geneName;
+  extractStringArray(arg_geneName, &FLAG_geneName);
   std::string FLAG_annoType = CHAR(STRING_ELT(arg_annoType,0));
 
   if (FLAG_fileName.size() == 0) {
@@ -180,34 +193,47 @@ SEXP impl_readVCFToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_g
     REprintf("Prefer using ANNO from https://github.com/zhanxw/anno  \n");
     return ans;
   }
+
+  int nGene = FLAG_geneName.size();
+  Rprintf("%d region to be extracted.\n", nGene);
+  int numAllocated = 0;
   
+  // allocate return value
+  numAllocated += createList(nGene, &ans);
+  numAllocated += setListNames(FLAG_geneName, &ans);
+
   std::map< std::string, std::string> geneRange;
-  loadGeneFile(FLAG_geneFile, FLAG_geneName, &geneRange);
-  std::string range;
-  for (std::map< std::string, std::string>::iterator it = geneRange.begin();
-       it != geneRange.end();
-       it++) {
-    if (range.size() > 0) {
-      range += ",";
+  loadGeneFile(FLAG_geneFile, FLAG_geneName, &geneRange);  
+  for (int i = 0; i < nGene; ++i) {
+    // REprintf("range = %s\n", FLAG_geneName[i].c_str());
+    const std::string& range = geneRange[FLAG_geneName[i]];
+    // for (std::map< std::string, std::string>::iterator it = geneRange.begin();
+    //      it != geneRange.end();
+    //      it++) {
+    //   if (range.size() > 0) {
+    //     range += ",";
+    //   }
+    //   range += it->second;
+    // };
+
+    //fprintf(stdout, "range = %s\n", range.c_str());
+    VCFExtractor vin(FLAG_fileName.c_str());
+    if (range.size())
+      vin.setRangeList(range.c_str());
+    else {
+      warning("Gene name [ %s ] does not exists in provided gene file", FLAG_geneName[i].c_str());
+      return (ans);
+    };
+
+    if (FLAG_annoType.size()) {
+      vin.setAnnoType(FLAG_annoType.c_str());
     }
-    range += it->second;
-  };
 
-  //fprintf(stdout, "range = %s\n", range.c_str());
-  VCFExtractor vin(FLAG_fileName.c_str());
-  if (range.size())
-    vin.setRangeList(range.c_str());
-  else {
-    warning("Gene name [ %s ] does not exists in provided gene file", FLAG_geneName.c_str());
-    return (ans);
-  };
-
-  if (FLAG_annoType.size()) {
-    vin.setAnnoType(FLAG_annoType.c_str());
+    // real working part
+    SET_VECTOR_ELT(ans, i, readVCF2Matrix(&vin));
   }
-
-  // real working part
-  return readVCF2Matrix(&vin);
+  UNPROTECT(numAllocated);
+  return ans;
 }
 
 SEXP readVCF2List(VCFInputFile* vin,
