@@ -307,6 +307,8 @@ size_t findCovariateDimension(const std::string& fn, int column) {
 #define RET_COV_ZZ_INDEX 18
 #define RET_HWE_CASE_INDEX 19
 #define RET_HWE_CTRL_INDEX 20
+#define RET_AF_CASE_INDEX 21
+#define RET_AF_CTRL_INDEX 22
 
 SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
                          const OrderedMap< std::string, std::string>& geneRange) {
@@ -403,6 +405,8 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
   names.push_back("covZZ");
   names.push_back("hweCase");
   names.push_back("hweCtrl");
+  names.push_back("afCase");
+  names.push_back("afCtrl");
   
   // REprintf("create zDims\n");
   std::vector<size_t> zDims(FLAG_covFile.size(), 0);
@@ -417,7 +421,8 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     numAllocated += createList(names.size(), &s); // a list with 10 elements: ref, alt, n, maf, stat, direction, p, cov, pos, anno
     numAllocated += setListNames(names, &s);
 
-    SEXP ref, alt, n, af, ac, callRate, hwe, nref, nhet, nalt, ustat, vstat, effect, p, cov, pos, anno, covXZ, covZZ, hweCase, hweCtrl;
+    SEXP ref, alt, n, af, ac, callRate, hwe, nref, nhet, nalt, ustat, vstat, effect, p, cov, pos, anno,
+        covXZ, covZZ, hweCase, hweCtrl, afCase, afCtrl;
     numAllocated += createList(nStudy, &ref);
     numAllocated += createList(nStudy, &alt);
     numAllocated += createList(nStudy, &n);
@@ -439,6 +444,8 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     numAllocated += createList(nStudy, &covZZ);
     numAllocated += createList(nStudy, &hweCase);
     numAllocated += createList(nStudy, &hweCtrl);
+    numAllocated += createList(nStudy, &afCase);
+    numAllocated += createList(nStudy, &afCtrl);
     
     int npos = geneLocationMap.valueAt(i).size();
     // std::vector<size_t> zDims(FLAG_covFile.size(), 0);
@@ -556,6 +563,16 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
       numAllocated += createDoubleArray(npos, &t);
       initDoubleArray(t);
       SET_VECTOR_ELT(hweCtrl, j, t);
+
+      //allocate memory for afCase, afCtrl
+      numAllocated += createDoubleArray(npos, &t);
+      initDoubleArray(t);
+      SET_VECTOR_ELT(afCase, j, t);
+
+      numAllocated += createDoubleArray(npos, &t);
+      initDoubleArray(t);
+      SET_VECTOR_ELT(afCtrl, j, t);
+      
     } // end looping study
     numAllocated += createStringArray(npos, &pos);
     initStringArray(pos);
@@ -584,6 +601,8 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     SET_VECTOR_ELT(s, RET_COV_ZZ_INDEX, covZZ);
     SET_VECTOR_ELT(s, RET_HWE_CASE_INDEX, hweCase);
     SET_VECTOR_ELT(s, RET_HWE_CTRL_INDEX, hweCtrl);
+    SET_VECTOR_ELT(s, RET_AF_CASE_INDEX, afCase);
+    SET_VECTOR_ELT(s, RET_AF_CTRL_INDEX, afCtrl);
         
     SET_VECTOR_ELT(ret, i, s);
   };
@@ -716,10 +735,30 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
           INTEGER(s)[idx] = tempInt;
         }
 
-        if ( str2double(fd[PVAL_FILE_AF_COL], &tempDouble) ) {
-          v = VECTOR_ELT(u, RET_AF_INDEX);
-          s = VECTOR_ELT(v, study); // af
-          REAL(s)[idx] = tempDouble;
+        // af field may have one pvalue or three pvalue (all:case:control)
+        std::vector<std::string> afPvalues;
+        // REprintf("af = %s\n", fd[PVAL_FILE_AF_COL].c_str());
+        stringTokenize(fd[PVAL_FILE_AF_COL], ":", &afPvalues);
+        if (!afPvalues.empty()) {
+          if ( str2double(afPvalues[0], &tempDouble) ) {
+            v = VECTOR_ELT(u, RET_AF_INDEX);
+            s = VECTOR_ELT(v, study); // af
+            REAL(s)[idx] = tempDouble;
+          }
+          if (afPvalues.size() == 3) { // af_all:af_case:af_ctrl
+            if ( str2double(afPvalues[1], &tempDouble) ) {
+              v = VECTOR_ELT(u, RET_AF_CASE_INDEX);
+              s = VECTOR_ELT(v, study); // af
+              REAL(s)[idx] = tempDouble;
+            }
+            if ( str2double(afPvalues[2], &tempDouble) ) {
+              v = VECTOR_ELT(u, RET_AF_CTRL_INDEX);
+              s = VECTOR_ELT(v, study); // af
+              REAL(s)[idx] = tempDouble;
+            }
+          }
+        }  else {
+          REprintf("AF column has incorrect value [ %s ]", fd[PVAL_FILE_AF_COL].c_str());
         }
 
         if ( str2int(fd[PVAL_FILE_AC_COL], &tempInt) ) {

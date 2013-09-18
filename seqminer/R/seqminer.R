@@ -254,3 +254,60 @@ tabix <- function(tabixFile, tabixRange) {
   }
   ## packageStartupMessage("seqminer loaded ...")
 }
+
+#' Read null model statistics
+#'
+#' @param scoreTestFiles character vector, score test output files (rvtests outputs using --meta score)
+#' @return a list of statistics fitted under the null mode (without genetic effects)
+#' @export
+#' @import stringr
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' scoreFileName = system.file("rvtests/rvtest.MetaScore.assoc.anno.gz", package = "seqminer")
+rvmeta.readNullModel <- function(scoreTestFiles) {
+  stopifnot(file.exists(scoreTestFiles))
+  read.null.model <- function(fn) {
+      ## cat("gzFile, fn = ", fn, "\n")
+      f <- gzfile(fn, "rb")
+      ret = list()
+      beginStore = FALSE
+      while(TRUE) {
+          suppressWarnings(p <- readLines(con = f, n = 1, warn = FALSE))
+          if (substr(p, 1, 1) != "#") {
+              break
+          }
+          #print(p)
+          if (!beginStore) {
+              if ( p[1] == "##NullModelEstimates") {
+                  beginStore = TRUE
+                  next
+              }
+          } else {
+              ret[length(ret) + 1] <- p
+          }
+      }
+      close(f)
+      ret
+  }
+  model.to.matrix <- function(ret) {
+      if (is.null(ret) || length(ret) < 1) {
+          return(numeric(0))
+      }
+      ## library(stringr)
+      ## ret <- read.null.model(ret)
+      ret <- lapply(ret, function(x) { str_split(str_replace(x, "## - ", ""), "\t")[[1]]})
+      cnames <- ret[[1]]
+      ret[[1]] <- NULL
+      rnames <- lapply(ret, function(x) {x[1]})
+      rnames <- do.call(c, rnames)
+      data <- lapply(ret, function(x) {x[-1]})
+      mat <- do.call(rbind, data)
+      colnames(mat) <- cnames[-1]
+      rownames(mat) <- rnames
+      suppressWarnings(class(mat) <- "numeric")
+      mat
+  }
+  ret <- lapply(scoreTestFiles, function(x) { model.to.matrix(read.null.model(x))})
+  ret
+};
+

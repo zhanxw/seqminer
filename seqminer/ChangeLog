@@ -1,3 +1,11 @@
+2013-09-16  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support load parameters estimated from null model
+
+2013-09-15  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support loading case/control frequencies from meta-analysis results
+
 2013-08-29  Xiaowei Zhan  <zhanxw@amd.csgstat.sph.umich.edu>
 
 	* Add automatic test cases

@@ -1,4 +1,4 @@
-AC_INIT(seqminer, 0.1, zhanxw@gmail.com)
+AC_INIT(seqminer, 1.0, zhanxw@gmail.com)
 AC_CONFIG_HEADERS(src/config.h)
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then

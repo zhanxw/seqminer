@@ -169,7 +169,7 @@ public:
         }
         if (text[0] == '\0') 
             return false;
-        std::string t;
+        std::string t = text;
         for (size_t i = 0 ; i < this->pattern.size(); ++i) {
           if (t.find(this->pattern[i]) != std::string::npos) { //found
             return true;
