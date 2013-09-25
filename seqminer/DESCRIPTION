@@ -26,7 +26,7 @@ Copyright: We have used the following software and made minimal
     <lh3@live.co.uk> (MIT license). We removed standard IO related
     functions, e.g. printf, fprintf ; also changed its un-safe
     pointer arithmetics.
-License: GPL
+License: GPL-3 | LICENSE
 URL: http://zhanxw.com/seqminer
 Collate:
     'seqminer.R'
