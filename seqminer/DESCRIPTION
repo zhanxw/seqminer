@@ -1,7 +1,7 @@
 Package: seqminer
 Type: Package
 Title: Efficiently Read Sequencing Data (VCF format, METAL format) into R
-Version: 1.2
+Version: 1.3
 Date: 2013-9-16
 Author: Xiaowei Zhan <zhanxw@gmail.com> and Dajiang Liu
     <dajiang.liu@gmail.com>, with contributions of Jean-loup Gailly
@@ -26,7 +26,7 @@ Copyright: We have used the following software and made minimal
     <lh3@live.co.uk> (MIT license). We removed standard IO related
     functions, e.g. printf, fprintf ; also changed its un-safe
     pointer arithmetics.
-License: GPL-3 | LICENSE
+License: GPL | LICENSE
 URL: http://zhanxw.com/seqminer
 Collate:
     'seqminer.R'

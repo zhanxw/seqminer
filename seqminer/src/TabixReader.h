@@ -4,135 +4,130 @@
 #include "tabix.h"
 #include "RangeList.h"
 
-#include <iostream>
-#include "R.h"
-class TabixReader{
-public:
-TabixReader(const std::string& fn) : inReading(false), hasIndex(false), tabixHandle(0), ti_line(0) {
+
+class TabixReader {
+ public:
+  TabixReader(const std::string& fn)
+      : cannotOpen(false),
+        hasIndex(false),
+        readyToRead(false),
+        tabixHandle(0),
+        ti_line(0) {
     open(fn);
   };
-  ~TabixReader() {
+
+  virtual ~TabixReader() {
     close();
   };
 
-  bool openIndex(const std::string& fn) {
-    if (( this->tabixHandle = ti_open(fn.c_str(), 0)) == 0 ) {
-      // failed to open tabix index
-      REprintf("Cannot open index file for file [ %s ]!\n", fn.c_str());
-      this->hasIndex = false;
-      return false;
-    }
-    if (ti_lazy_index_load(this->tabixHandle) != 0) {
-      // failed to open tabix index
-      REprintf("Cannot open index file for file [ %s ]!\n", fn.c_str());
-      this->hasIndex = false;
-      return false;
-    }
+ private:
+  // don't copy
+  TabixReader(const TabixReader& );
+  TabixReader& operator=(const TabixReader& );
 
-    this->hasIndex = true;
-    return true;
-  };
-  void closeIndex(){
-    // REprintf("close index...");
-    if (!this->hasIndex) return;
-    // REprintf("close index...");
-    if (this->iter) {
-      ti_iter_destroy(this->iter);
-      this->iter = 0;
-      // REprintf("close iter...");
-    }
-
-    /* REprintf("Close index\n"); */
-    // REprintf("%x", this->tabixHandle);
-    if (this->tabixHandle) {
-      ti_close(this->tabixHandle);
-      this->tabixHandle = 0;
-      // REprintf("close handle...");
-    }
-    // REprintf("done. Close index\n");
-  };
-
+ public:
+  bool good() const {return this->readyToRead;}
+  
   bool readLine(std::string* line) {
-    // check index
-    if (!hasIndex) return false;
+    // openOK?
+    if (cannotOpen) return false;
 
     // read
-    if (!inReading) {
-      resetRangeIterator();
-      inReading = true;
-    };
-    while (this->rangeIterator != this->rangeEnd) {
-      if (!this->ti_line) { // last time does not read a valid line
-        // get range
-        char rangeBuffer[128];
-        snprintf(rangeBuffer, 128, "%s:%u-%u", this->rangeIterator.getChrom().c_str(),
-                 this->rangeIterator.getBegin(), this->rangeIterator.getEnd());
-        rangeBuffer[127] = '\0';
-#if 0
-        REprintf("Process range: %s\n", rangeBuffer);
-        // this->range.dump();
-#endif
-        // parse range
-        int tid, beg, end, len;
-        if (ti_parse_region(tabixHandle->idx, rangeBuffer, &tid, &beg, &end) != 0){
-#if 0
-          REprintf("Maybe non-existing range: %s, pass....\n", rangeBuffer);
-#endif
-          // continue to next rangeIdx
-          ti_iter_destroy(this->iter);
-          this->iter = 0;
-          ++ this->rangeIterator;
-          continue;
-          // FATAL("Cannot ti_parse_region");
-        }
-#if 0
-        REprintf("tid = %d, beg = %d, end %d, len %d\n", tid, beg, end, len);
-#endif
-        this->iter =  ti_queryi(this->tabixHandle, tid, beg, end);
-        /* if (this->iter == 0) { */
-        /*   REprintf("iter is null!\n"); */
-        /* } else { */
-        /*   REprintf("iter is not null!\n"); */
-        /* } */
-        this->ti_line = ti_read(this->tabixHandle, this->iter, &len);
-#if 0
-        REprintf("ti_line: %s, len = %d\n", this->ti_line, len);
-#endif
-        if (this->ti_line) { // s is valid
-          (*line) = ti_line;
-          return true;
-        } else{
-          // continue to next rangeIdx
-          ti_iter_destroy(this->iter);
-          this->iter = 0;
-          ++ this->rangeIterator;
-          continue;
-        }
-      } else {  // last time read a valid line
-        int len;
-        this->ti_line = ti_read(this->tabixHandle, iter, &len);
-        if (!this->ti_line) {
-          ++ this->rangeIterator;
-          continue;
-        } else {
-          (*line) = ti_line;
-          return true;
-        }
+    // check read mode
+    if (range.empty()) {
+      // read line by line
+      if (!iter) {
+        iter = ti_query(this->tabixHandle, 0, 0, 0);
+        if (!iter)
+          return false;
       }
-    } // end while
+      if (!this->firstLine.empty()) {
+        (*line) = this->firstLine;
+        this->firstLine.clear();
+        return true;
+      }
+      while( (ti_line = ti_read(this->tabixHandle, iter, &ti_line_len)) != 0 ) {
+        // need to skip header here
+        if ((int)(*ti_line) == idxconf->meta_char) continue;
+        (*line) = (ti_line);
+        return true;
+      }
+      return false;
+    }
+
+    // read by region
+    // check index
+    assert(!range.empty());
+    if (!hasIndex) {
+      readyToRead = false;
+      return false; 
+    }
+
+    if (iter) {
+      this->ti_line = ti_read(this->tabixHandle, iter, &ti_line_len);
+      if (this->ti_line) {
+        (*line) = ti_line;
+        return true;
+      }
+    }
+
+    // find valid iter
+    for (; this->rangeIterator != this->rangeEnd; ++ rangeIterator) {
+      char rangeBuffer[128];
+      snprintf(rangeBuffer, 128, "%s:%u-%u", this->rangeIterator.getChrom().c_str(),
+               this->rangeIterator.getBegin(), this->rangeIterator.getEnd());
+      rangeBuffer[127] = '\0';
+      int tid, beg, end; // , len;
+      if (ti_parse_region(tabixHandle->idx, rangeBuffer, &tid, &beg, &end) != 0){
+        continue;
+      }
+      ti_iter_destroy(iter);
+      iter = 0;
+      this->iter =  ti_queryi(this->tabixHandle, tid, beg, end);
+      this->ti_line = ti_read(this->tabixHandle, this->iter, &ti_line_len);
+      if (ti_line) {
+        ++rangeIterator;
+        (*line) = ti_line;
+        return true;
+      }
+    }
+    ti_iter_destroy(iter);
+    iter = 0;
+
     return false;
   };
 
   /**
    * @return 0 if adding region is valid
    */
-  int addRange(const std::string& r) {
-    if (inReading)
-      return -1;
-    range.addRangeList(r.c_str());
+  int setRange(const std::string& r) {
+    RangeList a;
+    a.addRangeList(r);
+    return this->setRange(a);
+  }
+  int setRange(const RangeList& r) {
+    this->range.setRange(r);
     resetRangeIterator();
+    if (this->iter) {
+      ti_iter_destroy(iter);
+      iter = 0;
+    }
     return 0;
-  };
+  }
+  int addRange(const std::string& r) {
+    RangeList a;
+    a.addRangeList(r);
+    return this->addRange(a);
+  }
+  int addRange(const RangeList& r) {
+    this->range.addRange(r);
+    resetRangeIterator();
+    if (this->iter) {
+      ti_iter_destroy(iter);
+      iter = 0;
+    }
+    return 0;
+  }
 
   /**
    * Some ranges may be overlapping, thus we merge those
@@ -141,19 +136,82 @@ TabixReader(const std::string& fn) : inReading(false), hasIndex(false), tabixHan
     range.sort();
     resetRangeIterator();
   };
+  const std::string& getHeader() const {
+    return this->header;
+  }
+ private:
+  bool openIndex(const std::string& fn) {
+    if (ti_lazy_index_load(this->tabixHandle) != 0) {
+      // failed to open tabix index
+      // fpritnf(stderr, "Cannot open index file for file [ %s ]!\n", fn.c_str());
+      this->hasIndex = false;
+      return false;
+    }
+
+    this->hasIndex = true;
+    return true;
+  };
+
+  void closeIndex(){
+    // fpritnf(stderr, "close index...");
+    if (!this->hasIndex) return;
+    // fpritnf(stderr, "close index...");
+    if (this->iter) {
+      ti_iter_destroy(this->iter);
+      this->iter = 0;
+      // fpritnf(stderr, "close iter...");
+    }
+
+    /* fpritnf(stderr, "Close index\n"); */
+    // fpritnf(stderr, "%x", this->tabixHandle);
+    // fpritnf(stderr, "done. Close index\n");
+  };
+
+
   int open(const std::string& fn) {
-    inReading = false;
     ti_line = 0;
 
+    // check file existance
+    this->tabixHandle = ti_open(fn.c_str(), 0);
+    if (!this->tabixHandle) {
+      this->cannotOpen = true;
+      return -1;
+    }
+
     //open index
-    this->tabixHandle = 0;
-    this->iter = 0;
     this->hasIndex = this->openIndex(fn);
 
     // set up range iterator
     resetRangeIterator();
 
-    return this->hasIndex ? 0 : -1;
+    // reset iterator
+    this->iter = 0;
+
+    // read header
+    idxconf = ti_get_conf(this->tabixHandle->idx);
+
+    // this command will let iter point to first record
+    // (don't call this twice), or the internal fp pointer
+    // will not re-shifted to its beginning position,
+    // but will continue read.
+    if (!this->hasIndex) {
+      return -1;
+    }
+    
+    this->iter = ti_query(this->tabixHandle, 0, 0, 0);
+    while ((ti_line = ti_read(this->tabixHandle, this->iter, &this->ti_line_len)) != 0) {
+      if ((int)(*ti_line) != idxconf->meta_char) {
+        this->firstLine = ti_line;
+        break; 
+      }
+      // fputs(ti_line, stdout); fputc('\n', stdout);
+      this->header += ti_line;
+      this->header += "\n";
+    }
+    
+    cannotOpen = false;
+    readyToRead = true;
+    return 0;
   };
 
   void close() {
@@ -161,6 +219,13 @@ TabixReader(const std::string& fn) : inReading(false), hasIndex(false), tabixHan
     // close index
 
     closeIndex();
+
+    if (this->tabixHandle) {
+      ti_close(this->tabixHandle);
+      this->tabixHandle = 0;
+      // fpritnf(stderr, "close handle...");
+    }
+
   };
   void resetRangeIterator() {
     this->rangeBegin = this->range.begin();
@@ -168,14 +233,11 @@ TabixReader(const std::string& fn) : inReading(false), hasIndex(false), tabixHan
     this->rangeIterator = this->range.begin();
   }
 
-private:
-  // don't copy
-  TabixReader(TabixReader& t);
-  TabixReader& operator=(TabixReader& t);
-private:
+ private:
   RangeList range;
-  bool inReading; // indicate reading has already started
+  bool cannotOpen;
   bool hasIndex;
+  bool readyToRead;
 
   // variable used for accessing by range
   RangeList::iterator rangeBegin;
@@ -186,6 +248,11 @@ private:
   tabix_t* tabixHandle;
   ti_iter_t iter;
   const char* ti_line;
+  int ti_line_len;
+  const ti_conf_t *idxconf;
+
+  std::string header;
+  std::string firstLine;
 };
 
 #endif /* _TABIXREADER_H_ */

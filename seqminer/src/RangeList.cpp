@@ -1,12 +1,32 @@
 #include "RangeList.h"
+#include <stdlib.h>
 #include <climits>
+
+void RangeCollection::obtainRange(const int index, std::string* chrom, unsigned int* beg, unsigned int* end) const {
+  unsigned int t = index;
+  unsigned int s;
+  for(unsigned int i = 0; i < this->chrVector.size(); i++ ) {
+    const std::vector<PositionPair>& v = this->rangeMap.find(chrVector[i])->second;
+    s = v.size();
+    if ( t < s) {
+      (*chrom) = chrVector[i];
+      (*beg) = v[t].begin;
+      (*end) = v[t].end;
+      return;
+    } else {
+      t -= s;
+    }
+  }
+  REprintf( "[ERROR] Cannot obtain range [ %d ] from RangeList!\n", index);
+  assert(false);
+}
 
 //
 void RangeList::filterGeneName(const char* inclusionGeneFileName, const char* geneTableFileName){
   // require user input gene list file
   if (strlen(geneTableFileName) == 0 && strlen(inclusionGeneFileName) != 0) {
-    REprintf("Please provide gene list file (e.g. refFlat) until we are able to process gene\n");
-    // exit(1);
+    REprintf( "Please provide gene list file (e.g. refFlat) until we are able to process gene\n");
+    //exit(1);
     return;
   }
 
@@ -38,7 +58,7 @@ void RangeList::filterGeneName(const char* inclusionGeneFileName, const char* ge
     }
   }
   if (this->rangeCollection.size() == 0){
-    Rprintf("We cannot find given gene in your geneListFile, so all sites will be outputed\n");
+    Rprintf( "We cannot find given gene in your geneListFile, so all sites will be outputed\n");
   }
 }
 
@@ -47,7 +67,7 @@ void RangeList::filterGeneName(const char* inclusionGeneFileName, const char* ge
  * @return 0: valid format
  */
 int parseRangeFormat(const std::string& s, std::string* chr, unsigned int* begin, unsigned int* end) {
-  //REprintf("parseRangeFormat: %s\n", s.c_str());
+  //REprintf( "parseRangeFormat: %s\n", s.c_str());
 
   unsigned int i = 0;
   chr->clear();
@@ -76,7 +96,7 @@ int parseRangeFormat(const std::string& s, std::string* chr, unsigned int* begin
 
   if (s[i] == '\0'){ // 1:100 meaning from 1:100- 1:(max_pos)
     *end = 1 << 29;  /// this is copied from tabix index.c ti_parse_region
-    // REprintf("UINT_MAX = %u", UINT_MAX);
+    // REprintf( "UINT_MAX = %u", UINT_MAX);
     return 0;
   }
 
@@ -89,7 +109,7 @@ int parseRangeFormat(const std::string& s, std::string* chr, unsigned int* begin
   }
   *end = e;
 
-  // REprintf("parse result: %s %d %d\n", chr->c_str(), *begin, *end);
+  // REprintf( "parse result: %s %d %d\n", chr->c_str(), *begin, *end);
   return 0;
 }
 
@@ -99,10 +119,7 @@ int parseRangeFormat(const std::string& s, std::string* chr, unsigned int* begin
  * X:150
  * MT
  */
-void RangeList::addRangeList(const char* argRangeList) {
-  if (!strlen(argRangeList)) return;
-
-  std::string rangeList = argRangeList;
+void RangeList::addRangeList(const std::string& rangeList) {
   std::vector<std::string> col;
   //col.AddTokens(arg, ',');
   stringTokenize(rangeList, ',', &col);
@@ -112,7 +129,7 @@ void RangeList::addRangeList(const char* argRangeList) {
     if (!parseRangeFormat(col[i], &c, &b, &e)) {
       this->rangeCollection.addRange(c, b, e);
     } else {
-      Rprintf("This range does not conform 1:100-200 format -- skip %s\n", col[i].c_str());
+      Rprintf( "This range does not conform 1:100-200 format -- skip %s\n", col[i].c_str());
     }
   }
 };
@@ -124,16 +141,15 @@ void RangeList::addRangeList(const char* argRangeList) {
  * chr beg
  * we will assume beg == end in the second case
  */
-void RangeList::addRangeFile(const char* argRangeFile){
-  if (!strlen(argRangeFile)) return;
-  // Rprintf("Load range file %s.\n", argRangeFile);
+void RangeList::addRangeFile(const std::string& rangeFile){
+  if (rangeFile.empty()) return;
 
-  LineReader lr(argRangeFile);
+  LineReader lr(rangeFile);
   std::vector<std::string> sa;
   while ( lr.readLineBySep(&sa, "\t ")) {
     if (sa.size() == 0) continue;
     if (sa.size() == 1){
-      // REprintf("Wrong format for --rangeFile: %s, shoudl be: chr beg end \n", argRangeFile);
+      // REprintf( "Wrong format for --rangeFile: %s, shoudl be: chr beg end \n", argRangeFile);
       this->addRangeList(sa[0].c_str());
     } else if (sa.size() == 2)
       this->rangeCollection.addRange(sa[0].c_str(), (unsigned int) atoi(sa[1]), (unsigned int) atoi(sa[1]));
@@ -141,9 +157,23 @@ void RangeList::addRangeFile(const char* argRangeFile){
       this->rangeCollection.addRange(sa[0].c_str(), (unsigned int) atoi(sa[1]), (unsigned int) atoi(sa[2]));
     else {
       // we will silently use the first 3 columns
-      // Rprintf("Will only use the first 3 column of --rangeFile %s\n", argRangeFile);
+      // Rprintf( "Will only use the first 3 column of --rangeFile %s\n", argRangeFile);
       this->rangeCollection.addRange(sa[0].c_str(), (unsigned int) atoi(sa[1]), (unsigned int) atoi(sa[2]));
     }
   }
 };
 
+void RangeList::addRange(const RangeList& rl) {
+  std::string chr;
+  unsigned int beg;
+  unsigned int end;
+  for (size_t i = 0; i < rl.size(); ++i) {
+    rl.obtainRange(i, &chr, &beg, &end);
+    this->addRange(chr, beg, end);
+  }
+}
+
+void RangeList::setRange(const RangeList& rl) {
+  this->clear();
+  this->addRange(rl);
+}

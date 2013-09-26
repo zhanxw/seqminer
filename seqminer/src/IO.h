@@ -351,7 +351,7 @@ private:
 /** Example code:
  // LineReader lr(fn);
  // while(lr.readLine(&line)>0){
- //         fprintf(stdout, "%s\n", line.c_str());
+ //         Rprintf( "%s\n", line.c_str());
  // }
  */
 class LineReader{

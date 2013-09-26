@@ -42,10 +42,10 @@ SEXP readVCF2Matrix(VCFExtractor* vin) {
     for (size_t i = 0; i < people.size(); i++) {
       indv = people[i];
       int g = indv->justGet(0).getGenotype();
-      //fprintf(stdout, "\t%d", g);
+      //Rprintf( "\t%d", g);
       genoVec.push_back(g);
     }
-    //fprintf(stdout, "\n");
+    //Rprintf( "\n");
   }; // end while
 
   //  REprintf("posVec = %zu, idVec = %zu, genoVec = %zu\n", posVec.size(), idVec.size(), genoVec.size());
@@ -100,7 +100,7 @@ SEXP readVCF2Matrix(VCFExtractor* vin) {
  * @return check whether VCF files has ANNO tag
  */
 bool vcfHasAnnotation(const std::string& fn) {
-  //fprintf(stdout, "range = %s\n", range.c_str());
+  //Rprintf( "range = %s\n", range.c_str());
   VCFInputFile vin(fn);
   while (vin.readRecord()) {
     VCFRecord& r = vin.getVCFRecord();
@@ -216,7 +216,7 @@ SEXP impl_readVCFToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_g
     //   range += it->second;
     // };
 
-    //fprintf(stdout, "range = %s\n", range.c_str());
+    //Rprintf( "range = %s\n", range.c_str());
     VCFExtractor vin(FLAG_fileName.c_str());
     if (range.size())
       vin.setRangeList(range.c_str());
@@ -479,7 +479,7 @@ SEXP impl_readVCFToListByRange(SEXP arg_fileName, SEXP arg_range, SEXP arg_annoT
   extractStringArray(arg_infoTag, &FLAG_infoTag);
   extractStringArray(arg_indvTag, &FLAG_indvTag);
 
-  //fprintf(stdout, "range = %s\n", range.c_str());
+  //Rprintf( "range = %s\n", range.c_str());
   VCFExtractor vin(FLAG_fileName.c_str());
   if (FLAG_range.size())
     vin.setRangeList(FLAG_range.c_str());
@@ -551,7 +551,7 @@ SEXP impl_readVCFToListByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_gen
     range += it->second;
   };
 
-  //fprintf(stdout, "range = %s\n", range.c_str());
+  //Rprintf( "range = %s\n", range.c_str());
   VCFExtractor vin(FLAG_fileName.c_str());
   if (range.size())
     vin.setRangeList(range.c_str());

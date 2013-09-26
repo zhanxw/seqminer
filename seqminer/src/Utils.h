@@ -1,16 +1,16 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
+#include "R.h"
 #include <string.h> // for strlen
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <vector>
 #include <string>
 #include <cassert>
 #include <algorithm>
-
-#include "R.h"
 
 // transpose matrix with dimension @param nr by @param nc
 template<class T>
@@ -31,7 +31,7 @@ inline std::string chopChr(const std::string& s) {
     return s.substr(3);
   }
   return s;
-}
+};
 
 // @return true: if @param s has leading "chr", "CHR", "Chr"...
 inline bool hasLeadingChr(const std::string& s) {
@@ -42,7 +42,7 @@ inline bool hasLeadingChr(const std::string& s) {
     return true;
   }
   return false;
-}
+};
 
 // remove the leading and trailing white spaces
 inline std::string stringStrip(const std::string& s){
@@ -58,10 +58,10 @@ inline std::string stringStrip(const std::string& s){
  * When delim is empty, we will give warning, return 1, and @param result will have the whole input string
  */
 inline int stringTokenize(const std::string& str, const std::string& delim, std::vector<std::string>* result){
-  //assert(result);
+  assert(result);
   result->clear();
   if (!delim.size()) {
-    REprintf("stringTokenize() using an empty delim");
+    REprintf( "stringTokenize() using an empty delim");
     result->push_back(str);
     return -1;
   }
@@ -77,22 +77,22 @@ inline int stringTokenize(const std::string& str, const std::string& delim, std:
       s.push_back(str[i]);
     }
     ++i;
-  }
+  };
   result->push_back(s);
   return result->size();
-}
+};
 
 inline int stringTokenize(const std::string& str, const char delim, std::vector<std::string>* result){
   std::string d(1, delim);
   return (stringTokenize(str, d, result));
-}
+};
 
 // pretty much like stringTokenize, but @param result will not contain empty string
 inline int stringNaturalTokenize(const std::string& str, const std::string& delim, std::vector<std::string>* result){
-  //assert(result);
+  assert(result);
   result->clear();
   if (!delim.size()) {
-    REprintf("stringTokenize() using an empty delim");
+    REprintf( "stringTokenize() using an empty delim");
     result->push_back(str);
     return -1;
   }
@@ -109,15 +109,15 @@ inline int stringNaturalTokenize(const std::string& str, const std::string& deli
       s.push_back(str[i]);
     }
     ++i;
-  }
+  };
   if (s.size() > 0)
     result->push_back(s);
   return result->size();
-}
+};
 inline int stringNaturalTokenize(const std::string& str, const char delim, std::vector<std::string>* result){
   std::string d(1, delim);
   return (stringNaturalTokenize(str, d, result));
-}
+};
 
 inline void stringJoin(const std::vector<std::string>& array, const char delim, std::string* res){
   res->clear();
@@ -125,40 +125,61 @@ inline void stringJoin(const std::vector<std::string>& array, const char delim, 
     (*res) += array[i];
     if (i) (*res) += delim;
   }
-}
+};
 
 inline void tolower(std::string* s) {
   for (std::string::iterator i = s->begin();
        i != s->end();
        ++i)
     (*i) = tolower(*i);
-}
+};
 
 inline std::string tolower(const std::string& s) {
   std::string ret(s);
   tolower(&ret);
   return ret;
-}
+};
 
 inline void toupper(std::string* s) {
   for (std::string::iterator i = s->begin();
        i != s->end();
        ++i)
     (*i) = toupper(*i);
-}
+};
 
 inline std::string toupper(const std::string& s) {
   std::string ret(s);
   toupper(&ret);
   return ret;
+};
+
+inline bool isInteger(const double m) {
+  double d;
+  return (modf(m, &d) == 0.0);
 }
+
 /**
  * print out the content for debug only
  */
 inline void dumpStringVector(const std::vector<std::string> s) {
   for (unsigned int i = 0; i < s.size(); i++) {
-    fprintf(stdout, "%u: %s\n", i, s[i].c_str());
+    Rprintf( "%u: %s\n", i, s[i].c_str());
   }
+};
+
+/**
+ * @return true if @param s ends with @param tail
+ */
+inline bool endsWith(const std::string& s, const std::string& tail) {
+  if (s.size() < tail.size()) return false;
+  size_t l = tail.size();
+  size_t idx = s.size() - l;
+  for (size_t i = 0; i != l; ++i) {
+    if (s[idx + i] != tail[i]) {
+      return false;
+    }
+  }
+  return true;
 }
 
 

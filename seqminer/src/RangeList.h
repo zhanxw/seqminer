@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <cassert>
 
+#include "R.h"
+
 #include "TypeConversion.h"
 #include "Utils.h"
 #include "IO.h"
@@ -17,11 +19,11 @@
 struct PositionPair{
   unsigned int begin;
   unsigned int end;
- PositionPair():
-  begin(0), end(0)
+  PositionPair():
+      begin(0), end(0)
   {};
- PositionPair(unsigned int b, unsigned int e):
-  begin(b), end(e)
+  PositionPair(unsigned int b, unsigned int e):
+      begin(b), end(e)
   {};
   bool operator== (const PositionPair o){
     return (begin == o.begin && end == o.end);
@@ -44,9 +46,9 @@ inline bool PositionPairCompare(const PositionPair& p1, const PositionPair& p2){
  * Store arbitrary number of ranges: e.g. [chr1:1-100, chr2:2-300....]
  */
 class RangeCollection{
-public:
-RangeCollection():_size(0){};
-  void addRange(const std::string& chr, unsigned int begin, unsigned int end) {  
+ public:
+  RangeCollection():_size(0){};
+  void addRange(const std::string& chr, unsigned int begin, unsigned int end) {
     this->addRange(chr.c_str(), begin, end);
   }
   void addRange(const char* chr, unsigned int begin, unsigned int end) {
@@ -89,23 +91,7 @@ RangeCollection():_size(0){};
   /**
    * Get @param index ordered range index, and store results in @param chrom, @param beg and @param end
    */
-  void obtainRange(const int index, std::string* chrom, unsigned int* beg, unsigned int* end) const {
-    unsigned int t = index;
-    unsigned int s;
-    for(unsigned int i = 0; i < this->chrVector.size(); i++ ) {
-      const std::vector<PositionPair>& v = this->rangeMap.find(chrVector[i])->second;
-      s = v.size();
-      if ( t < s) {
-        (*chrom) = chrVector[i];
-        (*beg) = v[t].begin;
-        (*end) = v[t].end;
-        return;
-      } else {
-        t -= s;
-      }
-    }
-    assert(false);
-  };
+  void obtainRange(const int index, std::string* chrom, unsigned int* beg, unsigned int* end) const;
 
   void obtainRange(const int index, std::string* range) const {
     unsigned int beg = 0;
@@ -136,7 +122,7 @@ RangeCollection():_size(0){};
       -- i;
       return i->isInRange(pos);
     } else {
-      if (i->begin == p.begin) 
+      if (i->begin == p.begin)
         return i->isInRange(pos);
       else {
         -- i;
@@ -148,11 +134,11 @@ RangeCollection():_size(0){};
 
     /* unsigned int low = lower_bound(r.begin(), r.end(), p, PositionPairCompare) - r.begin(); */
     /* unsigned int up = upper_bound(r.begin(), r.end(), p, PositionPairCompare) - r.begin(); */
-        
-    /* REprintf("\n%s\n ", upper_bound(r.begin(), r.end(), p, PositionPairCompare) ==  r.begin() ? "equal": "differ"); */
-    /* REprintf("%s\n", upper_bound(r.begin(), r.end(), p, PositionPairCompare) ==  r.end()  ? "equal": "differ"); */
-    /* REprintf("%s\n", PositionPairCompare(p, r[0])  ? "equal": "differ");         */
-    
+
+    /* REprintf( "\n%s\n ", upper_bound(r.begin(), r.end(), p, PositionPairCompare) ==  r.begin() ? "equal": "differ"); */
+    /* REprintf( "%s\n", upper_bound(r.begin(), r.end(), p, PositionPairCompare) ==  r.end()  ? "equal": "differ"); */
+    /* REprintf( "%s\n", PositionPairCompare(p, r[0])  ? "equal": "differ");         */
+
     /* for (unsigned int i = low; i <= up; i++){ */
     /*   PositionPair& pp = r[i]; */
     /*   if (pp.begin <= pos && pos < pp.end ) { */
@@ -166,6 +152,9 @@ RangeCollection():_size(0){};
     this->rangeMap.clear();
     this->_size = 0;
   };
+  bool empty() const {
+    return this->_size == 0;
+  }
   /**
    * @return number of regions
    */
@@ -178,7 +167,7 @@ RangeCollection():_size(0){};
   const std::map< std::string, std::vector<PositionPair> >& getRangeMap() const{
     return this->rangeMap;
   }
-private:
+ private:
   struct CompareChromName {
     bool operator() (const std::string& chrom1, const std::string& chrom2) {
       return ( chrom2int(chrom1)  < chrom2int(chrom2));
@@ -192,9 +181,9 @@ private:
   };
   void dump(const std::vector<PositionPair>& v){
     for (unsigned int i = 0; i < v.size(); i++){
-      printf("[%d, %d] ", v[i].begin, v[i].end);
+      Rprintf("[%d, %d] ", v[i].begin, v[i].end);
     }
-    printf("\n");
+    Rprintf("\n");
   }
   void consolidate(){
     std::map< std::string, std::vector<PositionPair> >::iterator iter;
@@ -213,7 +202,7 @@ private:
   // we will merge overlapped ranges
   void consolidateRange(std::vector<PositionPair>* r) {
     if (!r || r->empty()) return;
-    
+
     std::vector<PositionPair>& v = *r;
     const int l = v.size();
     int last = 0; // this is the element to change
@@ -237,7 +226,7 @@ private:
     }
     v.resize(last+1);
     return;
-#if 0    
+#if 0
     //old buggy code
     std::vector<PositionPair> t;
     const int l = v->size();
@@ -268,7 +257,7 @@ private:
     /* std::swap( t, *v); */
 #endif
   };
-private:
+ private:
   std::vector<std::string> chrVector;
   std::map< std::string, std::vector<PositionPair> > rangeMap;
   size_t _size;
@@ -279,8 +268,11 @@ private:
  * Hold a collection of ranges, and offer utility function (e.g. load file)
  */
 class RangeList{
-public:
-RangeList(): isSorted(false) {};
+ public:
+  RangeList(): isSorted(false) {};
+  /**
+   * Sort and consolidate regions
+   */
   void sort() {
     if (!this->isSorted) {
       this->rangeCollection.sort();
@@ -290,21 +282,22 @@ RangeList(): isSorted(false) {};
   /**
    * First sort all ranges(if necessary), then store th index-th range to @param range, in the format of "chr1:100-200"
    */
-  void obtainRange(const int index, std::string* range) {
+  void obtainRange(const int index, std::string* range) const {
     this->rangeCollection.obtainRange(index, range);
   }
-  void obtainRange(const int index, std::string* chr, unsigned int* beg, unsigned int* end) {
+  void obtainRange(const int index, std::string* chr, unsigned int* beg, unsigned int* end) const {
     this->rangeCollection.obtainRange(index, chr, beg, end);
   }
   /**
    * @return total number of regions (after merging).
    */
   size_t size() const {return this->rangeCollection.size(); };
+  bool empty() const {return this->rangeCollection.empty(); };
   // read gene list file and add these ranges
   void filterGeneName(const char* geneName, const char* fileName);
   /// @param argRangeList is a string indicating the range
-  void addRangeList(const char* argRangeList);
-  void addRangeFile(const char* argRangeFile);
+  void addRangeList(const std::string& argRangeList);
+  void addRangeFile(const std::string& argRangeFile);
   void addRange(const char* chr, unsigned int begin, unsigned int end) {
     this->isSorted = false;
     this->rangeCollection.addRange(chr, begin, end);
@@ -312,6 +305,8 @@ RangeList(): isSorted(false) {};
   void addRange(const std::string& chr, unsigned int begin, unsigned int end) {
     this->addRange(chr.c_str(), begin, end);
   };
+  void addRange(const RangeList& rl);
+  void setRange(const RangeList& rl);
   bool isInRange(const std::string& chr, unsigned int pos) {
     return this->rangeCollection.isInRange(chr, pos);
   };
@@ -334,15 +329,15 @@ RangeList(): isSorted(false) {};
     std::string out;
     for (size_t i = 0; i != this->size(); ++i) {
       this->obtainRange(i, &out);
-      REprintf("range %zu: %s\n", i, out.c_str());
+      REprintf( "range %zu: %s\n", i, out.c_str());
     }
   };
   class iterator{
- public:
- iterator(): rangeCollection(NULL), chromIndex(-1), inChromRegionSize(-1) 
+   public:
+    iterator(): rangeCollection(NULL), chromIndex(-1), inChromRegionSize(-1)
     {};
- iterator(const RangeCollection& rc, int chrIdx, int inChrIdx):
-    rangeCollection(&rc),
+    iterator(const RangeCollection& rc, int chrIdx, int inChrIdx):
+        rangeCollection(&rc),
         chromIndex(chrIdx),
         chromSize(0),
         inChromRangeIndex(inChrIdx),
@@ -385,9 +380,9 @@ RangeList(): isSorted(false) {};
     const unsigned int getEnd() const {
       return (*this->positionPair)[inChromRangeIndex].end;
     }
- private:
+   private:
     bool isValidChromIndex(int index) const{
-        if (0 <= index  && index < (int)this->rangeCollection->getChromVector().size()) {
+      if (0 <= index  && index < (int)this->rangeCollection->getChromVector().size()) {
         return true;
       }
       return false;
@@ -398,22 +393,22 @@ RangeList(): isSorted(false) {};
       if (iter != this->rangeCollection->getRangeMap().end()) {
         return &(iter->second);
       }
-      REprintf("ERROR: Don't contain chromosome %s!\n", chrom.c_str());
+      REprintf( "ERROR: Don't contain chromosome %s!\n", chrom.c_str());
       return NULL;
     };
     const std::vector<PositionPair>* getRegions(int index) const{
-        if (!isValidChromIndex(index) && index != (int) this->rangeCollection->getChromVector().size()) {
-        REprintf("Invalid chromosome index: %d!\n", index);
+      if (!isValidChromIndex(index) && index != (int) this->rangeCollection->getChromVector().size()) {
+        REprintf( "Invalid chromosome index: %d!\n", index);
         return NULL;
       }
-        if (index == (int) this->rangeCollection->getChromVector().size()) {
+      if (index == (int) this->rangeCollection->getChromVector().size()) {
         return NULL;
       }
       const std::string& c = this->rangeCollection->getChromVector()[index];
       return getRegions(c);
     };
 
- private:
+   private:
     const RangeCollection* rangeCollection;
     int chromIndex;
     size_t chromSize;           // number of chromosomes
@@ -430,7 +425,7 @@ RangeList(): isSorted(false) {};
     return iterator(rangeCollection, this->rangeCollection.getChromVector().size(), 0);
   };
 
-private:
+ private:
   RangeCollection rangeCollection;
   bool isSorted;
 }; // end class RangeList

@@ -125,7 +125,7 @@ int ZLIB_INTERNAL z_verbose = verbose;
 void ZLIB_INTERNAL z_error (m)
     char *m;
 {
-    fprintf(stderr, "%s\n", m);
+    REprintf( "%s\n", m);
     exit(1);
 }
 #endif

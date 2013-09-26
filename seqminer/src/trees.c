@@ -165,7 +165,7 @@ local void gen_trees_header OF((void));
 
 #else /* DEBUG */
 #  define send_code(s, c, tree) \
-     { if (z_verbose>2) fprintf(stderr,"\ncd %3d ",(c)); \
+     { if (z_verbose>2) REprintf("\ncd %3d ",(c)); \
        send_bits(s, tree[c].Code, tree[c].Len); }
 #endif
 
@@ -677,7 +677,7 @@ local void build_tree(s, desc)
         tree[n].Dad = tree[m].Dad = (ush)node;
 #ifdef DUMP_BL_TREE
         if (tree == s->bl_tree) {
-            fprintf(stderr,"\nnode %d(%d), sons %d(%d) %d(%d)",
+            REprintf("\nnode %d(%d), sons %d(%d) %d(%d)",
                     node, tree[node].Freq, n, tree[n].Freq, m, tree[m].Freq);
         }
 #endif

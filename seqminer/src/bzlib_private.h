@@ -73,17 +73,17 @@ extern void BZ2_bz__AssertH__fail ( int errcode );
 #endif
 
 #define VPrintf0(zf) \
-   fprintf(stderr,zf)
+   REprintf(zf)
 #define VPrintf1(zf,za1) \
-   fprintf(stderr,zf,za1)
+   REprintf(zf,za1)
 #define VPrintf2(zf,za1,za2) \
-   fprintf(stderr,zf,za1,za2)
+   REprintf(zf,za1,za2)
 #define VPrintf3(zf,za1,za2,za3) \
-   fprintf(stderr,zf,za1,za2,za3)
+   REprintf(zf,za1,za2,za3)
 #define VPrintf4(zf,za1,za2,za3,za4) \
-   fprintf(stderr,zf,za1,za2,za3,za4)
+   REprintf(zf,za1,za2,za3,za4)
 #define VPrintf5(zf,za1,za2,za3,za4,za5) \
-   fprintf(stderr,zf,za1,za2,za3,za4,za5)
+   REprintf(zf,za1,za2,za3,za4,za5)
 
 #else
 

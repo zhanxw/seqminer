@@ -137,13 +137,13 @@ public:
     int altLen = strlen(alt);
     if (refLen > 1 ) {
       if (ref[1] != ','){
-        fprintf(stdout, "skip with ref = %s and alt = %s\n", ref, alt);
+        Rprintf( "skip with ref = %s and alt = %s\n", ref, alt);
         return -1;
       }
     }
     if (altLen >1 ) {
       if (alt[1] != ',') {
-        fprintf(stdout, "skip with ref = %s and alt= %s\n", ref, alt);
+        Rprintf( "skip with ref = %s and alt= %s\n", ref, alt);
         return -1;
       }
     }
@@ -159,7 +159,7 @@ public:
     else if (chrom == "MT")
       fputs("25\t", this->fpBim);
     else {
-      fprintf(stdout, "skip chrom %s\n", chr);
+      Rprintf( "skip chrom %s\n", chr);
       return -1;
     }
     if (id && id[0] != '.')

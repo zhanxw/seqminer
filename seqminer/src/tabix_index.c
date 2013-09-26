@@ -9,7 +9,7 @@
 #include "knetfile.h"
 #endif
 #include "tabix.h"
-#include "R.h"
+
 #define TAD_MIN_CHUNK_GAP 32768
 // 1<<14 is the size of minimum bin.
 #define TAD_LIDX_SHIFT    14
@@ -315,19 +315,22 @@ ti_index_t *ti_index_core(BGZF *fp, const ti_conf_t *conf)
         if ( intv.beg<0 || intv.end<0 )
         {
             REprintf("[ti_index_core] the indexes overlap or are out of bounds\n");
-            return 0;//exit(1);
+            // exit(1);
+            return NULL;
         }
 		if (last_tid != intv.tid) { // change of chromosomes
             if (last_tid>intv.tid )
             {
                 REprintf("[ti_index_core] the chromosome blocks not continuous at line %llu, is the file sorted? [pos %d]\n",(unsigned long long)lineno,intv.beg+1);
-                return 0; //                exit(1);
+                // exit(1);
+                return NULL;
             }
 			last_tid = intv.tid;
 			last_bin = 0xffffffffu;
 		} else if (last_coor > intv.beg) {
 			REprintf( "[ti_index_core] the file out of order at line %llu\n", (unsigned long long)lineno);
-			return 0; // exit(1);
+			// exit(1);
+                        return NULL;
 		}
 		tmp = insert_offset2(&idx->index2[intv.tid], intv.beg, intv.end, last_off);
 		if (last_off == 0) offset0 = tmp;
@@ -342,7 +345,8 @@ ti_index_t *ti_index_core(BGZF *fp, const ti_conf_t *conf)
 		if (bgzf_tell(fp) <= last_off) {
 			REprintf( "[ti_index_core] bug in BGZF: %llx < %llx\n",
 					(unsigned long long)bgzf_tell(fp), (unsigned long long)last_off);
-			return 0; // exit(1);
+			// exit(1);
+                        return NULL;
 		}
 		last_off = bgzf_tell(fp);
 		last_coor = intv.beg;
@@ -365,13 +369,13 @@ void ti_index_destroy(ti_index_t *idx)
 	int i;
 	if (idx == 0) return;
 	// destroy the name hash table
-    for (k = kh_begin(idx->tname); k != kh_end(idx->tname); ++k) {
+	for (k = kh_begin(idx->tname); k != kh_end(idx->tname); ++k) {
 		if (kh_exist(idx->tname, k))
 			free((char*)kh_key(idx->tname, k));
 	}
 	kh_destroy(s, idx->tname);
 	// destroy the binning index
-    for (i = 0; i < idx->n; ++i) {
+	for (i = 0; i < idx->n; ++i) {
 		khash_t(i) *index = idx->index[i];
 		ti_lidx_t *index2 = idx->index2 + i;
 		for (k = kh_begin(index); k != kh_end(index); ++k) {
@@ -383,8 +387,8 @@ void ti_index_destroy(ti_index_t *idx)
 	}
 	free(idx->index);
 	// destroy the linear index
-    free(idx->index2);
-    free(idx);
+	free(idx->index2);
+	free(idx);
 }
 
 /******************
@@ -673,7 +677,7 @@ int ti_index_build2(const char *fn, const ti_conf_t *conf, const char *_fnidx)
 	} else fnidx = strdup(_fnidx);
 	fpidx = bgzf_open(fnidx, "w");
 	if (fpidx == 0) {
-		REprintf("[ti_index_build2] fail to create the index file.\n");
+		REprintf( "[ti_index_build2] fail to create the index file.\n");
 		free(fnidx);
 		return -1;
 	}
