@@ -152,7 +152,7 @@ void VCFInputFile::init(const char* fn) {
 
 bool VCFInputFile::readRecord(){
   // REprintf( "test\n");
-  int nRead;
+  int nRead = 0;
   while (true) {
     if (this->mode == VCF_LINE_MODE) {
       nRead = this->fp->readLine(&this->line);

@@ -269,7 +269,7 @@ size_t findCovariateDimension(const std::string& fn, int column) {
   }
         
   stringNaturalTokenize(line, "\t ", &fd);
-  if (column >= fd.size() ) {
+  if (column >= (int)fd.size() ) {
     return ret;
   }
   // REprintf("all_cov = %s\n", line.c_str());
@@ -371,7 +371,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
   PROTECT(geneNames = allocVector(STRSXP, nGene));
   numAllocated ++;
   {
-    for (int i = 0; i < geneLocationMap.size(); ++i) {
+    for (size_t i = 0; i != geneLocationMap.size(); ++i) {
     // for ( GeneLocationMap::iterator iter = geneLocationMap.begin();
     //       iter != geneLocationMap.end() ; ++iter){
       // Rprintf("assign gene name: %s\n", iter->first.c_str());
@@ -412,7 +412,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
   std::vector<size_t> zDims(FLAG_covFile.size(), 0);
   // GeneLocationMap::iterator iter = geneLocationMap.begin();
   for ( int i = 0;
-        i < geneLocationMap.size();
+        i < (int) geneLocationMap.size();
         ++i) {
     // REprintf("i = %d\n", i);
     // REprintf("names.size() = %zu\n", names.size());
@@ -698,7 +698,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
       double tempDouble;
       while( tr.readLine(&line) ){
         stringNaturalTokenize(line, " \t", &fd);
-        if (fd.size() <= PVAL_FILE_MIN_COLUMN_NUM) continue;
+        if ((int)fd.size() <= PVAL_FILE_MIN_COLUMN_NUM) continue;
         p = fd[PVAL_FILE_CHROM_COL];
         p += ':';
         p += fd[PVAL_FILE_POS_COL];
@@ -856,7 +856,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
   // fill in position and annotation
   // iter = geneLocationMap.begin();
   for ( int i = 0;
-        i < geneLocationMap.size();
+        i < (int)geneLocationMap.size();
         ++i) {
     // iter != geneLocationMap.end() ; ++iter, ++i){
     const std::map<std::string, int>& loc2idx = geneLocationMap.valueAt(i);
@@ -947,7 +947,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
           // REprintf("line = %s\n", line.c_str());
 
           stringNaturalTokenize(line, " \t", &fd);
-          if (fd.size() <= COV_FILE_MIN_COLUMN_NUM) continue;
+          if ((int)fd.size() <= COV_FILE_MIN_COLUMN_NUM) continue;
           
           const std::string& chrom = fd[COV_FILE_CHROM_COL];
           // REprintf("pos: %s\n", fd[COV_FILE_COV_COL].c_str());
@@ -1002,10 +1002,10 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
           stringNaturalTokenize(covArray[1], ',', &covXZ);
           // REprintf("covXZ = %s\n", covArray[1].c_str());
           int zDim = zDims[study];
-          if (covXZ.size() != zDim) {
+          if ((int)covXZ.size() != zDim) {
             REprintf("CovXZ has wrong dimension (Covariance column = [ %s ])\n", fd[COV_FILE_COV_COL].c_str() );
           }
-          for (size_t j = 0; j < zDim; ++j) {
+          for (int j = 0; j < zDim; ++j) {
             pj = chrom + ":" + pos[0];
             // REprintf("pj = %s, covXZ[j] = %s\n", pj.c_str(), covXZ[j].c_str());
             if (location2idx.count(pj) == 0) {
@@ -1021,7 +1021,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
           v = VECTOR_ELT(u, RET_COV_ZZ_INDEX);  // cov is the 6th element in the list
           s = VECTOR_ELT(v, study);
           stringNaturalTokenize(covArray[2], ',', &covZZ);
-          if (zDim * (zDim + 1) / 2 != covZZ.size()) {
+          if (zDim * (zDim + 1) / 2 != (int)covZZ.size()) {
             REprintf("CovXZ has wrong dimension (Covariance column = [ %s ])\n", fd[COV_FILE_COV_COL].c_str() );
           }
           // REprintf("covZZ = %s\n", covArray[2].c_str());
@@ -1167,7 +1167,7 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
       // Rprintf("%s\n", s);
       line = s;
       stringTokenize(line, "\t", &fd);
-      if (fd.size() <= COV_FILE_MIN_COLUMN_NUM) continue;
+      if ((int)fd.size() <= COV_FILE_MIN_COLUMN_NUM) continue;
       // if (fd[COV_FILE_NUM_MARKER_COL] == "1") continue; // only self covariance
       lineNo ++;
 
@@ -1440,7 +1440,7 @@ SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range) {
   while (tr.readLine(&line)) {
     // Rprintf("read a line: %s\n", line.c_str());
     stringNaturalTokenize(line, "\t ", &fd);
-    if (fd.size() <= PVAL_FILE_MIN_COLUMN_NUM) continue;
+    if ((int)fd.size() <= PVAL_FILE_MIN_COLUMN_NUM) continue;
     int pos = atoi(fd[PVAL_FILE_POS_COL]);
 
     // check consistent column number

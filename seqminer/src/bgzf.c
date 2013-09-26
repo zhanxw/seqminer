@@ -21,15 +21,18 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
    THE SOFTWARE.
 */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <assert.h>
+#if 0
 #include <pthread.h>
+#endif
 #include <sys/types.h>
 #include "bgzf.h"
+
+#define UNUSED(x) (void)(x)
 
 #ifdef _USE_KNETFILE
 #include "knetfile.h"
@@ -126,7 +129,9 @@ static BGZF *bgzf_write_init(int compress_level) // compress_level==-1 for the d
 	return fp;
 }
 // get the compress level from the mode string
-static int mode2level(const char *__restrict mode)
+// remove __restrict, as __ prefix is not portable.
+// static int mode2level(const char *__restrict mode)
+static int mode2level(const char * mode)
 {
 	int i, compress_level = -1;
 	for (i = 0; mode[i]; ++i)
@@ -142,7 +147,11 @@ BGZF *bgzf_open(const char *path, const char *mode)
 	assert(compressBound(BGZF_BLOCK_SIZE) < BGZF_MAX_BLOCK_SIZE);
 	if (strchr(mode, 'r') || strchr(mode, 'R')) {
 		_bgzf_file_t fpr;
+#ifdef _WIN32		
+		if ((fpr = _bgzf_open(path, "rb")) == 0) return 0;
+#else
 		if ((fpr = _bgzf_open(path, "r")) == 0) return 0;
+#endif
 		fp = bgzf_read_init();
 		fp->fp = fpr;
 	} else if (strchr(mode, 'w') || strchr(mode, 'W')) {
@@ -367,6 +376,7 @@ ssize_t bgzf_read(BGZF *fp, void *data, ssize_t length)
 	return bytes_read;
 }
 
+#if 0
 /***** BEGIN: multi-threading *****/
 
 typedef struct {
@@ -522,11 +532,13 @@ static ssize_t mt_write(BGZF *fp, const void *data, ssize_t length)
 }
 
 /***** END: multi-threading *****/
+#endif
 
 int bgzf_flush(BGZF *fp)
 {
 	if (!fp->is_write) return 0;
-	if (fp->mt) return mt_flush(fp);
+	// disable mt
+        // if (fp->mt) return mt_flush(fp);
 	while (fp->block_offset > 0) {
 		int block_length;
 		block_length = deflate_block(fp, fp->block_offset);
@@ -543,8 +555,10 @@ int bgzf_flush(BGZF *fp)
 int bgzf_flush_try(BGZF *fp, ssize_t size)
 {
 	if (fp->block_offset + size > BGZF_BLOCK_SIZE) {
-		if (fp->mt) return mt_lazy_flush(fp);
-		else return bgzf_flush(fp);
+          // disable mt
+          // if (fp->mt) return mt_lazy_flush(fp);
+          // else
+          return bgzf_flush(fp);
 	}
 	return -1;
 }
@@ -554,7 +568,8 @@ ssize_t bgzf_write(BGZF *fp, const void *data, ssize_t length)
 	const uint8_t *input = data;
 	int block_length = BGZF_BLOCK_SIZE, bytes_written = 0;
 	assert(fp->is_write);
-	if (fp->mt) return mt_write(fp, data, length);
+	// disable mt
+        // if (fp->mt) return mt_write(fp, data, length);
 	while (bytes_written < length) {
 		uint8_t* buffer = fp->uncompressed_block;
 		int copy_length = block_length - fp->block_offset < length - bytes_written? block_length - fp->block_offset : length - bytes_written;
@@ -576,11 +591,13 @@ int bgzf_close(BGZF* fp)
 		fp->compress_level = -1;
 		block_length = deflate_block(fp, 0); // write an empty block
 		count = fwrite(fp->compressed_block, 1, block_length, fp->fp);
+                UNUSED(count);
 		if (fflush(fp->fp) != 0) {
 			fp->errcode |= BGZF_ERR_IO;
 			return -1;
 		}
-		if (fp->mt) mt_destroy(fp->mt);
+		// disable mt
+                // if (fp->mt) mt_destroy(fp->mt);
 	}
 	ret = fp->is_write? fclose(fp->fp) : _bgzf_close(fp->fp);
 	if (ret != 0) return -1;
@@ -634,7 +651,11 @@ int bgzf_is_bgzf(const char *fn)
 	uint8_t buf[16];
 	int n;
 	_bgzf_file_t fp;
+#ifdef _WIN32
+	if ((fp = _bgzf_open(fn, "rb")) == 0) return 0;
+#else
 	if ((fp = _bgzf_open(fn, "r")) == 0) return 0;
+#endif
 	n = _bgzf_read(fp, buf, 16);
 	_bgzf_close(fp);
 	if (n != 16) return 0;

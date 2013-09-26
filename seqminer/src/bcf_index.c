@@ -1,3 +1,5 @@
+#include "R.h"
+
 #include <assert.h>
 #include <ctype.h>
 #include <sys/stat.h>

@@ -1,3 +1,4 @@
+#include "R.h"
 #include <string.h>
 #include <math.h>
 #include <assert.h>
@@ -116,11 +117,12 @@ void bcf_fit_alt(bcf1_t *b, int mask)
     b->l_str -= b->flt - p;
 
     // update PL and GT
-    int ipl=-1, igt=-1;
+    // int ipl=-1;
+    int igt=-1;
     for (i = 0; i < b->n_gi; ++i) 
     {
         bcf_ginfo_t *g = b->gi + i;
-        if (g->fmt == bcf_str2int("PL", 2)) ipl = i;
+        // if (g->fmt == bcf_str2int("PL", 2)) ipl = i;
         if (g->fmt == bcf_str2int("GT", 2)) igt = i;
     }
 

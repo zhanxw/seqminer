@@ -237,11 +237,11 @@ void bcf_fmt_core(const bcf_hdr_t *h, bcf1_t *b, kstring_t *s)
 	}
 	x = b->n_alleles * (b->n_alleles + 1) / 2;
 	if (b->n_gi == 0) return;
-    int iPL = -1;
+        // int iPL = -1; unused
     if ( b->n_alleles > 2 ) {
         for (i=0; i<b->n_gi; i++) {
             if ( b->gi[i].fmt == bcf_str2int("PL", 2) ) {
-                iPL = i;
+              // iPL = i;
                 break;
             }
         }

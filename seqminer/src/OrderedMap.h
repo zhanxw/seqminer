@@ -68,7 +68,10 @@ class OrderedMap{
         const KEY& k = this->keyVec[idx];
         if (this->keyTypeMap.find(k) == this->keyTypeMap.end()){
             REprintf("Cannot find KEY in valueAt()\n");
-            REprintf("Critical error happening!\n"); //abort();
+            REprintf("Critical error happening!\n");
+            //abort();
+            // just return the first
+            return this->keyTypeMap.begin()->second;
         } else {
             return this->keyTypeMap.find(k)->second;
         }

@@ -73,13 +73,14 @@ bcf_t *vcf_open(const char *fn, const char *mode)
 	if (strchr(mode, 'r')) {
 		v->fp = strcmp(fn, "-")? gzopen(fn, "r") : gzdopen(fileno(stdin), "r");
 		v->ks = ks_init(v->fp);
-	} else if (strchr(mode, 'w'))
+	} else if (strchr(mode, 'w')) {
           // v->fpout = strcmp(fn, "-")? fopen(fn, "w") : stdout;
           if (strcmp(fn, "-")) {
             v->fpout = fopen(fn, "w");
           } else {
             REprintf("bcf_open() tryting to write to stdout, unsupported feature!\n");
           }
+        }
 	return bp;
 }
 
