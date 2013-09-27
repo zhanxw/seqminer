@@ -12,7 +12,7 @@ Some components have separate license and listed below:
 
 2. bzip2
    Julian Seward <jseward@bzip.org> (BSD
-   license). We have renamed compres	s.c to bzCompress.c to avoid
+   license). We have renamed compress.c to bzCompress.c to avoid
    name collision with zlib.h, and its license files are renamed
    to bzip2.README and bzip2.LICENSE under src directory.
 
