@@ -153,7 +153,7 @@ SEXP impl_readVCFToMatrixByRange(SEXP arg_fileName, SEXP arg_range, SEXP arg_ann
   numAllocated += setListNames(FLAG_range, &ans);
   
   for (int i = 0; i < nGene; ++i) {
-    // REprintf("range = %s\n", FLAG_range.c_str());
+    // REprintf("range = %s\n", FLAG_range[i].c_str());
     VCFExtractor vin(FLAG_fileName.c_str());
     vin.setRangeList(FLAG_range[i].c_str());
 

@@ -1,6 +1,7 @@
 context("Test read from VCF file")
 outFile <- system.file("tests/correct.Rdata", package = "seqminer")
 
+
 if (file.exists(outFile)) {
     load(outFile)
     fileName <- system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
@@ -46,6 +47,14 @@ if (file.exists(outFile)) {
     test_that("test VCFToListByRange", {
         test.out.range.1 <- readVCFToListByRange(fileName, "1:196621007-196716634", "Synonymous", c("CHROM","ID", "POS"), c("AC","AN"), c("GT","GQ"))
         expect_equal(test.out.range.1, out.range.1)
+    })
+
+    ## test bcf
+    test_that("readVCFToMatrixByRange", {
+        ## cat("--------------- test readVCFToMatrixByRange ---------------\n")
+        fileName <- system.file("vcf/all.anno.filtered.extract.bcf.gz", package = "seqminer")
+        test.cfh <- readVCFToMatrixByRange(fileName, "1:196621007-196716634", "Nonsynonymous")
+        expect_equal(test.cfh, cfh)
     })
 }
 

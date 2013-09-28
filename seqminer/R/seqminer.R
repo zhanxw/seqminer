@@ -18,15 +18,57 @@ NULL
 #' Check input file has tabix index
 #' 
 #' @param fileName character vector, representing file names an input file name
-#' @return TRUE if an index file with ".tbi" exists
+#' @return TRUE if an index file with ".tbi" or "bci" exists, and created later than VCF/BCF file
 #' @keywords internal
 hasIndex <- function(fileName) {
-  if (file.exists(paste(fileName, ".tbi", sep = ""))) {
+    endsWith <- function(i, pattern = NULL) {
+        if (is.null(pattern)) {
+            return(FALSE)
+        }
+        if (length(fileName) != 1) {
+            stop("hasIndex() only take vector of length 1.")
+            return (FALSE)
+        }
+        p <- paste(pattern, "$", sep = "")
+        if (length(grep(x=i, pattern=p)) != 1) {
+            return (FALSE)
+        }
+        return (TRUE)
+    }
+    ## handle VCF
+    if (endsWith(fileName, ".vcf")) {
+        stop(gettextf("Input file is not bgzip compressed. Please use: [ bgzip %s ]", fileName))
+        return (FALSE)
+    }
+    if (endsWith(fileName, ".vcf.gz")) {
+        fIndex <- paste(fileName, ".tbi", sep = "")
+        if (!file.exists(fIndex)) {
+            stop(gettextf("Cannot find index file (you can create it using: [ tabix -p vcf %s ])") , fileName)
+            return (FALSE)
+        }
+    }
+
+    ## handle BCF
+    if (endsWith(fileName, ".bcf")) {
+        stop(gettextf("Input file is not bgzip compressed. Please use: [ bgzip %s ]", fileName))
+        return (FALSE)
+    }
+    if (endsWith(fileName, ".bcf.gz")) {
+        fIndex <- paste(fileName, ".bci", sep = "")
+        if (!file.exists(fIndex)) {
+            stop(gettextf("Cannot find index file (you can create it using: [ bcftools index %s ])") , fileName)
+            return (FALSE)
+        }
+    }
+
+    ## Check index file timestamp
+    time.data <- file.info(fileName)$mtime
+    time.index <- file.info(fIndex)$mtime
+    if (time.data > time.index) {
+        stop(gettextf("Index file [ %s ]is older than data file [ %s ].", fIndex, fileName))
+        return(FALSE)
+    }
     return (TRUE)
-  } else {
-    print("Cannot find index file (you can create it using: [ tabix -p vcf FILE_NAME.vcf.gz ])")  
-    return (FALSE)
-  }
 }
 
 #' Read a gene from VCF file and return a genotypes matrix
