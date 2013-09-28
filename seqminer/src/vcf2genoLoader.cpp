@@ -222,6 +222,7 @@ SEXP impl_readVCFToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_g
       vin.setRangeList(range.c_str());
     else {
       warning("Gene name [ %s ] does not exists in provided gene file", FLAG_geneName[i].c_str());
+      UNPROTECT(numAllocated);
       return (ans);
     };
 
@@ -377,7 +378,6 @@ SEXP readVCF2List(VCFInputFile* vin,
   std::vector<std::string> listNames;
   int retListIdx = 0;
   if (FLAG_vcfColumn.count("CHROM")) {
-    REprintf("XXX: chrom.size() = %d\n", (int)chrom.size());
     numAllocated += storeResult(chrom, ret, retListIdx++);
     listNames.push_back("CHROM");
   }
