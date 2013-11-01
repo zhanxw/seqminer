@@ -996,7 +996,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
           if (covArray.size() == 1) continue;
 
           // now loading covXZ, covZZ
-          REprintf("read covXZ\n");
+          // REprintf("read covXZ\n");
           v = VECTOR_ELT(u, RET_COV_XZ_INDEX);  // cov is the 6th element in the list
           s = VECTOR_ELT(v, study);
           stringNaturalTokenize(covArray[1], ',', &covXZ);
