@@ -9,7 +9,8 @@
   an input file name}
 }
 \value{
-  TRUE if an index file with ".tbi" exists
+  TRUE if an index file with ".tbi" or "bci" exists, and
+  created later than VCF/BCF file
 }
 \description{
   Check input file has tabix index

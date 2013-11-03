@@ -48,3 +48,8 @@ extern SEXP impl_readTabixByRange(SEXP arg_tabixFile, SEXP arg_range);
 SEXP readTabixByRange(SEXP arg_tabixFile, SEXP arg_range) {
   return impl_readTabixByRange(arg_tabixFile, arg_range);
 }
+
+extern SEXP impl_readTabixHeader(SEXP arg_tabixFile);
+SEXP readTabixHeader(SEXP arg_tabixFile) {
+  return impl_readTabixHeader(arg_tabixFile);
+}

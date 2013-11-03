@@ -1,3 +1,7 @@
+2013-11-02  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Add tabix.read.table() to directly read tabix file as data frame.
+
 2013-09-27  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Add more unit-test codes

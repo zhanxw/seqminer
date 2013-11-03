@@ -27,7 +27,7 @@ class TabixReader {
 
  public:
   bool good() const {return this->readyToRead;}
-  
+
   bool readLine(std::string* line) {
     // openOK?
     if (cannotOpen) return false;

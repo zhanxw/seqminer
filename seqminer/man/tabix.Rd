@@ -19,7 +19,7 @@
 }
 \examples{
 fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
-snp <- tabix(fileName, "1:196621007-196621007")
+snp <- tabix(fileName, "1:196623337-196632470")
 }
 \seealso{
   http://zhanxw.com/seqminer/ for online manual and

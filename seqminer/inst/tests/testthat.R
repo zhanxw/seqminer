@@ -50,11 +50,39 @@ if (file.exists(outFile)) {
     })
 
     ## test bcf
-    test_that("readVCFToMatrixByRange", {
+    test_that("readVCFToMatrixByRange.BCF", {
         ## cat("--------------- test readVCFToMatrixByRange ---------------\n")
         fileName <- system.file("vcf/all.anno.filtered.extract.bcf.gz", package = "seqminer")
         test.cfh <- readVCFToMatrixByRange(fileName, "1:196621007-196716634", "Nonsynonymous")
         expect_equal(test.cfh, cfh)
+    })
+
+    ## test tabix functions
+    test_that("tabix", {
+        fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+        snp <- tabix(fileName, "1:196623337-196632470")
+        expect_equal(class(snp), "character")
+        expect_equal(length(snp), 3)
+    })
+    test_that("tabix", {
+        fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+        snp <- tabix(fileName, "1:196633607-196633607")
+        expect_equal(class(snp), "character")
+        expect_equal(length(snp), 0)
+    })
+    test_that("tabix.read.table", {
+        fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+        snp <- tabix.read.table(fileName, "1:196623337-196632470")
+        expect_equal(class(snp), "data.frame")
+        expect_equal(nrow(snp), 3)
+        expect_equal(ncol(snp), 12)
+    })
+    test_that("tabix.read.table", {
+        fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+        snp <- tabix.read.table(fileName, "1:196633607-196633607")
+        expect_equal(class(snp), "data.frame")
+        expect_equal(nrow(snp), 0)
+        expect_equal(ncol(snp), 0)
     })
 }
 
