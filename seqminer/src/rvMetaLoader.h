@@ -7,4 +7,5 @@ extern "C" SEXP impl_rvMetaReadDataByRange(SEXP arg_pvalFile, SEXP arg_covFile, 
 
 extern "C" SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range);
 extern "C" SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range);
+extern "C" SEXP impl_readSkewByRange(SEXP arg_scoreFile, SEXP arg_range);
 

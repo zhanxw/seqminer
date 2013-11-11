@@ -44,9 +44,19 @@ SEXP readScoreByRange(SEXP arg_covFile, SEXP arg_range) {
   return impl_readScoreByRange(arg_covFile, arg_range);
 }
 
+extern SEXP impl_readSkewByRange(SEXP arg_covFile, SEXP arg_range);
+SEXP readSkewByRange(SEXP arg_covFile, SEXP arg_range) {
+  return impl_readSkewByRange(arg_covFile, arg_range);
+}
+
 extern SEXP impl_readTabixByRange(SEXP arg_tabixFile, SEXP arg_range);
 SEXP readTabixByRange(SEXP arg_tabixFile, SEXP arg_range) {
   return impl_readTabixByRange(arg_tabixFile, arg_range);
+}
+
+extern SEXP impl_readTabixSkippedLine(SEXP arg_tabixFile);
+SEXP readTabixSkippedLine(SEXP arg_tabixFile) {
+  return impl_readTabixSkippedLine(arg_tabixFile);
 }
 
 extern SEXP impl_readTabixHeader(SEXP arg_tabixFile);

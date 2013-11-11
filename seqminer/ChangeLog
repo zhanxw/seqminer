@@ -1,6 +1,22 @@
+2013-11-08  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Improve (Important!!) readVCFToListByGene function. Variants belonging to a certain gene can be distinguished.
+
+2013-11-07  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Change (Important!!) to avoid extracting duplicated variants
+
+2013-11-05  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support read MetaSkew file (outputs from 'rvtests --model skew')
+
+2013-11-04  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Add tabix.read.header() to read header lines of tabix files
+
 2013-11-02  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
-	* Add tabix.read.table() to directly read tabix file as data frame.
+	* Add tabix.read.table() to directly read tabix file as data frame
 
 2013-09-27  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 

@@ -100,4 +100,24 @@ class OrderedMap{
     std::map < KEY, TYPE > keyTypeMap;
 };
 
+/**
+ * For each element in @param input, give its order
+ * e.g. input = {a, b, c, d, b}
+ *      output = {a:0, b:1, c:2, d:3}
+ */
+template<class KEY>
+inline int numberVectorAsMap(const std::vector<KEY>& input,
+                             OrderedMap<KEY, int>* output) {
+  output->clear();
+  int n = input.size();
+  for(int i = 0; i < n; ++i){
+    if (output->find(input[i])){
+      continue;
+    }
+    const int s = output.size();
+    output[input[i]] = s;
+  }
+  return 0;
+}
+
 #endif /* _ORDEREDMAP_H_ */

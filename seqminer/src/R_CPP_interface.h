@@ -40,6 +40,14 @@ int storeResult(const std::string& key, const std::vector<std::string>& val , SE
 int storeResult(const std::string& key, const std::vector<int>& val , SEXP& ret, int idx);
 
 int setDim(int nrow, int ncol, SEXP* s);
+int setDim(int i, int j, int k, SEXP* s);
+int setDimNames(const std::vector<std::string>& nrow,
+                const std::vector<std::string>& ncol,
+                SEXP* s);
+int setDimNames(const std::vector<std::string>& ni,
+                const std::vector<std::string>& nj,
+                const std::vector<std::string>& nk,                
+                SEXP* s);
 
 /**
  * Set dim attributes for ret[idx]

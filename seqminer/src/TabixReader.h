@@ -139,6 +139,9 @@ class TabixReader {
   const std::string& getHeader() const {
     return this->header;
   }
+  const std::string& getSkippedLine() const {
+    return this->skippedLine;
+  }
  private:
   bool openIndex(const std::string& fn) {
     if (ti_lazy_index_load(this->tabixHandle) != 0) {
@@ -199,16 +202,24 @@ class TabixReader {
     }
     
     this->iter = ti_query(this->tabixHandle, 0, 0, 0);
+    int numSkippedLine = 0;
     while ((ti_line = ti_read(this->tabixHandle, this->iter, &this->ti_line_len)) != 0) {
-      if ((int)(*ti_line) != idxconf->meta_char) {
-        this->firstLine = ti_line;
-        break; 
+      if ((int)(*ti_line) == idxconf->meta_char) {
+        this->header += ti_line;
+        this->header += "\n";
+      } else {
+        if (numSkippedLine < idxconf->line_skip) {
+          ++numSkippedLine ;
+          this->skippedLine += ti_line;
+          this->skippedLine += "\n";
+        } else {
+          this->firstLine = ti_line;
+          break;
+        }
       }
       // fputs(ti_line, stdout); fputc('\n', stdout);
-      this->header += ti_line;
-      this->header += "\n";
     }
-    
+
     cannotOpen = false;
     readyToRead = true;
     return 0;
@@ -252,6 +263,7 @@ class TabixReader {
   const ti_conf_t *idxconf;
 
   std::string header;
+  std::string skippedLine;
   std::string firstLine;
 };
 

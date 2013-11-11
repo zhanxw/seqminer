@@ -202,19 +202,11 @@ SEXP impl_readVCFToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_g
   numAllocated += createList(nGene, &ans);
   numAllocated += setListNames(FLAG_geneName, &ans);
 
-  std::map< std::string, std::string> geneRange;
+  OrderedMap< std::string, std::string> geneRange;
   loadGeneFile(FLAG_geneFile, FLAG_geneName, &geneRange);  
   for (int i = 0; i < nGene; ++i) {
-    // REprintf("range = %s\n", FLAG_geneName[i].c_str());
+    REprintf("range = %s\n", FLAG_geneName[i].c_str());
     const std::string& range = geneRange[FLAG_geneName[i]];
-    // for (std::map< std::string, std::string>::iterator it = geneRange.begin();
-    //      it != geneRange.end();
-    //      it++) {
-    //   if (range.size() > 0) {
-    //     range += ",";
-    //   }
-    //   range += it->second;
-    // };
 
     //Rprintf( "range = %s\n", range.c_str());
     VCFExtractor vin(FLAG_fileName.c_str());
@@ -455,12 +447,11 @@ SEXP readVCF2List(VCFInputFile* vin,
   UNPROTECT(numAllocated);
   // Rprintf("Unprotected: %d\n", (retListLen + 1));
   return(ret);
-
 }
 
 /**
  * @param arg_fileName: a string character
- * @param arg_range: which range to extract
+ * @param arg_range: which range to extract. NOTE: only use first element
  * @param arg_annoType: allow annotation type, can be regular expression. (e.g. Synonymous|Nonsynonymous)
  * @param arg_columns: a list of which columns to extract (e.g. CHROM, POS ...)
  * @param arg_infoTag: a list of which tag under INFO tag will be extracted (e.g. ANNO, ANNO_FULL, AC ...)
@@ -497,19 +488,24 @@ SEXP impl_readVCFToListByRange(SEXP arg_fileName, SEXP arg_range, SEXP arg_annoT
     vin.setAnnoType(FLAG_annoType.c_str());
   }
   return readVCF2List(&vin, FLAG_vcfColumn, FLAG_infoTag, FLAG_indvTag);
-}
+} // impl_readVCFToListByRange
 
 /**
  * @param arg_fileName: a string character
  * @param arg_geneFile: which gene file to use
- * @param arg_geneName: which gene we are interested. (just allow One gene name).
+ * @param arg_geneName: which gene we are interested. (NOTE: only first one gene is used).
  * @param arg_annoType: allow annotation type, can be regular expression. (e.g. Synonymous|Nonsynonymous)
  * @param arg_columns: a list of which columns to extract (e.g. CHROM, POS ...)
  * @param arg_infoTag: a list of which tag under INFO tag will be extracted (e.g. ANNO, ANNO_FULL, AC ...)
  * @param arg_indvTag: a list of which tag given in individual's column (e.g. GT, GD, GQ ...)
  */
-SEXP impl_readVCFToListByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_geneName, SEXP arg_annoType, SEXP arg_columns, SEXP arg_infoTag, SEXP arg_indvTag){
-
+SEXP impl_readVCFToListByGene(SEXP arg_fileName,
+                              SEXP arg_geneFile,
+                              SEXP arg_geneName,
+                              SEXP arg_annoType,
+                              SEXP arg_columns,
+                              SEXP arg_infoTag,
+                              SEXP arg_indvTag){
   // begin
   std::string FLAG_fileName = CHAR(STRING_ELT(arg_fileName,0));
   std::string FLAG_geneFile = CHAR(STRING_ELT(arg_geneFile,0));
@@ -539,19 +535,18 @@ SEXP impl_readVCFToListByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_gen
     return R_NilValue;
   }
 
-  std::map< std::string, std::string> geneRange;
+  OrderedMap<std::string, std::string> geneRange;
   loadGeneFile(FLAG_geneFile, FLAG_geneName, &geneRange);
   std::string range;
-  for (std::map< std::string, std::string>::iterator it = geneRange.begin();
-       it != geneRange.end();
-       it++) {
+  int n = geneRange.size();
+  for (int i = 0; i < n; ++i) {
     if (range.size() > 0) {
       range += ",";
     }
-    range += it->second;
-  };
+    range += geneRange.valueAt(i);
+  }
 
-  //Rprintf( "range = %s\n", range.c_str());
+  REprintf( "range = %s\n", range.c_str());
   VCFExtractor vin(FLAG_fileName.c_str());
   if (range.size())
     vin.setRangeList(range.c_str());

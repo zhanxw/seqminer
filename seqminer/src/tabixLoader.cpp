@@ -32,13 +32,28 @@ SEXP impl_readTabixByRange(SEXP arg_tabixFile, SEXP arg_range) {
   return ret;
 }
 
+
+SEXP impl_readTabixSkippedLine(SEXP arg_tabixFile) {
+  std::vector<std::string> FLAG_tabixFile;
+  extractStringArray(arg_tabixFile, &FLAG_tabixFile);
+  TabixReader tr(FLAG_tabixFile[0]);
+
+  std::vector<std::string> headers;
+  stringTokenize(stringStrip(tr.getSkippedLine()), "\n", &headers);
+  
+  SEXP ret = R_NilValue;
+  storeResult(headers, &ret);
+  UNPROTECT(1);
+  return ret;
+}
+
 SEXP impl_readTabixHeader(SEXP arg_tabixFile) {
   std::vector<std::string> FLAG_tabixFile;
   extractStringArray(arg_tabixFile, &FLAG_tabixFile);
   TabixReader tr(FLAG_tabixFile[0]);
 
   std::vector<std::string> headers;
-  stringTokenize(tr.getHeader(), "\n", &headers);
+  stringTokenize(stringStrip(tr.getHeader()), "\n", &headers);
   
   SEXP ret = R_NilValue;
   storeResult(headers, &ret);

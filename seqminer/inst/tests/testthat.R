@@ -120,6 +120,7 @@ if (FALSE) {
     try(out.range.1 <- readVCFToListByRange(fileName, "1:196621007-196716634", "Synonymous", c("CHROM","ID", "POS"), c("AC","AN"), c("GT","GQ")))
     ## print(t)
 
+    
     save.image(file = outFile)
     ## load(outFile)
 }

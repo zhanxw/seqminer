@@ -8,6 +8,7 @@
 #include <math.h>
 
 #include <vector>
+#include <set>
 #include <string>
 #include <cassert>
 #include <algorithm>
@@ -50,6 +51,62 @@ inline std::string stringStrip(const std::string& s){
   unsigned int end = s.find_last_not_of(' ');
   return s.substr(beg, end-beg);
 }
+
+/**
+ * split " ",
+ *   for "a b", split to "a", "b"
+ *   for "a", split to "a"
+ *   for "a ", split to "a", ""
+ *   for "", split to ""
+ */
+class StringTokenizer{
+ public:
+  StringTokenizer(const std::string& i, char token):
+            data(i) {
+    this->token = token;
+    reset();
+  }
+  StringTokenizer(const std::string& i, const std::string& token):
+            data(i) {
+    this->token = token;
+    reset();
+  }
+  void reset() {
+    this->begin = 0;
+    this->end = data.size();
+  }
+  /**
+   * @param piece parsed a piece of string
+   * @return true if there are more parsed results
+   */
+  bool next(std::string* piece) {
+    std::string& s = *piece;
+    s.clear();
+    while (begin <= end) {
+          if (begin == end) {
+            ++ begin;
+            return true;
+          }
+
+
+          const char& c = data[begin];
+          if (token.find(c) == std::string::npos) {
+            // not a token
+            s.push_back(c);
+            ++begin;
+          } else {
+            ++begin;
+            return begin < end;
+          }
+    }
+    return begin <= end;
+  }
+ private:
+  const std::string& data;
+  std::string token;
+  size_t begin;
+  size_t end;
+}; // StringTokenizer
 
 /** tokenize the string
  * @return number of tokens we obtained
@@ -180,6 +237,60 @@ inline bool endsWith(const std::string& s, const std::string& tail) {
     }
   }
   return true;
+}
+
+/**
+ * Remove duplicated element from @param input and store it to @param output
+ * @return number of duplicated elements
+ */
+template<class T>
+int dedup(const std::vector<T>& input,
+          std::vector<T>* output) {
+  int ret = 0;
+  assert(output);
+  output->clear();
+  std::set<T> checked;
+  for (typename std::vector<T>::const_iterator it = input.begin();
+       it != input.end();
+       ++it) {
+    if (checked.count(*it)) {
+      ++ret;
+      continue;
+    }
+    checked.insert(*it);
+    output->push_back(*it);
+  }
+  return ret;
+}
+
+/**
+ * Remove duplicated element from @param input
+ */
+template<class T>
+int dedup(std::vector<T>* input) {
+  assert(input);
+  int ret = 0;
+  if (input->empty()) return ret;
+  
+  std::set<T> checked;
+  size_t n = input->size();
+  size_t i = 0;
+  size_t p = 0;
+  while (p < n) {
+    if (checked.count(input->at(p))) {
+      ++p;
+      continue;
+    }
+    if (i != p) {
+      (*input)[i] = (*input)[p];
+    }
+    ++i;
+    ++p;
+  }
+  if (i != n) {
+    input->resize(i);
+  }
+  return (n - i);
 }
 
 

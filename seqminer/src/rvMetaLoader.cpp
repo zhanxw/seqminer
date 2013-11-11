@@ -261,13 +261,13 @@ size_t findCovariateDimension(const std::string& fn, int column) {
   size_t ret = 0;
   LineReader lr(fn);
   std::string line;
-  std::vector<std::string> fd;  
+  std::vector<std::string> fd;
   while(lr.readLine(&line)) {
     if (line.empty() || line[0] == '#') continue;
     if (line.substr(0, 5) == "CHROM") continue;
     break;
   }
-        
+
   stringNaturalTokenize(line, "\t ", &fd);
   if (column >= (int)fd.size() ) {
     return ret;
@@ -277,7 +277,7 @@ size_t findCovariateDimension(const std::string& fn, int column) {
   stringNaturalTokenize(line, ":", &fd);
   if (fd.size() != 3) // covXX, covXZ, and covZZ
     return ret;
-  
+
   line = fd[1]; // covXZ
   // REprintf("covXZ = %s\n", line.c_str());
   stringNaturalTokenize(line, ",", &fd);
@@ -343,13 +343,13 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     }
   }
 
-  
+
   // for each gene, find its all position location
   typedef OrderedMap< std::string, std::map< std::string, int> > GeneLocationMap;
   GeneLocationMap geneLocationMap;
   for (size_t idx = 0; idx < geneRange.size(); ++idx) {
     const std::string& key = geneRange.keyAt(idx);
-    const std::string& value = geneRange.valueAt(idx);    
+    const std::string& value = geneRange.valueAt(idx);
     for (int i = 0; i < nStudy; ++i) {
       addLocationPerGene(key, value, FLAG_pvalFile[i], &geneLocationMap);
     }
@@ -372,8 +372,8 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
   numAllocated ++;
   {
     for (size_t i = 0; i != geneLocationMap.size(); ++i) {
-    // for ( GeneLocationMap::iterator iter = geneLocationMap.begin();
-    //       iter != geneLocationMap.end() ; ++iter){
+      // for ( GeneLocationMap::iterator iter = geneLocationMap.begin();
+      //       iter != geneLocationMap.end() ; ++iter){
       // Rprintf("assign gene name: %s\n", iter->first.c_str());
       SET_STRING_ELT(geneNames, i, mkChar(geneLocationMap.keyAt(i).c_str()));
       geneIndex[geneLocationMap.keyAt(i).c_str()] = i;
@@ -407,7 +407,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
   names.push_back("hweCtrl");
   names.push_back("afCase");
   names.push_back("afCtrl");
-  
+
   // REprintf("create zDims\n");
   std::vector<size_t> zDims(FLAG_covFile.size(), 0);
   // GeneLocationMap::iterator iter = geneLocationMap.begin();
@@ -446,7 +446,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     numAllocated += createList(nStudy, &hweCtrl);
     numAllocated += createList(nStudy, &afCase);
     numAllocated += createList(nStudy, &afCtrl);
-    
+
     int npos = geneLocationMap.valueAt(i).size();
     // std::vector<size_t> zDims(FLAG_covFile.size(), 0);
     // REprintf("npos= %d\n", npos);
@@ -572,7 +572,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
       numAllocated += createDoubleArray(npos, &t);
       initDoubleArray(t);
       SET_VECTOR_ELT(afCtrl, j, t);
-      
+
     } // end looping study
     numAllocated += createStringArray(npos, &pos);
     initStringArray(pos);
@@ -603,11 +603,11 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     SET_VECTOR_ELT(s, RET_HWE_CTRL_INDEX, hweCtrl);
     SET_VECTOR_ELT(s, RET_AF_CASE_INDEX, afCase);
     SET_VECTOR_ELT(s, RET_AF_CTRL_INDEX, afCtrl);
-        
+
     SET_VECTOR_ELT(ret, i, s);
   };
   // REprintf("finish allocate memory\n");
-                                 
+
   // return results
   Rprintf("Read score tests...\n");
   // read pval file and fill in values
@@ -658,7 +658,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
                                          .add(PVAL_FILE_PVAL_COL)
                                          .add(PVAL_FILE_ANNO_COL)
                                          .max();
-                                         
+
     if (PVAL_FILE_CHROM_COL < 0 ||
         PVAL_FILE_POS_COL < 0 ||
         PVAL_FILE_REF_COL < 0 ||
@@ -681,7 +681,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     // loop per gene
     for (size_t idx = 0; idx < geneRange.size(); ++idx) {
       const std::string& gene = geneRange.keyAt(idx);
-      const std::string& range = geneRange.valueAt(idx);    
+      const std::string& range = geneRange.valueAt(idx);
 
       // if (geneLocationMap.find(gene) == geneLocationMap.end()) continue;
       if (!geneLocationMap.find(gene) ) continue;
@@ -798,7 +798,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
         }  else {
           REprintf("HWE column has incorrect value [ %s ]", fd[PVAL_FILE_HWE_COL].c_str());
         }
-        
+
         if ( str2int(fd[PVAL_FILE_NREF_COL], &tempInt) ) {
           v = VECTOR_ELT(u, RET_NREF_INDEX);
           s = VECTOR_ELT(v, study); // nref
@@ -924,12 +924,12 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
           COV_FILE_COV_COL < 0 ) {
         REprintf("Study [ %s ] does not have all necessary headers\n", FLAG_covFile[study].c_str());
       }
-      
-      
+
+
       // loop per gene
       for (size_t idx = 0; idx < geneRange.size(); ++idx) {
         const std::string& gene = geneRange.keyAt(idx);
-        const std::string& range = geneRange.valueAt(idx);    
+        const std::string& range = geneRange.valueAt(idx);
 
         // if (geneLocationMap.find(gene) == geneLocationMap.end()) continue;
         if (!geneLocationMap.find(gene)) continue;
@@ -948,11 +948,11 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
 
           stringNaturalTokenize(line, " \t", &fd);
           if ((int)fd.size() <= COV_FILE_MIN_COLUMN_NUM) continue;
-          
+
           const std::string& chrom = fd[COV_FILE_CHROM_COL];
           // REprintf("pos: %s\n", fd[COV_FILE_COV_COL].c_str());
           stringNaturalTokenize(fd[COV_FILE_POS_COL], ',', &pos);
-          stringNaturalTokenize(fd[COV_FILE_COV_COL], ':', &covArray);          
+          stringNaturalTokenize(fd[COV_FILE_COV_COL], ':', &covArray);
           stringNaturalTokenize(covArray[0], ',', &cov);
 
           if (pos.empty()) {
@@ -991,7 +991,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
               REAL(s) [posj * covLen + posi] = tmp;
             }
           }
-          
+
           // check if we have covXZ and covZZ fields
           if (covArray.size() == 1) continue;
 
@@ -1034,11 +1034,11 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
           int idx = 0;
           for (int i = 0; i < zDim; ++i) {
             for (int j = 0; j <= i; ++j) {
-            if (str2double(covZZ[idx], &tmp)) {
-              REAL(s) [ i * zDim + j ]  = tmp;
-              REAL(s) [ j * zDim + i ]  = tmp;
-            }
-            ++idx;
+              if (str2double(covZZ[idx], &tmp)) {
+                REAL(s) [ i * zDim + j ]  = tmp;
+                REAL(s) [ j * zDim + i ]  = tmp;
+              }
+              ++idx;
             }
           }
         } // end tabixReader
@@ -1061,7 +1061,7 @@ SEXP impl_rvMetaReadDataByRange(SEXP arg_pvalFile, SEXP arg_covFile, SEXP arg_ra
   char key[100] = "";
   for (size_t i = 0; i < FLAG_range.size(); ++i) {
     sprintf(key, "Range%d", (int) (i + 1));
-    geneRange[key] = FLAG_range[i];  
+    geneRange[key] = FLAG_range[i];
   }
 
   return impl_rvMetaReadData(arg_pvalFile, arg_covFile, geneRange);
@@ -1117,7 +1117,7 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
                                       .add(COV_FILE_POS_COL)
                                       .add(COV_FILE_COV_COL)
                                       .max();
-  
+
   if (COV_FILE_CHROM_COL < 0 &&
       COV_FILE_START_COL < 0 &&
       COV_FILE_END_COL < 0 &&
@@ -1324,6 +1324,7 @@ int parsePosition(const std::string& range,
   *end = atoi(r.substr(j+1, r.size() - j));
   return 0;
 }
+
 /**
  * @param arg_scoreFile: single variant score test file
  * @return a data frame of
@@ -1364,27 +1365,27 @@ SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range) {
   const int PVAL_FILE_ANNO_COL = pvalHeader.get("ANNO");
   const int PVAL_FILE_ANNOFULL_COL = pvalHeader.get("ANNOFULL");
 
-    Maximum maximum;
-    const int PVAL_FILE_MIN_COLUMN_NUM = maximum
-                                         .add(PVAL_FILE_CHROM_COL)
-                                         .add(PVAL_FILE_POS_COL)
-                                         .add(PVAL_FILE_REF_COL)
-                                         .add(PVAL_FILE_ALT_COL)
-                                         .add(PVAL_FILE_NINFORMATIVE_COL)
-                                         .add(PVAL_FILE_AF_COL)
-                                         .add(PVAL_FILE_AC_COL)
-                                         .add(PVAL_FILE_CALLRATE_COL)
-                                         .add(PVAL_FILE_HWE_COL)
-                                         .add(PVAL_FILE_NREF_COL)
-                                         .add(PVAL_FILE_NHET_COL)
-                                         .add(PVAL_FILE_NALT_COL)
-                                         .add(PVAL_FILE_USTAT_COL)
-                                         .add(PVAL_FILE_SQRTVSTAT_COL)
-                                         .add(PVAL_FILE_EFFECT_COL)
-                                         .add(PVAL_FILE_PVAL_COL)
-                                         .add(PVAL_FILE_ANNO_COL)
-                                         .max();
-  
+  Maximum maximum;
+  const int PVAL_FILE_MIN_COLUMN_NUM = maximum
+                                       .add(PVAL_FILE_CHROM_COL)
+                                       .add(PVAL_FILE_POS_COL)
+                                       .add(PVAL_FILE_REF_COL)
+                                       .add(PVAL_FILE_ALT_COL)
+                                       .add(PVAL_FILE_NINFORMATIVE_COL)
+                                       .add(PVAL_FILE_AF_COL)
+                                       .add(PVAL_FILE_AC_COL)
+                                       .add(PVAL_FILE_CALLRATE_COL)
+                                       .add(PVAL_FILE_HWE_COL)
+                                       .add(PVAL_FILE_NREF_COL)
+                                       .add(PVAL_FILE_NHET_COL)
+                                       .add(PVAL_FILE_NALT_COL)
+                                       .add(PVAL_FILE_USTAT_COL)
+                                       .add(PVAL_FILE_SQRTVSTAT_COL)
+                                       .add(PVAL_FILE_EFFECT_COL)
+                                       .add(PVAL_FILE_PVAL_COL)
+                                       .add(PVAL_FILE_ANNO_COL)
+                                       .max();
+
   if (PVAL_FILE_CHROM_COL < 0 ||
       PVAL_FILE_POS_COL < 0 ||
       PVAL_FILE_REF_COL < 0 ||
@@ -1544,3 +1545,209 @@ SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range) {
   UNPROTECT(numAllocated);
   return ret;
 } // impl_readScoreByRange
+
+/**
+ * @param arg_skewFile: single variant skew test statistics file
+ * @return a data frame of
+ */
+SEXP impl_readSkewByRange(SEXP arg_skewFile, SEXP arg_range) {
+  int numAllocated = 0;
+  SEXP ret = R_NilValue;
+
+  // load by position
+  std::string FLAG_skewFile;
+  extractString(arg_skewFile, &FLAG_skewFile);
+  std::string FLAG_range;
+  extractString(arg_range, &FLAG_range);
+
+  // read header
+  PvalFileFormat skewHeader;
+  if (skewHeader.open(FLAG_skewFile) < 0 ){
+    REprintf("File [ %s ] does not have valid file header \n", FLAG_skewFile.c_str());
+    return ret;
+  }
+
+  // CHROM   START_POS       END_POS NUM_MARKER      MARKER_POS      SKEW
+  const int SKEW_FILE_CHROM_COL = skewHeader.get("CHROM");
+  const int SKEW_FILE_START_POS_COL = skewHeader.get("START_POS");
+  const int SKEW_FILE_END_POS_COL = skewHeader.get("END_POS");
+  const int SKEW_FILE_NUM_MARKER_COL = skewHeader.get("NUM_MARKER");
+  const int SKEW_FILE_MARKER_POS_COL = skewHeader.get("MARKER_POS");
+  const int SKEW_FILE_SKEW_COL = skewHeader.get("SKEW");
+
+  Maximum maximum;
+  const int SKEW_FILE_MIN_COLUMN_NUM = maximum
+                                       .add(SKEW_FILE_CHROM_COL)
+                                       .add(SKEW_FILE_START_POS_COL)
+                                       .add(SKEW_FILE_END_POS_COL)
+                                       .add(SKEW_FILE_NUM_MARKER_COL)
+                                       .add(SKEW_FILE_MARKER_POS_COL)
+                                       .add(SKEW_FILE_SKEW_COL)
+                                       .max();
+
+  if (SKEW_FILE_CHROM_COL < 0 ||
+      SKEW_FILE_START_POS_COL < 0 ||
+      SKEW_FILE_END_POS_COL < 0 ||
+      SKEW_FILE_NUM_MARKER_COL < 0 ||
+      SKEW_FILE_MARKER_POS_COL < 0 ||
+      SKEW_FILE_SKEW_COL < 0 ) {
+    REprintf("File [ %s ] does not have all necessary headers\n", FLAG_skewFile.c_str());
+    skewHeader.dump();
+    return ret;
+  }
+
+  // read all positions
+  int lineRead = 0;
+  int fieldLen = -1;
+  std::vector <std::string> fd;
+  std::vector <std::string> markerPos;
+  std::map <std::string, int> markerIndex;
+  std::string line;
+  std::string chromPos;
+  TabixReader tr(FLAG_skewFile);
+  tr.addRange(FLAG_range);
+  while (tr.readLine(&line)) {
+    // Rprintf("read a line: %s\n", line.c_str());
+    stringNaturalTokenize(line, "\t ", &fd);
+    if ((int)fd.size() <= SKEW_FILE_MIN_COLUMN_NUM) continue;
+    // check consistent column number
+    if (fieldLen < 0) {
+      fieldLen = fd.size();
+    } else if (fieldLen != (int)fd.size()) {
+      REprintf("Inconsistent field length at line [ %s ]. \n", line.c_str());
+      return ret;
+    }
+    int numMarker = atoi(fd[SKEW_FILE_NUM_MARKER_COL]);
+    int s = stringTokenize(fd[SKEW_FILE_MARKER_POS_COL], ",", &markerPos);
+    if (s != numMarker) {
+      REprintf("marker positions and numbers inconsistent [ %d != %d ]\n%s\n",
+               numMarker, s, line.c_str());
+      return ret;
+    }
+    for (size_t i = 0; i < markerPos.size(); ++i) {
+      chromPos = fd[SKEW_FILE_CHROM_COL];
+      chromPos += ":"    ;
+      chromPos += markerPos[i];
+      if (markerIndex.count(chromPos)) {
+        continue;
+      } else {
+        const int n = markerIndex.size();
+        markerIndex[chromPos] = n;
+      }
+    }
+    ++ lineRead;
+  }
+  // Rprintf("read %d lines\n", lineRead);
+  if (fieldLen < 0) {
+    REprintf("No valid input line read, please check your file [ %s ]\n",
+             FLAG_skewFile.c_str());
+    return ret;
+  }
+
+  // set up return value
+  lineRead = 0;
+  const int n = markerIndex.size();
+  numAllocated += createDoubleArray(n*n*n, &ret);
+  numAllocated += setDim(n, n, n, &ret);
+
+  // assign return values
+  int index1;
+  int index2;
+  int index3;
+  std::string chromPos2;
+  std::string chromPos3;
+  std::vector <std::string> triplet;
+  tr.setRange(FLAG_range);
+  while (tr.readLine(&line)) {
+    // Rprintf("read a line: %s\n", line.c_str());
+    stringNaturalTokenize(line, "\t ", &fd);
+    if ((int)fd.size() <= SKEW_FILE_MIN_COLUMN_NUM) continue;
+
+    // parse values
+    chromPos = fd[SKEW_FILE_CHROM_COL];
+    chromPos += ':';
+    chromPos += fd[SKEW_FILE_START_POS_COL];
+    
+    stringTokenize(fd[SKEW_FILE_MARKER_POS_COL], ",", &markerPos);
+    
+    StringTokenizer token(fd[SKEW_FILE_SKEW_COL], ':');
+    std::string piece;
+    while (token.next(&piece)) {
+      stringTokenize(piece, ",", &triplet);
+      if (triplet.size() != 3) {
+        REprintf("Wrong triplet value [ %s ]\n", piece.c_str());
+        break;
+      }
+      chromPos2 = fd[SKEW_FILE_CHROM_COL];
+      chromPos2 += ':';
+      chromPos2 += markerPos[atoi(triplet[0])];
+      chromPos3 = fd[SKEW_FILE_CHROM_COL];
+      chromPos3 += ':';
+      chromPos3 += markerPos[atoi(triplet[1])];
+      index1 = markerIndex[chromPos];
+      index2 = markerIndex[chromPos2];
+      index3 = markerIndex[chromPos3];
+      double val = atof(triplet[2]);
+      REAL(ret)[index2 + n * (index1 + index3 * n) ] = val;
+    }
+    ++ lineRead;
+  }
+  // Rprintf("read %d lines\n", lineRead);
+  
+  // dim (i, j, k ) assume dimension is 3 and size is n for each dimension
+  // dim (i, j, k ) is (j + i *n + k * n * n) th element (1-based)
+  // for 0-based, it is ((i + k * n) *n) + j - 1
+  //
+#if 0
+  std::vector<std::string> listNames;
+  int retListIdx = 0;
+  numAllocated += storeResult(position, ret, retListIdx++);
+  numAllocated += storeResult(ref, ret, retListIdx++);
+  numAllocated += storeResult(alt, ret, retListIdx++);
+  numAllocated += storeIntResult(nsample, ret, retListIdx++);
+  numAllocated += storeDoubleResult(af, ret, retListIdx++);
+  numAllocated += storeIntResult(ac, ret, retListIdx++);
+  numAllocated += storeDoubleResult(callRate, ret, retListIdx++);
+  numAllocated += storeResult(hwe, ret, retListIdx++); // hwe may have three number (all:case:ctrl)
+  numAllocated += storeIntResult(nref, ret, retListIdx++);
+  numAllocated += storeIntResult(nhet, ret, retListIdx++);
+  numAllocated += storeIntResult(nalt, ret, retListIdx++);
+  numAllocated += storeDoubleResult(ustat, ret, retListIdx++);
+  numAllocated += storeDoubleResult(vstat, ret, retListIdx++);
+  numAllocated += storeDoubleResult(effect, ret, retListIdx++);
+  numAllocated += storeDoubleResult(skew, ret, retListIdx++);
+
+  listNames.push_back("pos");
+  listNames.push_back("ref");
+  listNames.push_back("alt");
+  listNames.push_back("nSample");
+  listNames.push_back("af");
+  listNames.push_back("ac");
+  listNames.push_back("callRate");
+  listNames.push_back("hwe");
+  listNames.push_back("nref");
+  listNames.push_back("nhet");
+  listNames.push_back("nalt");
+  listNames.push_back("ustat");
+  listNames.push_back("vstat");
+  listNames.push_back("effect");
+  listNames.push_back("skew");
+
+  if (anno.size() ) {
+    numAllocated += storeResult(anno, ret, retListIdx++);
+    numAllocated += storeResult(annoFull, ret, retListIdx++);
+    listNames.push_back("anno");
+    listNames.push_back("annoFull");
+  }
+  SEXP sListNames;
+  PROTECT(sListNames = allocVector(STRSXP, listNames.size()));
+  numAllocated ++;
+  for (unsigned int i = 0; i != listNames.size(); ++i){
+    SET_STRING_ELT(sListNames, i, mkChar(listNames[i].c_str()));
+  }
+  setAttrib(ret, R_NamesSymbol, sListNames);
+#endif
+  
+  UNPROTECT(numAllocated);
+  return ret;
+} // impl_readSkewByRange

@@ -139,6 +139,49 @@ int setDim(int nrow, int ncol, SEXP* s){
   setAttrib( (*s), R_DimSymbol, dim);
   return 1;
 }
+
+int setDim(int i, int j, int k, SEXP* s){
+  SEXP dim;
+  PROTECT(dim = allocVector(INTSXP, 3));
+  INTEGER(dim)[0] = i;
+  INTEGER(dim)[1] = j;
+  INTEGER(dim)[2] = k;
+  setAttrib( (*s), R_DimSymbol, dim);
+  return 1;
+}
+
+int setDimNames(const std::vector<std::string>& nrow,
+                const std::vector<std::string>& ncol,
+                SEXP* s) {
+  int numAllocated = 0;
+  SEXP dimnames;
+  PROTECT(dimnames = allocVector(VECSXP, 2));
+  ++ numAllocated;
+  
+  numAllocated += storeResult(nrow, dimnames, 0);
+  numAllocated += storeResult(ncol, dimnames, 1);
+  setAttrib( (*s), R_DimNamesSymbol, dimnames);
+  
+  return numAllocated;
+}
+
+int setDimNames(const std::vector<std::string>& ni,
+                const std::vector<std::string>& nj,
+                const std::vector<std::string>& nk,                
+                SEXP* s) {
+  int numAllocated = 0;
+  SEXP dimnames;
+  PROTECT(dimnames = allocVector(VECSXP, 3));
+  ++ numAllocated;
+  
+  numAllocated += storeResult(ni, dimnames, 0);
+  numAllocated += storeResult(nj, dimnames, 1);
+  numAllocated += storeResult(nk, dimnames, 2);  
+  setAttrib( (*s), R_DimNamesSymbol, dimnames);
+  
+  return numAllocated;
+}
+
 /**
  * Set dim attributes for ret[idx]
  */
