@@ -1,0 +1,30 @@
+\name{rvmeta.writeCovData}
+\alias{rvmeta.writeCovData}
+\title{Write covariance association statistics files.}
+\usage{
+rvmeta.writeCovData(rvmetaData, outName)
+}
+\arguments{
+  \item{rvmetaData}{a list vector. It's usually read by
+  rvmeta.readDataByRange or rvmeta.readDataByGene function}
+
+  \item{outName}{character, a text indicating output file
+  prefix}
+}
+\value{
+TRUE only if succeed
+}
+\description{
+Write covariance association statistics files.
+}
+\examples{
+scoreFileName = system.file("rvtests/rvtest.MetaScore.assoc.anno.gz", package = "seqminer")
+covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
+geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
+cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
+rvmeta.writeCovData(cfh, "cfh.MetaCov.assoc")
+}
+\seealso{
+http://zhanxw.com/seqminer/ for online manual and examples
+}
+

@@ -75,4 +75,6 @@ void initStringArray(SEXP s);
  */
 int storeResult(const std::vector<std::string>& in , SEXP* ret) ;
 
+int getDim(SEXP s, std::vector<int>* d);
+
 #endif /* _R_CPP_INTERFACE_H_ */

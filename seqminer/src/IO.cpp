@@ -42,7 +42,7 @@ AbstractFileReader::FileType AbstractFileReader::checkFileType(const char* fileN
     }
     // read file header    
     FILE* fp = fopen(fileName, "rb");
-    if (!fp) return UNKNOWN;
+    if (!fp) return IO_FILE_TYPE_UNKNOWN;
     unsigned char header[2]={0,0};
     int n = fread(header, sizeof(char), 2, fp);
     fclose(fp);
@@ -66,7 +66,7 @@ AbstractFileReader::FileType AbstractFileReader::checkFileType(const char* fileN
     /*      header[1] <  0x7f /\* DEL *\/) { */
     /*     return PLAIN; */
     /* }  */
-    /* return UNKNOWN; */
+    /* return IO_FILE_TYPE_UNKNOWN; */
 }
 
 AbstractFileWriter::~AbstractFileWriter() {

@@ -2,8 +2,8 @@
 \alias{tabix.read.table}
 \title{Read tabix file, similar to running tabix in command line.}
 \usage{
-  tabix.read.table(tabixFile, tabixRange, col.names = TRUE,
-    stringsAsFactors = FALSE)
+tabix.read.table(tabixFile, tabixRange, col.names = TRUE,
+  stringsAsFactors = FALSE)
 }
 \arguments{
   \item{tabixFile}{character, an tabix indexed file}
@@ -18,18 +18,16 @@
   factors (default: FALSE)}
 }
 \value{
-  data frame, each elements is an individual line
+data frame, each elements is an individual line
 }
 \description{
-  Read tabix file, similar to running tabix in command
-  line.
+Read tabix file, similar to running tabix in command line.
 }
 \examples{
 fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
 snp <- tabix.read.table(fileName, "1:196623337-196632470")
 }
 \seealso{
-  http://zhanxw.com/seqminer/ for online manual and
-  examples
+http://zhanxw.com/seqminer/ for online manual and examples
 }
 

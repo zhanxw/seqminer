@@ -14,6 +14,9 @@
 #include <R.h>
 
 #include "GeneLoader.h"
+#include "FileFormat.h"
+
+#include "TypeConversion.h"
 
 /**
  * @param out will be a concatenated @param in separated by @param sep
@@ -32,183 +35,6 @@ void set2string(const std::set<std::string>& in,
     out->append(*iter);
   };
 }
-
-class MetaFileFormat{
- public:
-  /// check if all the necessary headers are set up
-  virtual bool isComplete() const = 0 ;
-  void setHeader(const std::map<std::string, int>& header) {
-    std::map<std::string, int>::const_iterator iter = header.begin();
-    for ( ;
-          iter != header.end();
-          ++iter) {
-      if (setHeader(iter->first, iter->second) < 0) {
-        REprintf("Problem when using the header [ %s ] for column [ %d ]\n", iter->first.c_str(), iter->second);
-      }
-    }
-  }
-  int setHeader(const std::string& key, const int& val) {
-    if (val < 0) return -1;
-    if (get(key) >= 0) // duplicate
-      return -1;
-    data[key] = val;
-  }
-  int get(const std::string& key) {
-    std::string k = toupper(key);
-    std::map<std::string, int>::const_iterator it = data.find(k);
-
-    if (it != data.end()) {
-      return it->second;
-    }
-
-    // check synonym
-    if (synonym.count(k) != 0) {
-      const std::set<std::string> & s = synonym.find(k)->second;
-      std::set<std::string>::const_iterator i;
-      for ( i = s.begin();
-            i != s.end();
-            ++i) {
-        if (data.find(*i) != data.end()) {
-          return data.find(*i)->second;
-        }
-      }
-    }
-
-    missingKey.insert(key);
-    return -1;
-  }
-
-  int peakHeader(const std::string& fn, std::map<std::string, int>* header) {
-    header->clear();
-    LineReader lr(fn);
-    std::vector<std::string> fd;
-    std::string line;
-    while(lr.readLine(&line)) {
-      stringNaturalTokenize(line, "\t ", &fd);
-      if (fd.empty()) continue;
-      if (fd[0][0] == '#' && fd[0] != "#CHROM") continue;
-      // strip out the '#' prefix
-      if (fd[0][0] == '#') {
-        fd[0] = fd[0].substr(1, fd[0].size() - 1);
-      }
-      for (size_t i = 0; i < fd.size(); ++i ) {
-        if (header->count(fd[i]) ) {
-          REprintf("Duplicatd header [ %s ]\n", fd[i].c_str());
-          continue;
-        }
-        (*header) [toupper(fd[i])] = i;
-      }
-      return 0;
-    };
-    return -1;
-  }
-  int open(const std::string& fn) {
-    return peakHeader(fn, &data);
-  }
-  void dump() {
-    REprintf("Missing header:\n");
-    for (std::set<std::string, int>::const_iterator it = missingKey.begin();
-         it != missingKey.end();
-         ++it) {
-      REprintf("[ %s ] \n", it->c_str());
-    }
-    REprintf("Known header:\n");
-    for (std::map<std::string, int>::const_iterator it = data.begin();
-         it != data.end();
-         ++it) {
-
-      REprintf("[ %s ] => [ %d ]\n", it->first.c_str(), it->second);
-    }
-    REprintf("Synonym headers:\n");
-    for (std::map<std::string, std::set<std::string> >::const_iterator it = synonym.begin();
-         it != synonym.end();
-         ++it) {
-      REprintf("[ %s ] => ", it->first.c_str());
-
-      const std::set<std::string> & s = synonym.find(it->first)->second;
-      std::set<std::string>::const_iterator i;
-      for ( i = s.begin();
-            i != s.end();
-            ++i) {
-        REprintf("[ %s ] ", i->c_str());
-      }
-      REprintf("\n");
-    }
-  };
-  /// add synonym of s1 and s2
-  int addSynonym(const std::string& key1, const std::string& key2) {
-    std::string s1 = toupper(key1);
-    std::string s2 = toupper(key2);
-    if (s1 == s2) return 0;
-    if (synonym.find(s1) != synonym.end() ) { // already synonym
-      if (synonym[s1].count(s2) != 0) {
-        return 0;
-      }
-    }
-    if (synonym.find(s2) != synonym.end() ) {
-      if (synonym[s2].count(s1) != 0) {
-        return 0;
-      }
-    }
-
-    // add synonym
-    {
-      synonym[s1].insert(s2);
-      const std::set<std::string> & s = synonym.find(s1)->second;
-      std::set<std::string>::const_iterator i;
-      for ( i = s.begin();
-            i != s.end();
-            ++i) {
-        synonym[*i].insert(s2);
-      }
-    }
-    {
-      synonym[s2].insert(s1);
-      const std::set<std::string> & s = synonym.find(s2)->second;
-      std::set<std::string>::const_iterator i;
-      for ( i = s.begin();
-            i != s.end();
-            ++i) {
-        synonym[*i].insert(s1);
-      }
-    }
-    return 0;
-  }
-
- private:
-  std::map<std::string, int> data;
-  std::set<std::string> missingKey;
-  std::map<std::string, std::set <std::string> > synonym; // key: word val: set of synonym of the word
-};
-
-
-/**
-   CHROM   POS     REF     ALT     N_INFORMATIVE   AF      INFORMATIVE_ALT_AC      CALL_RATE       HWE_PVALUE      N_REF   N_HET   N_ALT   U_STAT  SQRT_V_STAT     ALT_EFFSIZE     PVALUE
-*/
-class PvalFileFormat: public MetaFileFormat {
- public:
-  PvalFileFormat() {
-    addSynonym("AF", "ALL_AF");
-  }
-  bool isComplete() const {
-    return true;
-  }
-};
-/**
-   CHROM   START_POS       END_POS NUM_MARKER      MARKER_POS      COV
-*/
-class CovFileFormat: public MetaFileFormat {
- public:
-  CovFileFormat() {
-    addSynonym("CURRENT_POS", "START_POS");
-    addSynonym("MARKERS_IN_WINDOW", "MARKER_POS");
-    addSynonym("COV_MATRICES", "COV");
-    addSynonym("CURRENT_POS", "END_POS");
-  }
-  bool isComplete() const {
-    return true;
-  }
-};
 
 /**
  * Read @param, for each variant in @param range, put each location to @param location under the key @param gene
@@ -1751,3 +1577,305 @@ SEXP impl_readSkewByRange(SEXP arg_skewFile, SEXP arg_range) {
   UNPROTECT(numAllocated);
   return ret;
 } // impl_readSkewByRange
+
+
+SEXP impl_rvMetaWriteScoreData(SEXP arg_data, SEXP arg_outPrefix) {
+  SEXP ret = R_NilValue;
+  // write header
+  std::string outFileName;
+  extractString(arg_outPrefix, &outFileName);
+  FileWriter fw(outFileName.c_str(), BGZIP);
+  fw.write("CHROM\tPOS\tREF\tALT\tN_INFORMATIVE\tAF\t");
+  fw.write("INFORMATIVE_ALT_AC\tCALL_RATE\tHWE_PVALUE\t");
+  fw.write("N_REF\tN_HET\tN_ALT\tU_STAT\tSQRT_V_STAT\tALT_EFFSIZE\t");
+  fw.write("PVALUE\tANNO\n");
+  // CHROM   POS     REF     ALT     N_INFORMATIVE   AF
+  // INFORMATIVE_ALT_AC      CALL_RATE       HWE_PVALUE
+  // N_REF   N_HET   N_ALT   U_STAT  SQRT_V_STAT     ALT_EFFSIZE
+  // PVALUE  ANNO    ANNO_FULL
+  std::map<std::string, std::string> allowedColumn;
+  allowedColumn["ref"] = "REF";
+  allowedColumn["alt"] = "ALT";
+  allowedColumn["nSample"] = "N_INFORMATIVE";
+  allowedColumn["af"] = "AF";
+  allowedColumn["ac"] = "INFORMATIVE_ALT_AC";
+  allowedColumn["callrate"] = "CALL_RATE";
+  allowedColumn["hwe"] = "HWE_PVALUE";
+  allowedColumn["nref"] = "N_REF";
+  allowedColumn["nhet"] = "N_HET";
+  allowedColumn["nalt"] = "N_ALT";
+  allowedColumn["ustat"] = "U_STAT";
+  allowedColumn["vstat"] = "SQRT_V_STAT";
+  allowedColumn["effect"] = "ALT_EFFSIZE";
+  allowedColumn["pVal"] = "PVALUE";
+  allowedColumn["pos"] = "CHROM:POS";
+  allowedColumn["anno"] = "ANNO";
+
+  char outputColumn[][16] = {"ref", "alt", "nSample", "af", "ac", "callrate", "hwe",
+                         "nref", "nhet", "nalt", "ustat", "vstat", "effect",
+                         "pVal"};
+  int nOutputColumn = sizeof(outputColumn) / sizeof(outputColumn[0]);
+  /*
+    [1] "ref"      "alt"      "nSample"  "af"       "ac"       "callrate"
+    [7] "hwe"      "nref"     "nhet"     "nalt"     "ustat"    "vstat"
+    [13] "effect"   "pVal"     "cov"      "pos"      "anno"     "covXZ"
+    [19] "covZZ"    "hweCase"  "hweCtrl"  "afCase"   "afCtrl"
+  */
+
+  // data[gene or range][CHROM or POS or ..][study_i]
+  // 1. record all chromosomal positions
+  std::map<std::string, int> index;
+  std::vector<std::string> fd;
+  std::vector<std::string> result;
+  int nSite;
+  int nGene = length(arg_data);
+  for (int i = 0; i < nGene ; ++i) {
+    Rprintf("output %s\n", CHAR(STRING_ELT(getAttrib(arg_data, R_NamesSymbol), i)));    
+    SEXP values = VECTOR_ELT(arg_data, i);
+    SEXP rColNames = getAttrib(values, R_NamesSymbol);
+    for (int j = 0; j < length(rColNames); ++j) {
+      index[CHAR(STRING_ELT(rColNames,j))] = j;
+    }
+
+    // record basic info
+    if (index.count("pos")) {
+      SEXP v = VECTOR_ELT(values, index["pos"]);
+      nSite = length(v);
+    }
+    if (nSite < 0 ) {
+      REprintf("No sites to output, skipping...\n");
+      continue;
+    }
+    if (index.count("ref")) {
+      SEXP v = VECTOR_ELT(values, index["ref"]);
+      int nStudy = length(v);
+      if (nStudy < 1 ) {
+        REprintf("No studies to output, skipping...\n");
+        continue;
+      }
+      if (nStudy > 1) {
+        REprintf("First study will be written out, others are omitted!\n");
+      }
+    }
+
+    for (int j = 0; j < nSite; ++j) {
+      result.clear();
+      // chrom, pos
+      // Rprintf("process pos...\n");
+      if (index.count("pos")) {
+        SEXP v = VECTOR_ELT(values, index["pos"]);
+        stringTokenize(CHAR(STRING_ELT(v, j)), ":", &fd);
+        if (fd.size()  == 2) {
+          result.push_back(fd[0]);
+          result.push_back(fd[1]);
+        } else {
+          Rprintf("Skipping site due to malformatted pos\n");
+          continue;
+        }
+      } else {
+        Rprintf("Skipping site due to missing pos\n");
+        continue;
+      }
+
+      // ref, alt, ...
+      // Rprintf("process ref...\n");
+      for (int k = 0; k < nOutputColumn; ++k) {
+        if (index.count(outputColumn[k])) {
+          SEXP study = VECTOR_ELT(values, index[outputColumn[k]]);
+          SEXP v = VECTOR_ELT(study, 0);
+          switch(TYPEOF(v)) {
+            case STRSXP:
+              if (STRING_ELT(v, j) == NA_STRING) {
+                result.push_back("NA");
+              } else {
+                result.push_back(CHAR(STRING_ELT(v, j)));            
+              }
+              break;
+            case REALSXP:
+              if (REAL(v)[j] == NA_REAL) {
+                result.push_back("NA");
+              } else {
+                result.push_back(floatToString(REAL(v)[j]));            
+              }
+              break;
+            case INTSXP:
+              if (INTEGER(v)[j] == NA_INTEGER) {
+                result.push_back("NA");
+              } else {
+                result.push_back(toString(INTEGER(v)[j]));            
+              }
+              break;
+            default:
+              REprintf("strange type, skipping...\n");
+              result.push_back("NA");
+              break;
+          }
+        } else {
+          result.push_back("NA");                      
+        }
+      }
+      
+      // anno
+      // Rprintf("process anno...\n");
+      if (index.count("anno")) {
+        SEXP v = VECTOR_ELT(values, index["anno"]);
+        if (STRING_ELT(v, j) == NA_STRING) {
+          result.push_back("NA");
+        } else {
+          result.push_back(CHAR(STRING_ELT(v, j)));
+        }
+      } else {
+        result.push_back("NA");        
+      }
+
+      // output result
+      for (size_t k = 0; k != result.size(); ++k) {
+        if (k)
+          fw.write("\t");
+        fw.write(result[k]);
+      }
+      fw.write("\n");
+      
+    } // end loop site
+  }// end loop gene/range
+  return ret;
+} // impl_rvMetaWriteData
+
+int writeCov(FileWriter& fw,
+             const std::vector<std::string>& chrom,
+             const std::vector<std::string>& pos,
+             SEXP cov) {
+  if (chrom.size() != pos.size()) {
+    REprintf("chrom size does not match pos size!\n");
+    return -1;
+  }
+  std::vector<int> dim;
+  if (getDim(cov, &dim) || dim.size() != 2) {
+    REprintf("cov dimension error!\n");
+    return -1;
+  }
+  const int nrow = dim[0];
+  const int ncol = dim[1];
+  const int n = pos.size();
+  if (nrow != n) {
+    REprintf("cov rows is not equal to position number\n");
+    return -1;
+  }
+  if (nrow != ncol) {
+    REprintf("cov is not square\n");    
+    return -1;
+  }
+  if (n == 0) return 0; //nothing to write
+  for (int i = 0; i < n; ++i) {
+    fw.write(chrom[i].c_str());
+    fw.write("\t");
+    fw.write(pos[i].c_str());
+    fw.write("\t");
+    fw.write(pos[n-1].c_str());
+    fw.write("\t");
+    fw.write(toString(n-i));
+    fw.write("\t");
+    for (int j = i; j < n; ++j) {
+      if (j > i )
+        fw.write(",");
+      fw.write(pos[j].c_str());
+    }
+    fw.write("\t");
+    for (int j = i * n +i; j < i * n + n; ++j) {
+      if (j > i * n + i)
+        fw.write(",");
+      fw.write(floatToString(REAL(cov)[j]));
+    }
+    fw.write("\n");
+  }
+  return 0;
+}
+
+/** currently only support qtl
+ * write @param arg_data to @param arg_outPrefix
+ */
+SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
+  SEXP ret = R_NilValue;
+  // write header
+  std::string outFileName;
+  extractString(arg_outPrefix, &outFileName);
+  FileWriter fw(outFileName.c_str(), BGZIP);
+  fw.write("CHROM\tSTART_POS\tEND_POS\tNUM_MARKER\tMARKER_POS\tCOV\n");
+  
+  // CHROM   START_POS       END_POS NUM_MARKER      MARKER_POS      COV
+  std::map<std::string, std::string> allowedColumn;
+  allowedColumn["cov"] = "COV";
+  allowedColumn["pos"] = "CHROM:POS";
+  /*
+    [1] "ref"      "alt"      "nSample"  "af"       "ac"       "callrate"
+    [7] "hwe"      "nref"     "nhet"     "nalt"     "ustat"    "vstat"
+    [13] "effect"   "pVal"     "cov"      "pos"      "anno"     "covXZ"
+    [19] "covZZ"    "hweCase"  "hweCtrl"  "afCase"   "afCtrl"
+  */
+      
+  // data[gene or range][CHROM or POS or ..][study_i]
+  // 1. record all chromosomal positions
+  int numGene = length(arg_data);
+  int numColumn = -1;
+  std::vector<int> column;
+  int numStudy = -1;
+  std::vector<int> numValue;
+  std::vector<std::string> colNames;
+  int numValueToWrite = 0;
+  std::vector<std::string> fd;
+  std::vector<std::string> chrom;
+  std::vector<std::string> position;
+  for (int i = 0; i < numGene ; ++i) { //loop gene/range
+    Rprintf("output %s\n", CHAR(STRING_ELT(getAttrib(arg_data, R_NamesSymbol), i)));
+
+    SEXP values = VECTOR_ELT(arg_data, i);
+    SEXP rColNames = getAttrib(values, R_NamesSymbol);
+    //extractStringArray(rColNames, &colNames);
+    int posIndex  = -1;
+    int covIndex  = -1;
+    for (int i = 0; i < length(rColNames); ++i) {
+      if (strcmp(CHAR(STRING_ELT(rColNames, i)),  "pos") == 0) {
+        posIndex = i;
+      }
+      if (strcmp(CHAR(STRING_ELT(rColNames, i)),  "cov") == 0) {
+        covIndex = i;
+      }
+    }
+    if (posIndex <0 || covIndex < 0) {
+      Rprintf("Cannot find pos or cov\n");
+      continue;
+    }
+    
+    int numColumn = length(values); // counts of chrom/pos/...
+    // process pos
+    SEXP studies = VECTOR_ELT(values, posIndex);
+    int l = length(studies);
+    if (l < 1) {
+      REprintf("No study read!\n");
+      return ret;
+    }
+    if (l > 1) {
+      Rprintf("First study will be written out, others are omitted!\n");        
+    }
+    // Rprintf("preprocess pos ... \n");
+    SEXP pos = studies;
+    chrom.clear();
+    position.clear();
+    for (int i = 0; i < length(pos); ++i) {
+      stringTokenize(CHAR(STRING_ELT(pos, i)), ":", &fd);
+      chrom.push_back(fd[0]);
+      position.push_back(fd[1]);
+    }
+    // process cov
+    // Rprintf("preprocess cov ... \n");
+    studies = VECTOR_ELT(values, covIndex);
+    SEXP cov = VECTOR_ELT(studies, 0);
+    // write result
+    // Rprintf("output ... \n");
+    if (writeCov(fw, chrom, position, cov)) {
+      REprintf("Outputting got problem...\n");
+      return ret;
+    }
+  } // end //loop gene/range
+  return ret;
+} // impl_rvMetaWriteCovData

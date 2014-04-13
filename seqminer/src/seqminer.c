@@ -63,3 +63,33 @@ extern SEXP impl_readTabixHeader(SEXP arg_tabixFile);
 SEXP readTabixHeader(SEXP arg_tabixFile) {
   return impl_readTabixHeader(arg_tabixFile);
 }
+
+extern SEXP impl_rvMetaWriteScoreData(SEXP arg_data, SEXP arg_outPrefix);
+SEXP rvMetaWriteScoreData(SEXP arg_data, SEXP arg_outPrefix) {
+  return impl_rvMetaWriteScoreData(arg_data, arg_outPrefix);
+}
+
+extern SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix);
+SEXP rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
+  return impl_rvMetaWriteCovData(arg_data, arg_outPrefix);
+}
+
+extern SEXP impl_createTabixIndex(SEXP arg_tabixFile,
+                                      SEXP arg_seqnameColumn,
+                                      SEXP arg_startColumn,
+                                      SEXP arg_endColumn,
+                                      SEXP arg_commentChar,
+                                      SEXP arg_skipLine);
+SEXP createTabixIndex(SEXP arg_tabixFile,
+                      SEXP arg_seqnameColumn,
+                      SEXP arg_startColumn,
+                      SEXP arg_endColumn,
+                      SEXP arg_commentChar,
+                      SEXP arg_skipLine){
+  return impl_createTabixIndex(arg_tabixFile,
+                               arg_seqnameColumn,
+                               arg_startColumn,
+                               arg_endColumn,
+                               arg_commentChar,
+                               arg_skipLine);
+}

@@ -1,4 +1,4 @@
-AC_INIT(seqminer, 1.0, zhanxw@gmail.com)
+AC_INIT(seqminer, 2.0, zhanxw@gmail.com)
 AC_CONFIG_HEADERS(src/config.h)
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -55,8 +55,8 @@ AC_MSG_RESULT([yes])], [AC_MSG_RESULT([no])])
 
 dnl AC_SUBST(LIB_BZIP2)
 dnl -I. @CFLAGS@ -DNDEBUG 
-dnl  -I. @CXXFLAGS@ -DNDEBUG
-dnl  -lz -lm @LIB_BZIP2@
+dnl -I. @CXXFLAGS@ -DNDEBUG
+dnl -lz -lm @LIB_BZIP2@
 
 AC_SUBST([PKG_CFLAGS], ["-I. -DNDEBUG ${CFLAGS}"])
 AC_SUBST([PKG_CPPFLAGS], ["-I. -DNDEBUG ${CPPFLAGS} ${CXXFLAGS}"])

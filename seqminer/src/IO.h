@@ -12,7 +12,9 @@
 
 // Windows platform does not have good autoconf tools, so skip loading config.h
 #ifndef _WIN32
+#ifndef _WIN64
 #include "config.h"
+#endif
 #endif
 
 // cannot forward declare an typdef anonymous struct
@@ -29,7 +31,7 @@ typedef enum FileType {
   BZIP2 = 2,
 #endif
   BGZIP = 3,
-  UNKNOWN = 99
+  IO_FILE_TYPE_UNKNOWN = 99
 } FileType;
 
 /**
@@ -49,7 +51,7 @@ public:
 #ifdef HAVE_BZIP2
     BZIP2 = 2,
 #endif
-    UNKNOWN = 99
+    IO_FILE_TYPE_UNKNOWN = 99
   } FileType;
   virtual ~AbstractFileReader() {}; // make it virtual so subclass types can close file handle
   static AbstractFileReader* open(const char* fileName);
@@ -796,6 +798,9 @@ public:
   int write(const char* s){
     return this->fp->write(s);
   };
+  int write(const std::string& s) {
+    return this->fp->write(s.c_str());    
+  }
   int writeLine(const char* s){
     int ret = this->fp->write(s);
     this->fp->write("\n");

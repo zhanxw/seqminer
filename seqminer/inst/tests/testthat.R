@@ -1,8 +1,15 @@
 context("Test read from VCF file")
 outFile <- system.file("tests/correct.Rdata", package = "seqminer")
 
+sysname <- Sys.info()[['sysname']]
+systemTestable <- FALSE
+if (! sysname %in%  c("Linux", "Windows", "Darwin")) {
+    cat("Skip unit-testing tabix, probably your system ", sysname, " is big endian!\n")
+} else {
+    systemTestable <- TRUE
+}
 
-if (file.exists(outFile)) {
+if (file.exists(outFile) && systemTestable) {
     load(outFile)
     fileName <- system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
     geneFile <- system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
@@ -60,13 +67,14 @@ if (file.exists(outFile)) {
     ## test tabix functions
     test_that("tabix", {
         fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
-        snp <- tabix(fileName, "1:196623337-196632470")
+        snp <- tabix.read(fileName, "1:196623337-196632470")
         expect_equal(class(snp), "character")
         expect_equal(length(snp), 3)
     })
+
     test_that("tabix", {
         fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
-        snp <- tabix(fileName, "1:196633607-196633607")
+        snp <- tabix.read(fileName, "1:196633607-196633607")
         expect_equal(class(snp), "character")
         expect_equal(length(snp), 0)
     })
@@ -120,7 +128,6 @@ if (FALSE) {
     try(out.range.1 <- readVCFToListByRange(fileName, "1:196621007-196716634", "Synonymous", c("CHROM","ID", "POS"), c("AC","AN"), c("GT","GQ")))
     ## print(t)
 
-    
     save.image(file = outFile)
     ## load(outFile)
 }

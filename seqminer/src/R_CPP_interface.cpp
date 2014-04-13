@@ -31,7 +31,8 @@ void extractStringSet(SEXP in, std::set<std::string>* out) {
 
 /* get the list element named str, or return NULL */
 SEXP getListElement(SEXP list, const char *str) {
-  SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
+  SEXP elmt = R_NilValue;
+  SEXP names = getAttrib(list, R_NamesSymbol);
   for (R_len_t i = 0; i < length(list); i++)
     if(strcmp(CHAR(STRING_ELT(names, i)), str) == 0) {
       elmt = VECTOR_ELT(list, i);
@@ -248,4 +249,19 @@ int storeResult(const std::vector<std::string>& in , SEXP* ret) {
     SET_STRING_ELT( (*ret), i, mkChar(in[i].c_str()));
   }
   return alloc;
+}
+
+/**
+ * Store dimensions of @param s in @param d
+ * @return 0 if success
+ */
+int getDim(SEXP s, std::vector<int>* d) {
+  SEXP r = getAttrib(s, R_DimSymbol);
+  if (isNull(r)) return -1;
+  int n = length(r);
+  d->resize(n);
+  for(int i = 0;i < n; ++i) {
+    (*d)[i] = INTEGER(r)[i];
+  }
+  return 0;
 }

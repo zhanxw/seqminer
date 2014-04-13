@@ -2,7 +2,7 @@
 \alias{rvmeta.readScoreByRange}
 \title{Read score test statistics by range from METAL-format files.}
 \usage{
-  rvmeta.readScoreByRange(scoreTestFiles, tabixRange)
+rvmeta.readScoreByRange(scoreTestFiles, tabixRange)
 }
 \arguments{
   \item{scoreTestFiles}{character vector, score test output
@@ -12,18 +12,17 @@
   range in the VCF file to extract. e.g. 1:100-200}
 }
 \value{
-  score test statistics within given range
+score test statistics within given range
 }
 \description{
-  Read score test statistics by range from METAL-format
-  files.
+Read score test statistics by range from METAL-format
+files.
 }
 \examples{
 scoreFileName = system.file("rvtests/rvtest.MetaScore.assoc.anno.gz", package = "seqminer")
 cfh <- rvmeta.readScoreByRange(scoreFileName, "1:196621007-196716634")
 }
 \seealso{
-  http://zhanxw.com/seqminer/ for online manual and
-  examples
+http://zhanxw.com/seqminer/ for online manual and examples
 }
 

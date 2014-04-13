@@ -1,0 +1,20 @@
+#VCF_test
+#from http://www.sph.umich.edu/csg/liyanmin/vcfCodingSnps/Tutorial.shtml
+#CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  NA12891 NA12892 NA12878
+1	3	.	A	G	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	5	.	C	A	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	13	.	T	G	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	25	.	A	C	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	43	.	C	A	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	44	.	T	G	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	50	.	A	C	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	53	.	C	A	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	66	.	T	C	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	72	.	C	A	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	2000	.	C	A	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	14	.	A	AGCG	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	22	.	G	GC	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	7	.	TAA	.	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	20	.	AAGTA	A	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14
+1	53	.	C	A,T	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14 
+1	53	.	C	A[	50	depth=20		GT:GQ:GD	1/0:31:12	0/0:28:14 

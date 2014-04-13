@@ -12,6 +12,11 @@ KHASH_MAP_INIT_STR(str2id, int)
 #define drand48() ((double)rand() / RAND_MAX)
 #endif
 
+#ifndef __GNUC__
+#include <alloca.h>
+#endif
+
+    
 // FIXME: valgrind report a memory leak in this function. Probably it does not get deallocated...
 void *bcf_build_refhash(bcf_hdr_t *h)
 {
@@ -469,7 +474,8 @@ int bcf_gl10(const bcf1_t *b, uint8_t *gl)
 	for (k = 0; k < 4; ++k)
 		if (map[k] < 0) map[k] = k1;
 	for (i = 0; i < b->n_smpl; ++i) {
-		const uint8_t *p = PL->data + i * PL->len; // the PL for the i-th individual
+          // zhanxw:bypass arithmetic on a pointer to void
+		const uint8_t *p = (unsigned char*)PL->data + i * PL->len; // the PL for the i-th individual
 		uint8_t *g = gl + 10 * i;
 		for (k = j = 0; k < 4; ++k) {
 			for (l = k; l < 4; ++l) {
@@ -492,7 +498,8 @@ int bcf_gl10_indel(const bcf1_t *b, uint8_t *gl)
 	if (i == b->n_gi) return -1; // no PL
 	PL = b->gi + i;
 	for (i = 0; i < b->n_smpl; ++i) {
-		const uint8_t *p = PL->data + i * PL->len; // the PL for the i-th individual
+          // zhanxw:bypass arithmetic on a pointer to void
+		const uint8_t *p = (unsigned char*)PL->data + i * PL->len; // the PL for the i-th individual
 		uint8_t *g = gl + 10 * i;
 		for (k = j = 0; k < 4; ++k) {
 			for (l = k; l < 4; ++l) {

@@ -60,7 +60,7 @@ void loadGeneFile(const std::string& geneFile,
   output.resize(geneName.size());
   std::map<std::string, std::vector<int> >::iterator it;
   for(it = data.begin(); it != data.end(); ++it){
-    const std::string& name = it->first;
+    // const std::string& name = it->first;
     const std::vector<int>& indice = it->second;
     int n = indice.size();
     ranges[indice[0]].sort();
@@ -79,7 +79,6 @@ void loadGeneFile(const std::string& geneFile,
 
 static void setToVector(const std::set<std::string>& input,
                         std::vector<std::string>* output) {
-  int n = input.size();
   std::set<std::string>::const_iterator iter;
   for (iter = input.begin(); iter != input.end(); ++iter){
     output->push_back(*iter);

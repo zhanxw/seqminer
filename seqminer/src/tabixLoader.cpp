@@ -60,3 +60,23 @@ SEXP impl_readTabixHeader(SEXP arg_tabixFile) {
   UNPROTECT(1);
   return ret;
 }
+
+SEXP impl_createTabixIndex(SEXP arg_tabixFile,
+                           SEXP arg_seqnameColumn,
+                           SEXP arg_startColumn,
+                           SEXP arg_endColumn,
+                           SEXP arg_commentChar,
+                           SEXP arg_skipLine) {
+  SEXP ret = R_NilValue;
+  std::string fn = CHAR(STRING_ELT(arg_tabixFile, 0));
+  int chrom = INTEGER(arg_seqnameColumn)[0];
+  int startPos = INTEGER(arg_startColumn)[0];
+  int endPos = INTEGER(arg_endColumn)[0];
+  char metaChar = CHAR(STRING_ELT(arg_commentChar, 0))[0];
+  int skip = INTEGER(arg_skipLine)[0];
+  ti_conf_t meta_conf = {0, chrom, startPos, endPos, metaChar, skip};
+  if (ti_index_build(fn.c_str(), &meta_conf)) {
+    REprintf("Create tabix index failed for [ %s ]!\n", fn.c_str());
+  }
+  return ret;
+}

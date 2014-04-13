@@ -6,7 +6,6 @@
 #include <errno.h>
 #include <limits.h>
 #include <math.h> // for HUGE_VALF, HUGE_VALL
-
 #include <sstream>
 
 ////////////////////////////////////////////////////////////////////////
@@ -49,6 +48,16 @@ inline std::string toString(T i){
     return ss.str();
 }
 
+// convert double/float to string type
+// we try to mimic the '%g' in printf
+template<class T>
+inline std::string floatToString(T i){
+    std::stringstream ss;
+    ss.precision(6);
+    ss << std::noshowpoint << i;
+    return ss.str();
+}
+
 // convert std::string to integer
 // @return true if conversion succeed
 inline bool str2int(const char* input, int* output) {
@@ -74,6 +83,29 @@ inline bool str2int(const char* input, int* output) {
 inline bool str2int(const std::string& input, int* output) {
   return str2int(input.c_str(), output);
 }
+
+inline int toInt(const char* input) {
+    return (atoi(input));
+};
+
+inline int toInt(const std::string& input) {
+    return (atoi(input.c_str()));
+};
+
+inline float toFloat(const char* input) {
+    return (atof(input));
+};
+inline float toFloat(const std::string& input) {
+    return (atof(input.c_str()));
+};
+
+inline double toDouble(const char* input) {
+    return (atof(input));
+};
+inline double toDouble(const std::string& input) {
+    return (atof(input.c_str()));
+};
+
 // convert std::string to double
 // @return true if conversion succeed
 inline bool str2double(const char* input, double* output) {

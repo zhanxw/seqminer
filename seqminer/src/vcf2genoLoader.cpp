@@ -205,7 +205,7 @@ SEXP impl_readVCFToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_g
   OrderedMap< std::string, std::string> geneRange;
   loadGeneFile(FLAG_geneFile, FLAG_geneName, &geneRange);  
   for (int i = 0; i < nGene; ++i) {
-    REprintf("range = %s\n", FLAG_geneName[i].c_str());
+    // REprintf("range = %s\n", FLAG_geneName[i].c_str());
     const std::string& range = geneRange[FLAG_geneName[i]];
 
     //Rprintf( "range = %s\n", range.c_str());
@@ -275,7 +275,7 @@ SEXP readVCF2List(VCFInputFile* vin,
 
   bool FLAG_variantOnly = false;
   // real working part
-  bool nonVariantSite;
+  int nonVariantSite;
   while (vin->readRecord()){
     // REprintf("read a record\n");
     VCFRecord& r = vin->getVCFRecord();

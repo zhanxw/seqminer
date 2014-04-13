@@ -225,7 +225,8 @@ static int inflate_block(BGZF* fp, int block_length)
 	z_stream zs;
 	zs.zalloc = NULL;
 	zs.zfree = NULL;
-	zs.next_in = fp->compressed_block + 18;
+        // zhanxw:bypass arithmetic on a pointer to void
+	zs.next_in = (unsigned char*)fp->compressed_block + 18;
 	zs.avail_in = block_length - 16;
 	zs.next_out = fp->uncompressed_block;
 	zs.avail_out = BGZF_MAX_BLOCK_SIZE;

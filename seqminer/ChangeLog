@@ -1,3 +1,40 @@
+2014-04-13  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Add support for Solaris system (x86 Sun Studio 12.3)
+
+2014-04-12  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support more annotation types
+
+2014-04-09  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support basic annotation
+
+2014-03-30  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Change by default not creating tabix index
+
+2014-01-26  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Rename tabix() to tabix.read()
+	* Add tabix.createIndex()
+
+2014-01-25  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Add function to export summary statistics
+
+2013-11-29  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Update using "static inline" qualier in ksort.h
+
+2013-11-19  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Add configure.win and src/config.h to formally suport Windows build.
+
+2013-11-15  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support clang compilation on various platforms (since version 1.9.1)
+
 2013-11-08  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Improve (Important!!) readVCFToListByGene function. Variants belonging to a certain gene can be distinguished.

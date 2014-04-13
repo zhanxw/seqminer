@@ -9,3 +9,5 @@ extern "C" SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range);
 extern "C" SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range);
 extern "C" SEXP impl_readSkewByRange(SEXP arg_scoreFile, SEXP arg_range);
 
+extern "C" SEXP impl_rvMetaWriteScoreData(SEXP arg_data, SEXP arg_outPrefix);
+extern "C" SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix);

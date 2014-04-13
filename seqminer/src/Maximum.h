@@ -7,7 +7,9 @@ class Maximum{
 public:
 Maximum(): maxValue(INT_MIN) {}
   Maximum& add(int i){
-    maxValue  =  std::max(maxValue, i);
+    // maxValue  =  std::max(maxValue, i);
+    // the above won't work for SolarisStudio 12.3
+    maxValue = maxValue > i ? maxValue : i;
     return *this;
   }
   int max() {

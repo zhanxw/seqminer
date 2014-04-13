@@ -2,7 +2,7 @@
 \alias{readVCFToMatrixByRange}
 \title{Read a gene from VCF file and return a genotypes matrix}
 \usage{
-  readVCFToMatrixByRange(fileName, range, annoType)
+readVCFToMatrixByRange(fileName, range, annoType)
 }
 \arguments{
   \item{fileName}{character, represents an input VCF file
@@ -16,17 +16,16 @@
   can be left empty.}
 }
 \value{
-  genotype matrix
+genotype matrix
 }
 \description{
-  Read a gene from VCF file and return a genotypes matrix
+Read a gene from VCF file and return a genotypes matrix
 }
 \examples{
 fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
 cfh <- readVCFToMatrixByRange(fileName, "1:196621007-196716634", "Nonsynonymous")
 }
 \seealso{
-  http://zhanxw.com/seqminer/ for online manual and
-  examples
+http://zhanxw.com/seqminer/ for online manual and examples
 }
 

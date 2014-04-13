@@ -2,8 +2,8 @@
 \alias{readVCFToListByGene}
 \title{Read information from VCF file in a given range and return a list}
 \usage{
-  readVCFToListByGene(fileName, geneFile, geneName,
-    annoType, vcfColumn, vcfInfo, vcfIndv)
+readVCFToListByGene(fileName, geneFile, geneName, annoType, vcfColumn, vcfInfo,
+  vcfIndv)
 }
 \arguments{
   \item{fileName}{character, represents an input VCF file
@@ -31,12 +31,12 @@
   at individual level. Common choices are: GT, GQ, GD}
 }
 \value{
-  a list of genes, and each elements has specified
-  vcfColumn, vcfinfo, vcfIndv
+a list of genes, and each elements has specified vcfColumn,
+vcfinfo, vcfIndv
 }
 \description{
-  Read information from VCF file in a given range and
-  return a list
+Read information from VCF file in a given range and return
+a list
 }
 \examples{
 fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
@@ -45,7 +45,6 @@ cfh <- readVCFToListByGene(fileName, geneFile, "CFH", "Synonymous",
                            c("CHROM", "POS"), c("AF", "AC"), c("GT") )
 }
 \seealso{
-  http://zhanxw.com/seqminer/ for online manual and
-  examples
+http://zhanxw.com/seqminer/ for online manual and examples
 }
 
