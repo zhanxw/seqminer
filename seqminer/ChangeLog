@@ -1,3 +1,7 @@
+2014-04-14  zhanxw  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Improve stability when read tabix file
+
 2014-04-13  zhanxw  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Fix an initialization problem to pass UBSAN check

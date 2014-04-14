@@ -7,6 +7,8 @@
 #include <vector>
 
 SEXP impl_readTabixByRange(SEXP arg_tabixFile, SEXP arg_range) {
+  SEXP ret = R_NilValue;
+
   std::vector<std::string> FLAG_tabixFile;
   std::vector<std::string> FLAG_range;
   extractStringArray(arg_tabixFile, &FLAG_tabixFile);
@@ -16,6 +18,11 @@ SEXP impl_readTabixByRange(SEXP arg_tabixFile, SEXP arg_range) {
     Rprintf("Read the first tabix file: %s\n", FLAG_tabixFile[0].c_str() );
   }
   TabixReader tr(FLAG_tabixFile[0]);
+  if (!tr.good()) {
+    REprintf("Cannot open specified tabix file: %s\n", FLAG_tabixFile[0].c_str());
+    return ret;
+  }
+
   for (size_t i = 0; i < FLAG_range.size(); ++i) {
     tr.addRange(FLAG_range[i]);  
   }
@@ -26,7 +33,6 @@ SEXP impl_readTabixByRange(SEXP arg_tabixFile, SEXP arg_range) {
     res.push_back(line);
   }
 
-  SEXP ret = R_NilValue;
   storeResult(res, &ret);
   UNPROTECT(1);
   return ret;
@@ -34,28 +40,38 @@ SEXP impl_readTabixByRange(SEXP arg_tabixFile, SEXP arg_range) {
 
 
 SEXP impl_readTabixSkippedLine(SEXP arg_tabixFile) {
+  SEXP ret = R_NilValue;
+  
   std::vector<std::string> FLAG_tabixFile;
   extractStringArray(arg_tabixFile, &FLAG_tabixFile);
   TabixReader tr(FLAG_tabixFile[0]);
+  if (!tr.good()) {
+    REprintf("Cannot open specified tabix file: %s\n", FLAG_tabixFile[0].c_str());
+    return ret;
+  }
 
   std::vector<std::string> headers;
   stringTokenize(stringStrip(tr.getSkippedLine()), "\n", &headers);
   
-  SEXP ret = R_NilValue;
   storeResult(headers, &ret);
   UNPROTECT(1);
   return ret;
 }
 
 SEXP impl_readTabixHeader(SEXP arg_tabixFile) {
+  SEXP ret = R_NilValue;
+
   std::vector<std::string> FLAG_tabixFile;
   extractStringArray(arg_tabixFile, &FLAG_tabixFile);
   TabixReader tr(FLAG_tabixFile[0]);
+  if (!tr.good()) {
+    REprintf("Cannot open specified tabix file: %s\n", FLAG_tabixFile[0].c_str());
+    return ret;
+  }
 
   std::vector<std::string> headers;
   stringTokenize(stringStrip(tr.getHeader()), "\n", &headers);
   
-  SEXP ret = R_NilValue;
   storeResult(headers, &ret);
   UNPROTECT(1);
   return ret;

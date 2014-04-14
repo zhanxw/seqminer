@@ -2,7 +2,7 @@ Package: seqminer
 Type: Package
 Title: Efficiently Read Sequence Data (VCF format, BCF format and METAL
         format) into R
-Version: 2.7
+Version: 2.8
 Date: 2013-11-15
 Author: Xiaowei Zhan <zhanxw@gmail.com> and Dajiang Liu
     <dajiang.liu@gmail.com>, with contributions of Jean-loup Gailly
@@ -29,7 +29,7 @@ Copyright: We have used the following software and made minimal
         pointer arithmetics.
 License: GPL | file LICENSE
 URL: http://zhanxw.com/seqminer
-Packaged: 2014-04-13 23:47:49 UTC; zhanxw
+Packaged: 2014-04-14 05:00:07 UTC; root
 Repository: CRAN
 Date/Publication: 2013-01-20 17:22:08
 Depends: stringr
