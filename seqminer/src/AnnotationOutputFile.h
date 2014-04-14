@@ -1,19 +1,22 @@
 #ifndef _ANNOTATIONOUTPUTFILE_H_
 #define _ANNOTATIONOUTPUTFILE_H_
 
+#ifdef HAVE_UNISTD_H
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#endif
 
 #include "IO.h"
 #include "AnnotationInputFile.h"
 #include "OrderedMap.h"
 
+#ifdef HAVE_UNISTD_H
 bool fileExists(std::string& s) {
   struct stat res;
   int ret = stat(s.c_str(), &res);
   return (ret == 0);
-};
+}
 
 time_t getFileMtime(std::string& s) {
   struct stat res;
@@ -23,7 +26,8 @@ time_t getFileMtime(std::string& s) {
     return -1;
   }
   return res.st_mtime;
-};
+}
+#endif
 
 class AnnotationOutputFile{
  public:
@@ -150,11 +154,13 @@ AnnotationOutputFile(const std::string& out):headerOutputted(false), totalVarian
     // back up existing/older index file
     size_t len = outputFileName.size();
     std::string indexFileName = outputFileName.substr(0, len - 3); // strip ".gz"
+#ifdef HAVE_UNISTD_H
     if (fileExists(indexFileName) &&
         getFileMtime(indexFileName) <= getFileMtime(outputFileName)) { // index too old
       remove(indexFileName.c_str());
       REprintf( "Done: Removed old index file ...\n");
     }
+#endif
     if ( bgzf_is_bgzf(outputFileName.c_str())!=1 )
     {
       REprintf("[tabix] was bgzip used to compress this file? %s\n", outputFileName.c_str());

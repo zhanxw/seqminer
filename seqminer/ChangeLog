@@ -1,3 +1,8 @@
+2014-04-13  zhanxw  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Fix an initialization problem to pass UBSAN check
+	* Support compilation in Windows
+
 2014-04-13  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Add support for Solaris system (x86 Sun Studio 12.3)

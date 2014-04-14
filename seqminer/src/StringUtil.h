@@ -42,17 +42,17 @@ inline int stringTokenize(const std::string& str, const std::string& delim, std:
   };
   result->push_back(s);
   return result->size();
-};
+}
 
 inline int stringTokenize(const std::string& str, const char delim, std::vector<std::string>* result){
     std::string d;
     d.push_back(delim);
     return (stringTokenize(str, d, result));
-};
+}
 
 inline bool isEmptyString(const std::string& s){
     return s.size() == 0;
-};
+}
 /* int stringNaturalTokenize(const std::string& str, const std::string& delim, std::vector<std::string>* result){ */
 /*     int ret = stringTokenize(str, delim, result); */
 /*     ret = remove_if(result->begin(), result->end(), isEmptyString) - result->begin(); */
@@ -86,15 +86,16 @@ inline int stringNaturalTokenize(const std::string& str, const std::string& deli
       s.push_back(str[i]);
     }
     ++i;
-  };
+  }
   if (s.size() > 0)
     result->push_back(s);
   return result->size();
-};
+}
+
 inline int stringNaturalTokenize(const std::string& str, const char delim, std::vector<std::string>* result){
   std::string d(1, delim);
   return (stringNaturalTokenize(str, d, result));
-};
+}
 
 //remove leading and trailing characters
 inline void stringStrip(std::string* input, const char* characters = " ") {
@@ -102,7 +103,8 @@ inline void stringStrip(std::string* input, const char* characters = " ") {
     size_t beg = input->find_first_not_of(characters);
     size_t end = input->find_last_not_of(characters);
     input->assign( input->substr(beg, end - beg + 1) );
-};
+}
+
 // remove the leading and trailing white spaces
 inline std::string stringStrip(const std::string& s){
   unsigned int beg = s.find_first_not_of(' ');
@@ -119,7 +121,7 @@ inline void stringSlice(std::string* input, int beg, int end) {
     if (end < 0) end += len;
     assert (beg >= 0 && end >= 0);
     input -> assign ( input->substr(beg, end- beg)) ;
-};
+}
 
 template <class T>
 std::string stringJoin(const std::vector<std::string>& input, const T delim) {
@@ -133,7 +135,7 @@ std::string stringJoin(const std::vector<std::string>& input, const T delim) {
         s+= input[i];
     }
     return s;
-};
+}
 /**
  * for std::string type, we use reference to save memory.
  */
@@ -149,33 +151,33 @@ inline std::string stringJoin<const std::string&>(const std::vector<std::string>
         s+= input[i];
     }
     return s;
-};
+}
 
 inline void tolower(std::string* s) {
   for (std::string::iterator i = s->begin();
        i != s->end();
        ++i)
     (*i) = tolower(*i);
-};
+}
 
 inline std::string tolower(const std::string& s) {
   std::string ret(s);
   tolower(&ret);
   return ret;
-};
+}
 
 inline void toupper(std::string* s) {
   for (std::string::iterator i = s->begin();
        i != s->end();
        ++i)
     (*i) = toupper(*i);
-};
+}
 
 inline std::string toupper(const std::string& s) {
   std::string ret(s);
   toupper(&ret);
   return ret;
-};
+}
 /* std::string toUpper(const std::string& s) { */
 /*     std::string r; */
 /*     for (unsigned int i = 0; i < s.size(); i++) { */
@@ -201,18 +203,19 @@ inline std::string chopChr(const std::string& s) {
         return s.substr(3);
     }
     return s;
-};
+}
 
 static char _bufferStr[128];
 // convert number to char*
 inline const char* toStr(const int i) {
     sprintf(_bufferStr, "%d", i);
     return _bufferStr;
-};
+}
+
 inline const char* toStr(const double d) {
     sprintf(_bufferStr, "%lf", d);
     return _bufferStr;
-};
+}
 
 /* void tolower(std::string* s) { */
 /*   for (std::string::iterator i = s->begin(); */
@@ -233,7 +236,7 @@ inline void dumpStringVector(const std::vector<std::string> s) {
   for (unsigned int i = 0; i < s.size(); i++) {
     Rprintf( "%u: %s\n", i, s[i].c_str());
   }
-};
+}
 
 /**
  * @return true if @param s ends with @param tail
@@ -313,7 +316,7 @@ inline bool hasLeadingChr(const std::string& s) {
     return true;
   }
   return false;
-};
+}
 
 /**
  * split " ",

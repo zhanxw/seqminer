@@ -54,7 +54,7 @@ int parseParameter(SEXP param, const std::string& key, const int def) {
 }
 
 bool parseParameter(SEXP param, const std::string& key, const bool def) {
-  int ret;
+  int ret = 0;
   SEXP val = getListElement(param, key.c_str());
   if (val == R_NilValue) {
     return def;
@@ -104,12 +104,26 @@ SEXP impl_annotateGene(SEXP s_param,
   std::vector<std::string> anno(n);
   std::vector<std::string> annoFull(n);
 
+  std::string chrom;
+  int pos;
+  std::string ref;
+  std::string alt;
   for (int i = 0; i < n ; ++i) {
     // REprintf("i = %d\n", i);
-    std::string chrom = CHAR(STRING_ELT(s_chrom, i));
-    int pos = INTEGER(s_pos)[i];
-    std::string ref = CHAR(STRING_ELT(s_ref, i));
-    std::string alt = CHAR(STRING_ELT(s_alt, i));
+    chrom = CHAR(STRING_ELT(s_chrom, i));
+    pos = INTEGER(s_pos)[i];
+    ref = CHAR(STRING_ELT(s_ref, i));
+#ifdef __sun
+    // Solaris will treat the last argument as pair list
+    // very puzzling why this will happen...
+    if (TYPEOF(s_alt) == LISTSXP) {
+      alt = (const char*)(CAR(s_alt)); 
+      s_alt = CDR(s_alt);
+    }
+#else
+    alt = CHAR(STRING_ELT(s_alt, i));
+#endif
+    
     AnnotationString.setFormat("default");
     std::string choppedChr = chopChr(chrom);
 
@@ -312,3 +326,4 @@ SEXP impl_getRefBase(SEXP reference,
 
   return ret;
 }
+

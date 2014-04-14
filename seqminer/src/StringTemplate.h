@@ -344,7 +344,8 @@ int StringTemplate::Array::translate(std::string* str, const std::map<std::strin
     idx ++;
   } while (maxStringArraySize >= 0 && idx < (size_t)maxStringArraySize);
   return 0;
-};
+}
+
 int StringTemplate::Array::parse(const char* s, int param_beg, int param_end){
   int real_beg = param_beg;
   int real_end = param_end;
@@ -430,7 +431,7 @@ int StringTemplate::Array::parse(const char* s, int param_beg, int param_end){
     end ++ ;
   };
   return 0;
-};
+}
 
 
 #endif /* _STRINGTEMPLATE_H_ */

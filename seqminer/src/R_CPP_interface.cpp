@@ -265,3 +265,37 @@ int getDim(SEXP s, std::vector<int>* d) {
   }
   return 0;
 }
+
+/**
+ * Print the type of @param x
+ */
+void printType(SEXP x) {
+  switch (TYPEOF(x)) {
+    case NILSXP:      REprintf("NILSXP");     break;
+    case SYMSXP:      REprintf("SYMSXP");     break;
+    case LISTSXP:     REprintf("LISTSXP");    break;
+    case CLOSXP:      REprintf("CLOSXP");     break;
+    case ENVSXP:      REprintf("ENVSXP");     break;
+    case PROMSXP:     REprintf("PROMSXP");    break;
+    case LANGSXP:     REprintf("LANGSXP");    break;
+    case SPECIALSXP:  REprintf("SPECIALSXP"); break;
+    case BUILTINSXP:  REprintf("BUILTINSXP"); break;
+    case CHARSXP:     REprintf("CHARSXP");    break;
+    case LGLSXP:      REprintf("LGLSXP");     break;
+    case INTSXP:      REprintf("INTSXP");     break;
+    case REALSXP:     REprintf("REALSXP");    break;
+    case CPLXSXP:     REprintf("CPLXSXP");    break;
+    case STRSXP:      REprintf("STRSXP");     break;
+    case DOTSXP:      REprintf("DOTSXP");     break;
+    case ANYSXP:      REprintf("ANYSXP");     break;
+    case VECSXP:      REprintf("VECSXP");     break;
+    case EXPRSXP:     REprintf("EXPRSXP");    break;
+    case BCODESXP:    REprintf("BCODESXP");   break;
+    case EXTPTRSXP:   REprintf("EXTPTRSXP");  break;
+    case WEAKREFSXP:  REprintf("WEAKREFSXP"); break;
+    case S4SXP:       REprintf("S4SXP");      break;
+    case RAWSXP:      REprintf("RAWSXP");     break;
+    default:          REprintf("<unknown>");  break;
+  }
+  REprintf("\n");
+}

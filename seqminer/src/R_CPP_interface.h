@@ -11,7 +11,6 @@
 #include <set>
 
 
-
 void extractString(SEXP in, std::string* out);
 
 /**
@@ -77,4 +76,9 @@ int storeResult(const std::vector<std::string>& in , SEXP* ret) ;
 
 int getDim(SEXP s, std::vector<int>* d);
 
+/**
+ * Print the type of @param x
+ */
+void printType(SEXP x);
+  
 #endif /* _R_CPP_INTERFACE_H_ */

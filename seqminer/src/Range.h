@@ -22,7 +22,8 @@ struct Range{
     int length() const { 
         int l = end - start + 1;
         if (l < 0) {
-            printf("getLength() < 0 for start(%d) and end(%d)\n", start, end);
+	  // printf("getLength() < 0 for start(%d) and end(%d)\n", start, end);
+	  REprintf("getLength() < 0 for start(%d) and end(%d)\n", start, end);
         }
         return l;
     };

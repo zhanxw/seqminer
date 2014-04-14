@@ -220,7 +220,7 @@ bool BCFReader::readLine(std::string* line) {
     }
   }
   return false;
-};
+}
 
 static void my_write_header(bcf_hdr_t *h)
 {

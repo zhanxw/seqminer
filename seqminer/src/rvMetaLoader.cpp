@@ -1816,12 +1816,12 @@ SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
   // data[gene or range][CHROM or POS or ..][study_i]
   // 1. record all chromosomal positions
   int numGene = length(arg_data);
-  int numColumn = -1;
+  // int numColumn = -1;
   std::vector<int> column;
-  int numStudy = -1;
+  //  int numStudy = -1;
   std::vector<int> numValue;
   std::vector<std::string> colNames;
-  int numValueToWrite = 0;
+  // int numValueToWrite = 0;
   std::vector<std::string> fd;
   std::vector<std::string> chrom;
   std::vector<std::string> position;
@@ -1846,7 +1846,7 @@ SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
       continue;
     }
     
-    int numColumn = length(values); // counts of chrom/pos/...
+    // int numColumn = length(values); // counts of chrom/pos/...
     // process pos
     SEXP studies = VECTOR_ELT(values, posIndex);
     int l = length(studies);

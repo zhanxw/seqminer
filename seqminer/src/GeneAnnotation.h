@@ -24,7 +24,7 @@ struct GeneAnnotationParam{
 
 class GeneAnnotation{
  public:
-  GeneAnnotation():allowMixedVariation(false)
+  GeneAnnotation() /*:allowMixedVariation(false)*/
   {};
   virtual ~GeneAnnotation() {
   };
@@ -857,7 +857,7 @@ public:
   Codon codon;
   Priority priority;
 
-  bool allowMixedVariation;       // VCF ALT field may have more than one variation e..g A,C
+  // bool allowMixedVariation;       // VCF ALT field may have more than one variation e..g A,C
 
   // output related variables
   AnnotationResultCollection annotationResults;

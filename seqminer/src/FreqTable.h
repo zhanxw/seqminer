@@ -15,10 +15,11 @@ public:
     };
     void remove(const T& t) {
         if (this->data.find(t) == this->data.end()) {
-            return false;
+            return; // false;
         }
         this->data[t] -- ;
         this->isSorted = false;
+        return;
     };
     size_t size() const{ return this->data.size();}; 
     // return the frequency in ascending order

@@ -132,7 +132,7 @@ void RangeList::addRangeList(const std::string& rangeList) {
       Rprintf( "This range does not conform 1:100-200 format -- skip %s\n", col[i].c_str());
     }
   }
-};
+}
 
 /**
  * read a range list file like following
@@ -161,7 +161,7 @@ void RangeList::addRangeFile(const std::string& rangeFile){
       this->rangeCollection.addRange(sa[0].c_str(), (unsigned int) atoi(sa[1]), (unsigned int) atoi(sa[2]));
     }
   }
-};
+}
 
 void RangeList::addRange(const RangeList& rl) {
   std::string chr;

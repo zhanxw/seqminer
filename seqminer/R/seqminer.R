@@ -628,14 +628,11 @@ makeAnnotationParameter <- function(param = NULL) {
 #' @export
 #' @seealso makeAnnotationParameter
 #' @examples
-#' reference = "/net/fantasia/home/zhanxw/anno/resources/hs37d5.fa"
-#' refBase <- getRefBase(reference, chrom = c(19, 19), pos = c(6718146, 6718387), len = c(1, 1))
-#'
-#' param <- list(reference = "/net/fantasia/home/zhanxw/anno/resources/hs37d5.fa",
-#'                   geneFile = "/net/fantasia/home/zhanxw/anno/resources/refFlat_hg19.txt.gz")
+#' param <- list(reference = system.file("tabanno/test.fa", package = "seqminer"),
+#'               geneFile = system.file("tabanno/test.gene.txt", package = "seqminer"))
 #' param <- makeAnnotationParameter(param)
 #' print(param)
-#' annotateGene(param, c("19", "19"), c(6718146, 6718387) , c("T", "G"), c("G", "C"))
+#' annotateGene(param, c("1", "1"), c(3, 5) , c("A", "C"), c("G", "C"))
 annotateGene <- function(param, chrom, position, ref, alt) {
     param <- makeAnnotationParameter(param)
     res <- validateAnnotationParameter(param)
@@ -700,6 +697,8 @@ annotateVcf <- function(inVcf, outVcf, params) {
         stop("Stop due to critical error")
     }
 
+    storage.mode(inVcf) <- "character"
+    storage.mode(outVcf) <- "character"
     .Call("anno", inVcf, outVcf, params)
 }
 
@@ -725,5 +724,7 @@ annotatePlain <- function(inFile, outFile, params) {
         cat(res[[2]])
         stop("Stop due to critical error")
     }
+    storage.mode(inFile) <- "character"
+    storage.mode(outFile) <- "character"
     .Call("anno", inFile, outFile, params)
 }

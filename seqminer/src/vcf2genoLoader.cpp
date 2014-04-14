@@ -275,7 +275,7 @@ SEXP readVCF2List(VCFInputFile* vin,
 
   bool FLAG_variantOnly = false;
   // real working part
-  int nonVariantSite;
+  int nonVariantSite = 0;
   while (vin->readRecord()){
     // REprintf("read a record\n");
     VCFRecord& r = vin->getVCFRecord();

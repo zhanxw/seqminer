@@ -24,17 +24,19 @@ bool RegionComparator(const Region& a, const Region& b) {
   if (a.beg == b.beg)
     return (a.end < b.end);
   return (a.beg < b.beg);
-};
+}
+
 bool RegionIndexComparator(const RegionIndex& a, const RegionIndex& b) {
   if (a.beg == b.beg)
     return (a.end < b.end);
   return (a.beg < b.beg);
-};
+}
+
 bool inRegion(const int pos, const Region& r) {
   if ( r.beg <= pos && pos < r.end)
     return true;
   return false;
-};
+}
 
 class BedReader {
  public:

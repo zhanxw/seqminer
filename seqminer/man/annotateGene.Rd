@@ -23,14 +23,14 @@ annotated results in a data frame structure
 Annotate a test variant
 }
 \examples{
-reference = "/net/fantasia/home/zhanxw/anno/resources/hs37d5.fa"
-refBase <- getRefBase(reference, chrom = c(19, 19), pos = c(6718146, 6718387), len = c(1, 1))
+reference = system.file("tabanno/test.fa", package = "seqminer")
+refBase <- getRefBase(reference, chrom = c(1, 1), pos = c(1, 2), len = c(1, 1))
 
-param <- list(reference = "/net/fantasia/home/zhanxw/anno/resources/hs37d5.fa",
-                  geneFile = "/net/fantasia/home/zhanxw/anno/resources/refFlat_hg19.txt.gz")
+param <- list(reference = system.file("tabanno/test.fa", package = "seqminer"),
+                  geneFile = system.file("tabanno/test.gene.txt", package = "seqminer"))
 param <- makeAnnotationParameter(param)
 print(param)
-annotateGene(param, c("19", "19"), c(6718146, 6718387) , c("T", "G"), c("G", "C"))
+annotateGene(param, c("1", "1"), c(3, 5) , c("A", "C"), c("G", "C"))
 }
 \seealso{
 makeAnnotationParameter

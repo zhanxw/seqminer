@@ -448,10 +448,11 @@ public:
   bool isNonCodingGene;
   GeneFormat format;
 };
+
 bool GeneCompareLess(const Gene& a, const Gene& b) {
   if (a.tx.start != b.tx.start)
     return a.tx.start < b.tx.start;
   else
     return a.exon.size() < b.exon.size();
-};
+}
 #endif /* _GENE_H_ */

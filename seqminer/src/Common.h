@@ -21,9 +21,7 @@ inline bool hasSuffix(const std::string& s, const std::string& suffix) {
       return false;
   }
   return true;
-};
-
-
+}
 
 
 #endif /* _COMMON_H_ */

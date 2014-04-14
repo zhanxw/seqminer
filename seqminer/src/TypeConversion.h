@@ -86,25 +86,27 @@ inline bool str2int(const std::string& input, int* output) {
 
 inline int toInt(const char* input) {
     return (atoi(input));
-};
+}
 
 inline int toInt(const std::string& input) {
     return (atoi(input.c_str()));
-};
+}
 
 inline float toFloat(const char* input) {
     return (atof(input));
-};
+}
+
 inline float toFloat(const std::string& input) {
     return (atof(input.c_str()));
-};
+}
 
 inline double toDouble(const char* input) {
     return (atof(input));
-};
+}
+
 inline double toDouble(const std::string& input) {
     return (atof(input.c_str()));
-};
+}
 
 // convert std::string to double
 // @return true if conversion succeed
@@ -128,6 +130,7 @@ inline bool str2double(const char* input, double* output) {
     *output = val;
     return true;
 }
+
 inline bool str2double(const std::string& input, double* output) {
   return str2double(input.c_str(), output);
 }
