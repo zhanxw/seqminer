@@ -224,7 +224,7 @@ public:
 
       switch (key.type) {
         case TEXT:
-          if (s[end] == '$' && s[end-1] != '\\') { // change mode
+          if (s[end] == '$' && (end == 0 || s[end-1] != '\\')) { // change mode
             if (key.text.size()) {
               key.type = TEXT;
               this->data.push_back(key);

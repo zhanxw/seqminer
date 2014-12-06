@@ -110,7 +110,9 @@ int my_vcf_write(bcf_t *bp, bcf_hdr_t *h, bcf1_t *b, std::string* line) {
   // fwrite(v->line.s, 1, v->line.l, v->fpout);
   // fputc('\n', v->fpout);
   line->assign(str.s, str.l);
-  return str.l + 1;
+  int ret = str.l + 1; // how many bytes are read
+  free(str.s);
+  return ret;
   // return v->line.l + 1;
 }
 

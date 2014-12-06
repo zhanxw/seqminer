@@ -11,10 +11,10 @@
 #include <vector>
 
 // Windows platform does not have good autoconf tools, so skip loading config.h
-#ifndef _WIN32
-#ifndef _WIN64
+// don't use _WIN32 or _WIN64, should use WIN32 (by R extension manual)
+// WIN32 is on for both Win32 and Win64
+#ifndef WIN32
 #include "config.h"
-#endif
 #endif
 
 // cannot forward declare an typdef anonymous struct

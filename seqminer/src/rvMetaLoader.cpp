@@ -1493,9 +1493,9 @@ SEXP impl_readSkewByRange(SEXP arg_skewFile, SEXP arg_range) {
     chromPos = fd[SKEW_FILE_CHROM_COL];
     chromPos += ':';
     chromPos += fd[SKEW_FILE_START_POS_COL];
-    
+
     stringTokenize(fd[SKEW_FILE_MARKER_POS_COL], ",", &markerPos);
-    
+
     StringTokenizer token(fd[SKEW_FILE_SKEW_COL], ':');
     std::string piece;
     while (token.next(&piece)) {
@@ -1519,7 +1519,7 @@ SEXP impl_readSkewByRange(SEXP arg_skewFile, SEXP arg_range) {
     ++ lineRead;
   }
   // Rprintf("read %d lines\n", lineRead);
-  
+
   // dim (i, j, k ) assume dimension is 3 and size is n for each dimension
   // dim (i, j, k ) is (j + i *n + k * n * n) th element (1-based)
   // for 0-based, it is ((i + k * n) *n) + j - 1
@@ -1573,7 +1573,7 @@ SEXP impl_readSkewByRange(SEXP arg_skewFile, SEXP arg_range) {
   }
   setAttrib(ret, R_NamesSymbol, sListNames);
 #endif
-  
+
   UNPROTECT(numAllocated);
   return ret;
 } // impl_readSkewByRange
@@ -1627,10 +1627,10 @@ SEXP impl_rvMetaWriteScoreData(SEXP arg_data, SEXP arg_outPrefix) {
   std::map<std::string, int> index;
   std::vector<std::string> fd;
   std::vector<std::string> result;
-  int nSite;
+  int nSite = 0;
   int nGene = length(arg_data);
   for (int i = 0; i < nGene ; ++i) {
-    Rprintf("output %s\n", CHAR(STRING_ELT(getAttrib(arg_data, R_NamesSymbol), i)));    
+    Rprintf("output %s\n", CHAR(STRING_ELT(getAttrib(arg_data, R_NamesSymbol), i)));
     SEXP values = VECTOR_ELT(arg_data, i);
     SEXP rColNames = getAttrib(values, R_NamesSymbol);
     for (int j = 0; j < length(rColNames); ++j) {
@@ -1688,21 +1688,21 @@ SEXP impl_rvMetaWriteScoreData(SEXP arg_data, SEXP arg_outPrefix) {
               if (STRING_ELT(v, j) == NA_STRING) {
                 result.push_back("NA");
               } else {
-                result.push_back(CHAR(STRING_ELT(v, j)));            
+                result.push_back(CHAR(STRING_ELT(v, j)));
               }
               break;
             case REALSXP:
               if (REAL(v)[j] == NA_REAL) {
                 result.push_back("NA");
               } else {
-                result.push_back(floatToString(REAL(v)[j]));            
+                result.push_back(floatToString(REAL(v)[j]));
               }
               break;
             case INTSXP:
               if (INTEGER(v)[j] == NA_INTEGER) {
                 result.push_back("NA");
               } else {
-                result.push_back(toString(INTEGER(v)[j]));            
+                result.push_back(toString(INTEGER(v)[j]));
               }
               break;
             default:
@@ -1711,10 +1711,10 @@ SEXP impl_rvMetaWriteScoreData(SEXP arg_data, SEXP arg_outPrefix) {
               break;
           }
         } else {
-          result.push_back("NA");                      
+          result.push_back("NA");
         }
       }
-      
+
       // anno
       // Rprintf("process anno...\n");
       if (index.count("anno")) {
@@ -1725,7 +1725,7 @@ SEXP impl_rvMetaWriteScoreData(SEXP arg_data, SEXP arg_outPrefix) {
           result.push_back(CHAR(STRING_ELT(v, j)));
         }
       } else {
-        result.push_back("NA");        
+        result.push_back("NA");
       }
 
       // output result
@@ -1735,7 +1735,7 @@ SEXP impl_rvMetaWriteScoreData(SEXP arg_data, SEXP arg_outPrefix) {
         fw.write(result[k]);
       }
       fw.write("\n");
-      
+
     } // end loop site
   }// end loop gene/range
   return ret;
@@ -1762,7 +1762,7 @@ int writeCov(FileWriter& fw,
     return -1;
   }
   if (nrow != ncol) {
-    REprintf("cov is not square\n");    
+    REprintf("cov is not square\n");
     return -1;
   }
   if (n == 0) return 0; //nothing to write
@@ -1801,7 +1801,7 @@ SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
   extractString(arg_outPrefix, &outFileName);
   FileWriter fw(outFileName.c_str(), BGZIP);
   fw.write("CHROM\tSTART_POS\tEND_POS\tNUM_MARKER\tMARKER_POS\tCOV\n");
-  
+
   // CHROM   START_POS       END_POS NUM_MARKER      MARKER_POS      COV
   std::map<std::string, std::string> allowedColumn;
   allowedColumn["cov"] = "COV";
@@ -1812,7 +1812,7 @@ SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
     [13] "effect"   "pVal"     "cov"      "pos"      "anno"     "covXZ"
     [19] "covZZ"    "hweCase"  "hweCtrl"  "afCase"   "afCtrl"
   */
-      
+
   // data[gene or range][CHROM or POS or ..][study_i]
   // 1. record all chromosomal positions
   int numGene = length(arg_data);
@@ -1845,7 +1845,7 @@ SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
       Rprintf("Cannot find pos or cov\n");
       continue;
     }
-    
+
     // int numColumn = length(values); // counts of chrom/pos/...
     // process pos
     SEXP studies = VECTOR_ELT(values, posIndex);
@@ -1855,7 +1855,7 @@ SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
       return ret;
     }
     if (l > 1) {
-      Rprintf("First study will be written out, others are omitted!\n");        
+      Rprintf("First study will be written out, others are omitted!\n");
     }
     // Rprintf("preprocess pos ... \n");
     SEXP pos = studies;
@@ -1879,3 +1879,46 @@ SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
   } // end //loop gene/range
   return ret;
 } // impl_rvMetaWriteCovData
+
+/**
+ * Test whether @param arg_position is in @param arg_range
+ * @param arg_position a vector of characters
+ * @param arg_range a range list e.g. 1:2-3,X:100-200
+ * @return a vector of logical values
+ */
+SEXP impl_isInRange(SEXP arg_position, SEXP arg_range) {
+  SEXP ret = R_NilValue;
+  std::vector<std::string> position;
+  std::string range;
+  int n;
+
+  extractStringArray(arg_position, &position);
+  extractString(arg_range, &range);
+  n = position.size();
+
+  RangeList rl;
+  rl.addRangeList(range);
+  if (!rl.size()) {
+    REprintf("There is no regions\n");
+    return ret;
+  }
+
+  PROTECT(ret = allocVector(LGLSXP, n));
+  std::string chrom;
+  unsigned int beg, end;
+
+  for (int i = 0; i < n; ++i) {
+    if (parseRangeFormat(position[i], &chrom, &beg, &end)) {
+      LOGICAL(ret)[i] = NA_LOGICAL;
+      continue;
+    }
+
+    if (rl.isInRange(chrom, beg)) {
+      LOGICAL(ret)[i] = 1;
+    } else {
+      LOGICAL(ret)[i] = 0;
+    }
+  }
+  UNPROTECT(1);
+  return ret;
+}

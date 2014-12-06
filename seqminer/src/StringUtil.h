@@ -213,7 +213,7 @@ inline const char* toStr(const int i) {
 }
 
 inline const char* toStr(const double d) {
-    sprintf(_bufferStr, "%lf", d);
+    sprintf(_bufferStr, "%g", d);
     return _bufferStr;
 }
 

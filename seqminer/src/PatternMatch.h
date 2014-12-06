@@ -3,7 +3,10 @@
 
 #define ERROR_BUF_LEN 64
 
+#ifndef WIN32
+// Windows platform does not need config.h
 #include "config.h"
+#endif
 
 #ifndef HAVE_REG_STARTEND
 // e.g. in Solaris, it doesnot implement REG_STARTEND,
@@ -13,6 +16,7 @@
 #endif
 
 #ifdef HAVE_POSIX_REGEX
+// #pragma message "Enable pcre POSIX library"
 // We use PCRE here, use 'man pcreposix' for more information
 // accordig to http://lh3lh3.users.sourceforge.net/reb.shtml
 // PCRE-posix is fast
@@ -23,7 +27,7 @@
 
 // #pragma message "undef posix (2)"
 class Regex {
-public:
+  public:
     /**
      * read pattern like "=Synonymous,=Indel"
      */
@@ -131,7 +135,7 @@ public:
     bool isInitialized() const {
       return this->initialized;
     }
-private:
+  private:
     bool initialized;
     regex_t pattern;
     char error_buf[ERROR_BUF_LEN];
@@ -139,12 +143,13 @@ private:
 };
 
 #else
+// #pragma message "Enable a minimal pattern matching library"
 
 #include <string>
 #include <vector>
 #include "Utils.h"
 class Regex {
-public:
+  public:
     /**
      * parse patterns by '|', e.g. "=Synonymous|=Indel"
      * @return 0 if success
@@ -209,13 +214,12 @@ public:
     bool isInitialized() const {
       return this->initialized;
     }
-private:
+  private:
     bool initialized;
     std::vector<std::string> pattern;
     char error_buf[ERROR_BUF_LEN];
 };
 
 #endif
-
 
 #endif /* _PATTERNMATCH_H_ */

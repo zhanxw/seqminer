@@ -93,3 +93,8 @@ SEXP createTabixIndex(SEXP arg_tabixFile,
                                arg_commentChar,
                                arg_skipLine);
 }
+
+extern SEXP impl_isInRange(SEXP arg_position, SEXP arg_range);
+SEXP isInRange(SEXP arg_position, SEXP arg_range) {
+  return impl_isInRange(arg_position, arg_range);
+}

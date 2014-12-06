@@ -53,13 +53,14 @@ class AnnotationInputFile{
   }
   void close() {
     if (this->lr) {
-      REprintf("Delete lr\n");
+      // REprintf("Delete lr\n");
       delete lr;
       this->lr = NULL;
-    }
-    if (checkReference && failedReferenceSite > 0) {
-      REprintf( "ERROR: Total [ %d ] sites have unmatched Reference alleles\n", failedReferenceSite);
-      // LOG << "ERROR: Total [ " << failedReferenceSite << " ] sites have unmatched Reference alleles\n";
+
+      if (checkReference && failedReferenceSite > 0) {
+        REprintf( "ERROR: Total [ %d ] sites have unmatched reference alleles\n", failedReferenceSite);
+        // LOG << "ERROR: Total [ " << failedReferenceSite << " ] sites have unmatched reference alleles\n";
+      }
     }
   };
 

@@ -126,7 +126,7 @@ void VCFInputFile::init(const char* fn) {
     headerLoaded = true;
   } else {
     if (!endsWith(fn, ".vcf") && !endsWith(fn, "vcf.gz")) {
-      REprintf("[WARN] File name does not look like a VCF/BCF file.\n");
+      REprintf("[WARN] File name does not look like a VCF/BCF file (no .vcf, .vcf.gz, .bcf, .bcf.gz suffix).\n");
     }
     this->mode = VCF_LINE_MODE;
     this->fp = new LineReader(fn);

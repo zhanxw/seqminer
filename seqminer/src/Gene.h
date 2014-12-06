@@ -11,7 +11,7 @@
 #include "TypeConversion.h"
 
 class Gene{
-public:
+ public:
   // read refFlat file into internal data structure
   // chr1 will be chopped to 1.
   void readLine(const char* line, const GeneFormat& format) {
@@ -136,7 +136,7 @@ public:
              getCDSLength() % 3 );
     }
 #endif
-  };
+  }
   /**
    *@return true if @param pos is in upstream and return how far it is from the beginning of the gene
    */
@@ -153,7 +153,7 @@ public:
       }
     }
     return false;
-  };
+  }
   bool isDownstream(const int pos, const int downstreamRange, int* dist) {
     if (this->forwardStrand) {
       if (this->tx.end < pos && pos < this->tx.end + downstreamRange) {
@@ -167,7 +167,7 @@ public:
       }
     }
     return false;
-  };
+  }
   /**
    * @return true is @param variousPos is i 5'-UTR region,
    * //@param utrPos will store the relative position of @param variousPos to the leftmost position of 5' UTR
@@ -179,14 +179,14 @@ public:
       return true;
     };
     return false;
-  };
+  }
   bool is3PrimeUtr(const int variantPos, int* utrPos, int* utrLen) {
     if (this->isNonCoding()) return false;
     if (this->isInRange(variantPos, this->utr3)){
       return true;
     };
     return false;
-  };
+  }
   bool isExon(const int variantPos, int* exonNum){
     bool ret = this->isInRange(variantPos, this->exon, exonNum);
     if (ret && !this->forwardStrand){
@@ -205,7 +205,7 @@ public:
       }
       return false;
     */
-  };
+  }
   bool isCodingRegion(const int variantPos, int* codonNum){
     if (isNonCoding())
       return false;
@@ -213,7 +213,7 @@ public:
       return true;
     }
     return false;
-  };
+  }
   /**
    * @return the position of the codon right next to @param currentPos,
    * @param cdsIdx indicates which codon (1, 2, 3..) is the @param currentPos
@@ -243,7 +243,7 @@ public:
       }
     }
     return nextPos;
-  };
+  }
   /**
    * @return true: if codonPos[3] are all valid position
    * @param codonNum : which base (inclusive, 1-based) has mutation. possible values: 1, 2, 3 ...
@@ -316,7 +316,7 @@ public:
     if (codonPos[0] != -1 && codonPos[1] != -1 && codonPos[2] != -1)
       return true;
     return false;
-  };
+  }
   bool isIntron(const int variantPos, int* intronNum){
     // strand is not an issue here
     for (unsigned int i = 1; i < this->exon.size(); i++) {
@@ -325,7 +325,7 @@ public:
       }
     }
     return false;
-  };
+  }
   bool isSpliceSite(const int variantPos, int spliceIntoExon, int spliceIntoIntron, bool* isEssentialSpliceSite){
     *isEssentialSpliceSite = false;
     unsigned int exonNumber = this->exon.size();
@@ -360,7 +360,7 @@ public:
       }
     }
     return false;
-  };
+  }
   size_t getExonNumber() const {
     return this->exon.size();
   }
@@ -369,46 +369,46 @@ public:
     for (unsigned int i = 0; i < v.size() ; i++ )
       l += v[i].length();
     return l;
-  };
+  }
   int getExonLength() {
     return this->getTotalLength(this->exon);
-  };
+  }
   int getCDSLength() {
     return this->getTotalLength(this->cds);
-  };
+  }
   int get5PrimeUTRLength() {
     return this->getTotalLength(this->utr5);
-  };
+  }
   int get3PrimeUTRLength() {
     return this->getTotalLength(this->utr3);
-  };
+  }
   int getGeneLength() {
     return this->tx.length();
-  };
+  }
   bool isNonCoding() {
     return this->isNonCodingGene;
-  };
+  }
   bool isCoding() {
     return !this->isNonCodingGene;
-  };
+  }
   /**
    * @return true if @param pos is in the range [@param beg, @param end] (inclusive on the boundaries).
    */
   bool isInRange(const int pos, const int beg, const int end) {
+    if (beg <= pos && pos <= end)
+      return true;
     if (beg > end) {
       REprintf( "in isInRange beg(%d) > end(%d).\n", beg, end);
     }
-    if (beg <= pos && pos <= end)
-      return true;
     return false;
-  };
+  }
   bool isInRange(const int pos, const Range& r) {
     return (this->isInRange(pos, r.start, r.end));
-  };
+  }
   bool isInRange(const int pos, const std::vector<Range>& r) {
     int idx;
     return this->isInRange(pos, r, &idx);
-  };
+  }
   /**
    * Check if @param pos is in the range (@param r), and put the index to @param whichRange
    * so that @param pos is within @param r [ @param whichRange]
@@ -423,7 +423,7 @@ public:
     }
     *whichRange = -1;
     return false;
-  };
+  }
   /**
    * @return the total length from @param beg to @param end, inclusive on the boundaries
    */
@@ -432,8 +432,8 @@ public:
       REprintf( "In length beg(%d) > end(%d) + 1; please check gene file format.\n", beg, end);
     }
     return (end - beg + 1);
-  };
-public:
+  }
+ public:
   std::string geneName;
   std::string transcriptName;
   std::string chr;

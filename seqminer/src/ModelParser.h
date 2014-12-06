@@ -13,11 +13,9 @@ class ModelParser{
  public:
   /**
    * @return 0: if parse succeed.
-   * NOTE: will convert all letters to lower case
    */
   int parse(const std::string& s){
     std::string arg = s;
-    tolower(&arg);
 
     size_t l = arg.find(ModelParser::LEFT_DELIM);
     if ( l == std::string::npos){

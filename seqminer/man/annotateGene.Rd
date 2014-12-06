@@ -23,11 +23,8 @@ annotated results in a data frame structure
 Annotate a test variant
 }
 \examples{
-reference = system.file("tabanno/test.fa", package = "seqminer")
-refBase <- getRefBase(reference, chrom = c(1, 1), pos = c(1, 2), len = c(1, 1))
-
 param <- list(reference = system.file("tabanno/test.fa", package = "seqminer"),
-                  geneFile = system.file("tabanno/test.gene.txt", package = "seqminer"))
+              geneFile = system.file("tabanno/test.gene.txt", package = "seqminer"))
 param <- makeAnnotationParameter(param)
 print(param)
 annotateGene(param, c("1", "1"), c(3, 5) , c("A", "C"), c("G", "C"))

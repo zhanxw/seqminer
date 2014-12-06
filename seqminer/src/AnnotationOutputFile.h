@@ -31,7 +31,7 @@ time_t getFileMtime(std::string& s) {
 
 class AnnotationOutputFile{
  public:
-AnnotationOutputFile(const std::string& out):headerOutputted(false), totalVariants(0),outputFileName(out) {
+  AnnotationOutputFile(const std::string& out):headerOutputted(false), totalVariants(0),outputFileName(out) {
     /* if (strncmp (out, "stdout", 6) ) { */
     /*   this->fout = fopen(out, "wt"); */
     /*   if (!this->fout) { */
@@ -45,7 +45,7 @@ AnnotationOutputFile(const std::string& out):headerOutputted(false), totalVarian
     } else {
       this->fout = new FileWriter(out.c_str());
     }
-  };
+  }
   ~AnnotationOutputFile() {
     this->close();
   }
@@ -149,7 +149,7 @@ AnnotationOutputFile(const std::string& out):headerOutputted(false), totalVarian
     };
     this->fout->write("\n");
     ++this->totalVariants;
-  };
+  }
   int indexOutput() {
     // back up existing/older index file
     size_t len = outputFileName.size();
@@ -191,10 +191,13 @@ AnnotationOutputFile(const std::string& out):headerOutputted(false), totalVarian
     }
 
     // index
-    return ti_index_build(outputFileName.c_str(), &conf);    
-  };
-  
-private:
+    return ti_index_build(outputFileName.c_str(), &conf);
+  }
+
+  int getTotalVariant() const {
+    return this->totalVariants;
+  }
+   private:
   // don't copy
   AnnotationOutputFile(const AnnotationOutputFile& fw);
   AnnotationOutputFile& operator=(const AnnotationOutputFile& fw);
