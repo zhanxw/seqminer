@@ -1,4 +1,7 @@
 #include "R.h"
+#include "Rmath.h"
+#include "R_ext/Random.h"
+
 #include <string.h>
 #include <math.h>
 #include <assert.h>
@@ -10,6 +13,7 @@ KHASH_MAP_INIT_STR(str2id, int)
 #ifdef _WIN32
 #define srand48(x) srand(x)
 #define drand48() ((double)rand() / RAND_MAX)
+
 #endif
 
 #ifndef __GNUC__
@@ -363,12 +367,18 @@ int bcf_anno_max(bcf1_t *b)
 int bcf_shuffle(bcf1_t *b, int seed)
 {
 	int i, j, *a;
-	if (seed > 0) srand48(seed);
+	if (seed > 0) {
+          // srand48(seed);
+          // R package forbid srand47m drand48, see: http://cran.r-project.org/doc/manuals/r-release/R-exts.html#Writing-portable-packages
+          GetRNGstate();
+        }
 	a = malloc(b->n_smpl * sizeof(int));
 	for (i = 0; i < b->n_smpl; ++i) a[i] = i;
 	for (i = b->n_smpl; i > 1; --i) {
 		int tmp;
-		j = (int)(drand48() * i);
+		// j = (int)(drand48() * i);
+                // R package forbid srand47m drand48, see: http://cran.r-project.org/doc/manuals/r-release/R-exts.html#Writing-portable-packages
+                j = (int)(unif_rand() * i);
 		tmp = a[j]; a[j] = a[i-1]; a[i-1] = tmp;
 	}
 	for (j = 0; j < b->n_gi; ++j) {
@@ -381,6 +391,9 @@ int bcf_shuffle(bcf1_t *b, int seed)
 		gi->data = swap;
 	}
 	free(a);
+
+        // R package forbid srand47m drand48, see: http://cran.r-project.org/doc/manuals/r-release/R-exts.html#Writing-portable-packages
+        PutRNGstate();
 	return 0;
 }
 
