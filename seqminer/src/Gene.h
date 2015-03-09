@@ -397,9 +397,11 @@ class Gene{
   bool isInRange(const int pos, const int beg, const int end) {
     if (beg <= pos && pos <= end)
       return true;
-    if (beg > end) {
-      REprintf( "in isInRange beg(%d) > end(%d).\n", beg, end);
-    }
+
+    // following case should not happen:
+    // if (beg > end) {
+    //   REprintf( "in isInRange beg(%d) > end(%d).\n", beg, end);
+    // }
     return false;
   }
   bool isInRange(const int pos, const Range& r) {

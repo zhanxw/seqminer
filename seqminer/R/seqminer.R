@@ -82,7 +82,7 @@ hasIndex <- function(fileName) {
   return (TRUE)
 }
 
-#' Read a gene from VCF file and return a genotypes matrix
+#' Read a gene from VCF file and return a genotype matrix
 #'
 #' @param fileName character, represents an input VCF file (Bgzipped, with Tabix index)
 #' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200
@@ -94,16 +94,17 @@ hasIndex <- function(fileName) {
 #' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
 #' cfh <- readVCFToMatrixByRange(fileName, "1:196621007-196716634", "Nonsynonymous")
 readVCFToMatrixByRange <- function(fileName, range, annoType) {
-  stopifnot(file.exists(fileName), length(fileName) == 1, hasIndex(fileName))
+  stopifnot(file.exists(fileName), length(fileName) == 1)
+  stopifnot(hasIndex(fileName))
   storage.mode(fileName) <- "character"
   storage.mode(range)    <- "character"
   storage.mode(annoType) <- "character"
   .Call("readVCFToMatrixByRange", fileName, range, annoType, PACKAGE="seqminer");
 };
 
-#' Read a gene from VCF file and return a genotypes matrix
+#' Read a gene from VCF file and return a genotype matrix
 #'
-#' @param fileName charactr, represents an input VCF file (Bgzipped, with Tabix index)
+#' @param fileName character, represents an input VCF file (Bgzipped, with Tabix index)
 #' @param geneFile character, a text file listing all genes in refFlat format
 #' @param geneName character vector, which gene(s) to be extracted
 #' @param annoType character, annotated types you would like to extract, such as "Nonsynonymous", "Synonymous". This can be left empty.
@@ -117,7 +118,8 @@ readVCFToMatrixByRange <- function(fileName, range, annoType) {
 readVCFToMatrixByGene <- function(fileName, geneFile, geneName, annoType) {
   stopifnot(file.exists(fileName), length(fileName) == 1)
   stopifnot(file.exists(geneFile), length(geneFile) == 1)
-
+  stopifnot(hasIndex(fileName))
+  
   storage.mode(fileName) <- "character"
   storage.mode(geneFile) <- "character"
   storage.mode(geneName) <- "character"
@@ -141,7 +143,8 @@ readVCFToMatrixByGene <- function(fileName, geneFile, geneName, annoType) {
 #' cfh <- readVCFToListByRange(fileName, "1:196621007-196716634", "Nonsynonymous",
 #'                             c("CHROM", "POS"), c("AF", "AC"), c("GT") )
 readVCFToListByRange <- function(fileName, range, annoType, vcfColumn, vcfInfo, vcfIndv) {
-  stopifnot(file.exists(fileName), length(fileName) == 1, hasIndex(fileName))
+  stopifnot(file.exists(fileName), length(fileName) == 1)
+  stopifnot(hasIndex(fileName))
   storage.mode(fileName) <- "character"
   storage.mode(range)    <- "character"
   storage.mode(annoType) <- "character"
@@ -169,8 +172,10 @@ readVCFToListByRange <- function(fileName, range, annoType, vcfColumn, vcfInfo, 
 #' cfh <- readVCFToListByGene(fileName, geneFile, "CFH", "Synonymous",
 #'                            c("CHROM", "POS"), c("AF", "AC"), c("GT") )
 readVCFToListByGene <- function(fileName, geneFile, geneName, annoType, vcfColumn, vcfInfo, vcfIndv) {
-  stopifnot(file.exists(fileName), length(fileName) == 1, hasIndex(fileName))
+  stopifnot(file.exists(fileName), length(fileName) == 1)
   stopifnot(file.exists(geneFile), length(geneFile) == 1)
+  stopifnot(hasIndex(fileName))
+  
   storage.mode(fileName) <- "character"
   storage.mode(geneFile) <- "character"
   storage.mode(geneName) <- "character"

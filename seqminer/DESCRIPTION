@@ -2,26 +2,20 @@ Package: seqminer
 Type: Package
 Title: Efficiently Read Sequence Data (VCF format, BCF format and METAL
     format) into R
-Version: 3.2
-Date: 2014-12-06
+Version: 3.5
+Date: 2014-12-21
 Author: Xiaowei Zhan <zhanxw@gmail.com> and Dajiang Liu
-    <dajiang.liu@gmail.com>, with contributions of Julian Seward
-    <jseward@bzip.org> (this author wrote bzip2 and with BSD
-    license we include bzip2 source codes) and Heng Li
+    <dajiang.liu@gmail.com>, with contributions of Heng Li
     <lh3@live.co.uk> (this author wrote tabix and with MIT license
     we include tabix source codes).
 Maintainer: Xiaowei Zhan <zhanxw@gmail.com>
-Description: Integrate sequencing data (VCF) or meta-analysis results in R
+Description: Integrate sequencing data (VCF/BCF) or meta-analysis results in R
 Copyright: We have used the following software and made minimal
-    necessary changes: Bzip2, Julian Seward <jseward@bzip.org> (BSD
-    license). We have renamed compress.c to bzCompress.c to avoid
-    name collision with zlib.h, and its license files are renamed
-    to bzip2.README and bzip2.LICENSE; Tabix, Heng Li
-    <lh3@live.co.uk> (MIT license). We removed standard IO related
-    functions, e.g. printf, fprintf ; also changed its un-safe
-    pointer arithmetics.
+    necessary changes: Tabix, Heng Li <lh3@live.co.uk> (MIT license). 
+    We removed standard IO related functions, e.g. printf, fprintf ; 
+    also changed its un-safe pointer arithmetics.
 License: GPL | file LICENSE
-URL: http://zhanxw.com/seqminer
+URL: http://seqminer.genomic.codes
 Packaged: 2014-04-14 05:00:07 UTC; root
 Repository: CRAN
 Date/Publication: 2013-01-20 17:22:08
@@ -29,3 +23,4 @@ Depends:
     stringr
 Suggests:
     testthat, SKAT
+SystemRequirements: zlib headers and libraries, optionally also bzip2 and POSIX-compliant regex functions.

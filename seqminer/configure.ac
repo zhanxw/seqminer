@@ -1,4 +1,5 @@
-AC_INIT(seqminer, 3.2, zhanxw@gmail.com)
+define([pkgversion], esyscmd([sh -c "grep Version: DESCRIPTION | cut -d' ' -f2 | tr -d '\n'"]))dnl
+AC_INIT(seqminer, [pkgversion], zhanxw@gmail.com)
 AC_CONFIG_HEADERS(src/config.h)
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -53,13 +54,8 @@ int main(void) {
 AC_MSG_RESULT([yes])], [AC_MSG_RESULT([no])])
 
 
-dnl AC_SUBST(LIB_BZIP2)
-dnl -I. @CFLAGS@ -DNDEBUG 
-dnl -I. @CXXFLAGS@ -DNDEBUG
-dnl -lz -lm @LIB_BZIP2@
-
-AC_SUBST([PKG_CFLAGS], ["-I. -DNDEBUG ${CFLAGS}"])
-AC_SUBST([PKG_CPPFLAGS], ["-I. -DNDEBUG ${CPPFLAGS} ${CXXFLAGS}"])
+AC_SUBST([PKG_CFLAGS], ["-I. ${CFLAGS}"])
+AC_SUBST([PKG_CPPFLAGS], ["-I. ${CPPFLAGS} ${CXXFLAGS}"])
 AC_SUBST([PKG_LIBS], ["-lz -lm ${LIB_BZIP2}"])
 
 AC_CONFIG_FILES([src/Makevars])

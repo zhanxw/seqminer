@@ -10,7 +10,7 @@
 
 #ifndef HAVE_REG_STARTEND
 // e.g. in Solaris, it doesnot implement REG_STARTEND,
-// we have to skip using regex related functions in lib
+// we have to skip using regex related functions
 #undef HAVE_POSIX_REGEX
 // #pragma message "undef posix (1)"
 #endif
