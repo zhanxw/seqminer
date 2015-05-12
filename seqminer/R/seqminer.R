@@ -14,6 +14,23 @@
 #' @importFrom utils packageVersion
 NULL
 
+#' Check if the input is url e.g. http:// or ftp://
+#' @param fileName character vector
+#' @keywords internal
+isURL <- function(fileName) {
+  if (grepl(pattern = "^http://", fileName) ||
+      grepl(pattern = "^ftp://", fileName) ) {
+    return(TRUE)
+  }
+  return(FALSE)
+}
+
+local.file.exists <- function(fileName) {
+  if (isURL(fileName)) {
+    return(TRUE)
+  }
+  return(file.exists(fileName))
+}
 
 #' Check input file has tabix index
 #'
@@ -21,6 +38,9 @@ NULL
 #' @return TRUE if an index file with ".tbi" or "bci" exists, and created later than VCF/BCF file
 #' @keywords internal
 hasIndex <- function(fileName) {
+  if (isURL(fileName)) {
+    return(TRUE)
+  }
   endsWith <- function(i, pattern = NULL) {
     if (is.null(pattern)) {
       return(FALSE)
@@ -69,9 +89,9 @@ hasIndex <- function(fileName) {
   }
   if (!file.exists(fIndex)) {
     stop(gettextf("The index file [ %s ] does not exists.", fIndex))
-    return (FALSE)    
+    return (FALSE)
   }
-  
+
   ## Check index file timestamp
   time.data <- file.info(fileName)$mtime
   time.index <- file.info(fIndex)$mtime
@@ -94,7 +114,7 @@ hasIndex <- function(fileName) {
 #' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
 #' cfh <- readVCFToMatrixByRange(fileName, "1:196621007-196716634", "Nonsynonymous")
 readVCFToMatrixByRange <- function(fileName, range, annoType) {
-  stopifnot(file.exists(fileName), length(fileName) == 1)
+  stopifnot(local.file.exists(fileName), length(fileName) == 1)
   stopifnot(hasIndex(fileName))
   storage.mode(fileName) <- "character"
   storage.mode(range)    <- "character"
@@ -116,10 +136,10 @@ readVCFToMatrixByRange <- function(fileName, range, annoType) {
 #' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
 #' cfh <- readVCFToMatrixByGene(fileName, geneFile, "CFH", "Synonymous")
 readVCFToMatrixByGene <- function(fileName, geneFile, geneName, annoType) {
-  stopifnot(file.exists(fileName), length(fileName) == 1)
-  stopifnot(file.exists(geneFile), length(geneFile) == 1)
+  stopifnot(local.file.exists(fileName), length(fileName) == 1)
+  stopifnot(local.file.exists(geneFile), length(geneFile) == 1)
   stopifnot(hasIndex(fileName))
-  
+
   storage.mode(fileName) <- "character"
   storage.mode(geneFile) <- "character"
   storage.mode(geneName) <- "character"
@@ -143,7 +163,7 @@ readVCFToMatrixByGene <- function(fileName, geneFile, geneName, annoType) {
 #' cfh <- readVCFToListByRange(fileName, "1:196621007-196716634", "Nonsynonymous",
 #'                             c("CHROM", "POS"), c("AF", "AC"), c("GT") )
 readVCFToListByRange <- function(fileName, range, annoType, vcfColumn, vcfInfo, vcfIndv) {
-  stopifnot(file.exists(fileName), length(fileName) == 1)
+  stopifnot(local.file.exists(fileName), length(fileName) == 1)
   stopifnot(hasIndex(fileName))
   storage.mode(fileName) <- "character"
   storage.mode(range)    <- "character"
@@ -172,10 +192,10 @@ readVCFToListByRange <- function(fileName, range, annoType, vcfColumn, vcfInfo, 
 #' cfh <- readVCFToListByGene(fileName, geneFile, "CFH", "Synonymous",
 #'                            c("CHROM", "POS"), c("AF", "AC"), c("GT") )
 readVCFToListByGene <- function(fileName, geneFile, geneName, annoType, vcfColumn, vcfInfo, vcfIndv) {
-  stopifnot(file.exists(fileName), length(fileName) == 1)
+  stopifnot(local.file.exists(fileName), length(fileName) == 1)
   stopifnot(file.exists(geneFile), length(geneFile) == 1)
   stopifnot(hasIndex(fileName))
-  
+
   storage.mode(fileName) <- "character"
   storage.mode(geneFile) <- "character"
   storage.mode(geneName) <- "character"
@@ -201,8 +221,8 @@ readVCFToListByGene <- function(fileName, geneFile, geneName, annoType, vcfColum
 #' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
 #' cfh <- rvmeta.readDataByGene(scoreFileName, covFileName, geneFile, "CFH")
 rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName) {
-  stopifnot(file.exists(scoreTestFiles))
-  stopifnot(is.null(covFiles) || (file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
+  stopifnot(local.file.exists(scoreTestFiles))
+  stopifnot(is.null(covFiles) || (local.file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
   stopifnot(file.exists(geneFile), length(geneFile) == 1)
   storage.mode(scoreTestFiles) <- "character"
   storage.mode(covFiles) <- "character"
@@ -229,8 +249,8 @@ rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName) 
 #' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
 #' cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
 rvmeta.readDataByRange <- function (scoreTestFiles, covFiles, ranges) {
-  stopifnot(file.exists(scoreTestFiles))
-  stopifnot(is.null(covFiles) || (file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
+  stopifnot(local.file.exists(scoreTestFiles))
+  stopifnot(is.null(covFiles) || (local.file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
   storage.mode(scoreTestFiles) <- "character"
   storage.mode(covFiles) <- "character"
   storage.mode(ranges) <- "character"
@@ -254,7 +274,7 @@ rvmeta.readDataByRange <- function (scoreTestFiles, covFiles, ranges) {
 #' covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
 #' cfh <- rvmeta.readCovByRange(covFileName, "1:196621007-196716634")
 rvmeta.readCovByRange <- function(covFile, tabixRange) {
-  stopifnot(file.exists(covFile))
+  stopifnot(local.file.exists(covFile))
   storage.mode(covFile) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readCovByRange", covFile, tabixRange, PACKAGE="seqminer");
@@ -271,7 +291,7 @@ rvmeta.readCovByRange <- function(covFile, tabixRange) {
 #' scoreFileName = system.file("rvtests/rvtest.MetaScore.assoc.anno.gz", package = "seqminer")
 #' cfh <- rvmeta.readScoreByRange(scoreFileName, "1:196621007-196716634")
 rvmeta.readScoreByRange <- function(scoreTestFiles, tabixRange) {
-  stopifnot(file.exists(scoreTestFiles))
+  stopifnot(local.file.exists(scoreTestFiles))
   storage.mode(scoreTestFiles) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readScoreByRange", scoreTestFiles, tabixRange, PACKAGE="seqminer");
@@ -288,7 +308,7 @@ rvmeta.readScoreByRange <- function(scoreTestFiles, tabixRange) {
 #' skewFileName = system.file("rvtests/rvtest.MetaSkew.assoc.gz", package = "seqminer")
 #' cfh <- rvmeta.readSkewByRange(skewFileName, "1:196621007-196716634")
 rvmeta.readSkewByRange <- function(skewFile, tabixRange) {
-  stopifnot(file.exists(skewFile))
+  stopifnot(local.file.exists(skewFile))
   storage.mode(skewFile) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readSkewByRange", skewFile, tabixRange, PACKAGE="seqminer");
@@ -305,7 +325,7 @@ rvmeta.readSkewByRange <- function(skewFile, tabixRange) {
 #' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
 #' snp <- tabix.read(fileName, "1:196623337-196632470")
 tabix.read <- function(tabixFile, tabixRange) {
-  stopifnot(file.exists(tabixFile))
+  stopifnot(local.file.exists(tabixFile))
   storage.mode(tabixFile) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readTabixByRange", tabixFile, tabixRange, PACKAGE="seqminer");
@@ -322,7 +342,7 @@ tabix.read <- function(tabixFile, tabixRange) {
 #' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
 #' snp <- tabix.read.header(fileName)
 tabix.read.header <- function(tabixFile, skippedLine = FALSE) {
-  stopifnot(file.exists(tabixFile))
+  stopifnot(local.file.exists(tabixFile))
   storage.mode(tabixFile) <- "character"
   header <- .Call("readTabixHeader", tabixFile, PACKAGE="seqminer");
   ret <- list(header = header)
@@ -347,7 +367,7 @@ tabix.read.header <- function(tabixFile, skippedLine = FALSE) {
 #' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
 #' snp <- tabix.read.table(fileName, "1:196623337-196632470")
 tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsFactors = FALSE) {
-  stopifnot(file.exists(tabixFile))
+  stopifnot(local.file.exists(tabixFile))
   storage.mode(tabixFile) <- "character"
   storage.mode(tabixRange) <- "character"
   header <- .Call("readTabixHeader", tabixFile, PACKAGE = "seqminer")
@@ -412,7 +432,7 @@ tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsF
 #' @examples
 #' scoreFileName = system.file("rvtests/rvtest.MetaScore.assoc.anno.gz", package = "seqminer")
 rvmeta.readNullModel <- function(scoreTestFiles) {
-  stopifnot(file.exists(scoreTestFiles))
+  stopifnot(local.file.exists(scoreTestFiles))
   read.null.model <- function(fn) {
     ## cat("gzFile, fn = ", fn, "\n")
     f <- gzfile(fn, "rb")
@@ -631,7 +651,7 @@ validateAnnotationParameter <- function(param, debug = FALSE) {
       if (!file.exists(parsed[[i]][2])) {
         status <- FALSE
         msg <- c(msg, paste("BED resource file not exists: ", parsed[[i]][2]))
-        next        
+        next
       }
     }
   }
@@ -649,7 +669,7 @@ validateAnnotationParameter <- function(param, debug = FALSE) {
       if (!file.exists(parsed[[i]][2])) {
         status <- FALSE
         msg <- c(msg, paste("Genomescore resource file not exists: ", parsed[[i]][2]))
-        next        
+        next
       }
     }
   }
@@ -667,11 +687,11 @@ validateAnnotationParameter <- function(param, debug = FALSE) {
       if (!file.exists(parsed[[i]][1])) {
         status <- FALSE
         msg <- c(msg, paste("Tabix resource file not exists: ", parsed[[i]][1]))
-        next        
+        next
       }
     }
   }
-  
+
   res <- list(status, paste(msg, sep = " \n"))
   return(res)
 }
@@ -787,7 +807,7 @@ annotateVcf <- function(inVcf, outVcf, params) {
   }
 
   verifyFilename(inVcf, outVcf)
-  
+
   storage.mode(inVcf) <- "character"
   storage.mode(outVcf) <- "character"
   .Call("anno", inVcf, outVcf, params)
@@ -816,7 +836,7 @@ annotatePlain <- function(inFile, outFile, params) {
     stop("Stop due to critical error")
   }
   verifyFilename(inFile, outFile)
-  
+
   storage.mode(inFile) <- "character"
   storage.mode(outFile) <- "character"
   .Call("anno", inFile, outFile, params)

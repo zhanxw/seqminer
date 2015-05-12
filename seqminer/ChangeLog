@@ -1,4 +1,12 @@
-2014-12-21  Xiaowei Zhan  <zhanxw@dumbo.csgstat.sph.umich.edu>
+2015-05-12  Xiaowei Zhan  <zhanxw@dumbo.csgstat.sph.umich.edu>
+
+	* Fix a corner case to avoid crash
+
+2015-04-27  Xiaowei Zhan  <zhanxw@dumbo.csgstat.sph.umich.edu>
+
+	* Update codes
+
+2014-12-21  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Improve error messages
 

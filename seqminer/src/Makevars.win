@@ -1,1 +1,4 @@
+CXX_STD = CXX11
+PKG_CFLAGS=-I. -DNDEBUG -D_USE_KNETFILE -I/net/fantasia/home/zhanxw/usr/include
+PKG_CXXFLAGS=-I. -DNDEBUG -D_USE_KNETFILE -I/usr/local/include -I/net/fantasia/home/zhanxw/usr/include
 PKG_LIBS=-lz

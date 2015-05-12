@@ -106,7 +106,8 @@ void VCFInputFile::init(const char* fn) {
   this->tabixReader = NULL;
   this->bcfReader = NULL;
   this->autoMergeRange = false;
-  
+
+#if 0  
   // check whether file exists.
   FILE* fp = fopen(fn, "rb");
   if (!fp) {
@@ -114,7 +115,8 @@ void VCFInputFile::init(const char* fn) {
     return;
   }
   fclose(fp);
-
+#endif
+  
   bool headerLoaded = false;
   // use file name to check file type
   if (endsWith(fn, ".bcf") || endsWith(fn, ".bcf.gz")) {
