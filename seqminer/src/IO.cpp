@@ -21,11 +21,14 @@ AbstractFileReader* AbstractFileReader::open(const char* fileName) {
   if (l > 3 && !strcmp(fileName + l - 3, ".gz")) {
     fr = new GzipFileReader(fileName);
     return fr;
-  } else if (l > 4 && !strcmp(fileName + l - 4, ".bz2")) {
+  }
+#ifdef HAVE_BZIP2
+  else if (l > 4 && !strcmp(fileName + l - 4, ".bz2")) {
     fr = new Bzip2FileReader(fileName);
     return fr;
   }
-
+#endif
+  
   // try autodetect
   switch (AbstractFileReader::checkFileType(fileName)) {
     case PLAIN:

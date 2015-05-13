@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <climits>
 
+#include "IO.h"
+
 void RangeCollection::obtainRange(const int index, std::string* chrom, unsigned int* beg, unsigned int* end) const {
   unsigned int t = index;
   unsigned int s;

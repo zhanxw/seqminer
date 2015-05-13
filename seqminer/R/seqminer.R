@@ -404,7 +404,7 @@ tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsF
 }
 
 .onAttach <- function(libname, pkgname){
-  newVersionLink = "http://zhanxw.com:8080/seqminer/version"
+  newVersionLink = "http://zhanxw.com/seqminer/version"
   conn <- url(newVersionLink)
   ret <- tryCatch(readLines(conn, n = 2), error = function(e) {NULL})
   close(conn)

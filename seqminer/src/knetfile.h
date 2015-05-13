@@ -9,6 +9,14 @@
 #define netwrite(fd, ptr, len) write(fd, ptr, len)
 #define netclose(fd) close(fd)
 #else
+
+// avoid Realloc problem
+// http://tolstoy.newcastle.edu.au/R/e2/devel/06/11/1242.html
+#include <R.h>
+#undef Realloc
+#define R_Realloc(p,n,t) (t *) R_chk_realloc( (void *)(p), (size_t)((n) * sizeof(t)) )
+
+#include <windows.h>
 #include <winsock2.h>
 #define netread(fd, ptr, len) recv(fd, ptr, len, 0)
 #define netwrite(fd, ptr, len) send(fd, ptr, len, 0)

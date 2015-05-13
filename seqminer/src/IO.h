@@ -11,9 +11,9 @@
 #include <vector>
 
 // Windows platform does not have good autoconf tools, so skip loading config.h
-// don't use _WIN32 or _WIN64, should use WIN32 (by R extension manual)
-// WIN32 is on for both Win32 and Win64
-#ifndef WIN32
+// _WIN32 is on for both Win32 and Win64
+// refer: "On all Windows builds (even 64-bit ones) ‘_WIN32’ will be defined: on 64-bit Windows builds also ‘_WIN64’, and on OS X ‘__APPLE__’ is defined.18"
+#ifndef _WIN32
 #include "config.h"
 #endif
 
