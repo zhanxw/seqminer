@@ -1,0 +1,23 @@
+\name{getRefBase}
+\alias{getRefBase}
+\title{Annotate a test variant}
+\usage{
+getRefBase(reference, chrom, position, len = NULL)
+}
+\arguments{
+  \item{reference}{path to the reference genome file (.fa
+  file)}
+
+  \item{chrom}{a vector of chromosome names}
+
+  \item{position}{a vector of chromosome positions}
+
+  \item{len}{a vector of length}
+}
+\value{
+based extracted from the reference genome
+}
+\description{
+Annotate a test variant
+}
+

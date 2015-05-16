@@ -1,0 +1,11 @@
+year <- sub("-.*", "", meta$Date)
+note <- sprintf("seqminer version %s", meta$Version)
+
+bibentry(bibtype = "article",
+         title = "TaSer (TabAnno and SeqMiner): a toolset for annotating and querying next-generation sequence data",
+         author = c(person("Xiaowei", "Zhan"), person("Dajiang J", "Liu")),
+         journal = "arXiv preprint arXiv:1306.5715",
+         year = {2013},
+         note = note,
+         url = "http://zhanxw.com/seqminer"
+         )

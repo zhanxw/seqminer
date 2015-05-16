@@ -1,0 +1,26 @@
+\name{tabix.read}
+\alias{tabix.read}
+\title{Read tabix file, similar to running tabix in command line.}
+\usage{
+tabix.read(tabixFile, tabixRange)
+}
+\arguments{
+  \item{tabixFile}{character, an tabix indexed file}
+
+  \item{tabixRange}{character, a text indicating which
+  range in the VCF file to extract. e.g. 1:100-200}
+}
+\value{
+character vector, each elements is an individual line
+}
+\description{
+Read tabix file, similar to running tabix in command line.
+}
+\examples{
+fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+snp <- tabix.read(fileName, "1:196623337-196632470")
+}
+\seealso{
+http://zhanxw.com/seqminer/ for online manual and examples
+}
+

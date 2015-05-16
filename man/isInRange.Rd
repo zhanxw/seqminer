@@ -1,0 +1,24 @@
+\name{isInRange}
+\alias{isInRange}
+\title{Test whether a vector of positions are inside given ranges}
+\usage{
+isInRange(positions, rangeList)
+}
+\arguments{
+  \item{positions}{characters, positions. e.g. c("1:2-3",
+  "1:4")}
+
+  \item{rangeList}{character, ranges, e.g. "1:1-3,1:2-4"}
+}
+\value{
+logical vector, TRUE/FALSE/NA
+}
+\description{
+Test whether a vector of positions are inside given ranges
+}
+\examples{
+positions <- c("1:2-3", "1:4", "XX")
+ranges <- "1:1-3,1:2-4,1:5-10"
+isInRange(positions, ranges)
+}
+
