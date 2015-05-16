@@ -1,10 +1,10 @@
 seqminer
 ========
 
-Query sequence data (VCF/BCF, Tabix) in R
+[![Build Status](https://travis-ci.org/zhanxw/seqminer.svg?branch=master)](https://travis-ci.org/zhanxw/seqminer)
 
-Quick introduction is available http://zhanxw.com/seqminer/
+Efficiently Read Sequence Data (VCF Format, BCF Format and METAL Format) into R
 
+Quick introduction is available: http://zhanxw.com/seqminer/
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/zhanxw/seqminer/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
