@@ -1,0 +1,45 @@
+\name{readVCFToListByRange}
+\alias{readVCFToListByRange}
+\title{Read information from VCF file in a given range and return a list}
+\usage{
+readVCFToListByRange(fileName, range, annoType, vcfColumn, vcfInfo, vcfIndv)
+}
+\arguments{
+  \item{fileName}{character, represents an input VCF file
+  (Bgzipped, with Tabix index)}
+
+  \item{range}{character, a text indicating which range in
+  the VCF file to extract. e.g. 1:100-200}
+
+  \item{annoType}{character, annotated types you would like
+  to extract, such as "Nonsynonymous", "Synonymous". This
+  can be left empty.}
+
+  \item{vcfColumn}{character vector, which vcf columns to
+  extract. It can be chosen from CHROM, POS, ID, REF, ALT,
+  QUAL, FILTER, INFO, FORMAT and etc.}
+
+  \item{vcfInfo}{character vector, which should be tags in
+  the INFO columns to extarct. Common choices include: DP,
+  AC, AF, NS}
+
+  \item{vcfIndv}{character vector, which values to extract
+  at individual level. Common choices are: GT, GQ, GD}
+}
+\value{
+a list of genes, and each elements has specified vcfColumn,
+vcfinfo, vcfIndv
+}
+\description{
+Read information from VCF file in a given range and return
+a list
+}
+\examples{
+fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+cfh <- readVCFToListByRange(fileName, "1:196621007-196716634", "Nonsynonymous",
+                            c("CHROM", "POS"), c("AF", "AC"), c("GT") )
+}
+\seealso{
+http://zhanxw.com/seqminer/ for online manual and examples
+}
+

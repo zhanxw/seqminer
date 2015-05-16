@@ -1,0 +1,29 @@
+\name{annotatePlain}
+\alias{annotatePlain}
+\title{Annotate a plain text file}
+\usage{
+annotatePlain(inFile, outFile, params)
+}
+\arguments{
+  \item{inFile}{input file name}
+
+  \item{outFile}{output file name}
+
+  \item{params}{parameters}
+}
+\value{
+0 if succeed
+}
+\description{
+Annotate a plain text file
+}
+\examples{
+param <- list(reference = system.file("tabanno/test.fa", package = "seqminer"),
+              geneFile = system.file("tabanno/test.gene.txt", package = "seqminer"),
+              inputFormat = "plain")
+param <- makeAnnotationParameter(param)
+inFile <- system.file("tabanno/input.test.plain.txt", package = "seqminer")
+outFile <- paste0(getwd(), "/", "out.annotated.txt")
+annotatePlain(inFile, outFile, param)
+}
+

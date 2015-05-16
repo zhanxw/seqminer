@@ -1,0 +1,33 @@
+\name{tabix.createIndex}
+\alias{tabix.createIndex}
+\title{Create tabix index file, similar to running tabix in command line.}
+\usage{
+tabix.createIndex(bgzipFile, sequenceColumn = 1, startColumn = 4,
+  endColumn = 5, metaChar = "#", skipLines = 0)
+}
+\arguments{
+  \item{bgzipFile}{character, an tabix indexed file}
+
+  \item{sequenceColumn}{integer, sequence name column}
+
+  \item{startColumn}{integer, start column}
+
+  \item{endColumn}{integer, end column}
+
+  \item{metaChar}{character, symbol for comment/meta lines}
+
+  \item{skipLines}{integer, first this number of lines will
+  be skipped}
+}
+\description{
+Create tabix index file, similar to running tabix in
+command line.
+}
+\examples{
+fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+tabix.createIndex(fileName, 1, 2, 0, '#', 0)
+}
+\seealso{
+http://zhanxw.com/seqminer/ for online manual and examples
+}
+
