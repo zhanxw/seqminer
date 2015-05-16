@@ -47,6 +47,7 @@
 #endif
 
 #include "knetfile.h"
+#include "R.h"
 
 /* In winsock.h, the type of a socket is SOCKET, which is: "typedef
  * u_int SOCKET". An invalid SOCKET is: "(SOCKET)(~0)", or signed
@@ -189,7 +190,7 @@ static off_t my_netread(int fd, void *buf, off_t len)
          * one call. They have to be called repeatedly. */
         while (rest) {
                 if (socket_wait(fd, 1) <= 0) break; // socket is not ready for reading
-                curr = netread(fd, buf + l, rest);
+                curr = netread(fd, ((char*)buf) + l, rest);
                 /* According to the glibc manual, section 13.2, a zero returned
                  * value indicates end-of-file (EOF), which should mean that
                  * read() will not return zero if EOF has not been met but data
@@ -413,7 +414,7 @@ int khttp_connect_file(knetFile *fp)
         fp->fd = socket_connect(fp->host, fp->port);
         buf = calloc(0x10000, 1); // FIXME: I am lazy... But in principle, 64KB should be large enough.
         l += sprintf(buf + l, "GET %s HTTP/1.0\r\nHost: %s\r\n", fp->path, fp->http_host);
-    l += sprintf(buf + l, "Range: bytes=%lld-\r\n", (long long)fp->offset);
+        l += sprintf(buf + l, "Range: bytes=%lld-\r\n", (long long)fp->offset);
         l += sprintf(buf + l, "\r\n");
         netwrite(fp->fd, buf, l);
         l = 0;
@@ -519,7 +520,7 @@ off_t knet_read(knetFile *fp, void *buf, off_t len)
         if (fp->type == KNF_TYPE_LOCAL) { // on Windows, the following block is necessary; not on UNIX
                 off_t rest = len, curr;
                 while (rest) {
-                        curr = read(fp->fd, buf + l, rest);
+                  curr = read(fp->fd, ((char*)buf) + l, rest);
                         if (curr == 0) break;
                         l += curr; rest -= curr;
                 }

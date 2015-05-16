@@ -6,7 +6,7 @@
 
 #ifndef _WIN32
 #define netread(fd, ptr, len) read(fd, ptr, len)
-#define netwrite(fd, ptr, len) write(fd, ptr, len)
+#define netwrite(fd, ptr, len) do {ssize_t unused = write(fd, ptr, len); (void)(unused);}while(0);
 #define netclose(fd) close(fd)
 #else
 
@@ -16,8 +16,8 @@
 #undef Realloc
 #define R_Realloc(p,n,t) (t *) R_chk_realloc( (void *)(p), (size_t)((n) * sizeof(t)) )
 
-#include <windows.h>
 #include <winsock2.h>
+#include <windows.h>
 #define netread(fd, ptr, len) recv(fd, ptr, len, 0)
 #define netwrite(fd, ptr, len) send(fd, ptr, len, 0)
 #define netclose(fd) closesocket(fd)
