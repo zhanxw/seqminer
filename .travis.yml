@@ -3,3 +3,5 @@ warnings_are_errors: true
 r_binary_packages:
  - testthat
  - SKAT
+ - stringr
+
