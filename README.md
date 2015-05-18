@@ -7,4 +7,10 @@ Efficiently Read Sequence Data (VCF Format, BCF Format and METAL Format) into R
 
 Quick introduction is available: http://zhanxw.com/seqminer/
 
+Install the latest stable version:
 
+    install.packages("seqminer")
+
+Install the develop version (devtools package is required):
+
+    devtools::install_github("zhanxw/seqminer")
