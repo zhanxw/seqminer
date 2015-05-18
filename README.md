@@ -11,6 +11,6 @@ Install the latest stable version:
 
     install.packages("seqminer")
 
-Install the develop version (devtools package is required):
+Install the development version ([devtools](https://github.com/hadley/devtools) package is required):
 
     devtools::install_github("zhanxw/seqminer")
