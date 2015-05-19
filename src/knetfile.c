@@ -38,10 +38,12 @@
 #include <unistd.h>
 #include <sys/types.h>
 
-#ifdef _WIN32
 
-#include <windows.h>
-#include <winsock2.h>
+#include "knetfile.h"
+#include "R.h"
+
+
+#ifdef _WIN32
 
 #include <winsock.h>
 #else
@@ -50,8 +52,6 @@
 #include <sys/socket.h>
 #endif
 
-#include "knetfile.h"
-#include "R.h"
 
 /* In winsock.h, the type of a socket is SOCKET, which is: "typedef
  * u_int SOCKET". An invalid SOCKET is: "(SOCKET)(~0)", or signed
