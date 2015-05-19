@@ -1,6 +1,9 @@
+## refer: 1.2.4 Using C++11 code
 CXX_STD = CXX11
+
 ##PKG_CFLAGS=-I. -DNDEBUG #-D_USE_KNETFILE
 ## don't use -I. => otherwise our IO.h will confuse a system header file
+## also don't use _USE_KNETFILE or it will not compile
 PKG_CFLAGS=-DNDEBUG #-D_USE_KNETFILE 
-PKG_CXXFLAGS=-I. -DNDEBUG #-D_USE_KNETFILE
+PKG_CXX1XFLAGS=-I. -DNDEBUG #-D_USE_KNETFILE
 PKG_LIBS=-lz -lws2_32

@@ -7,11 +7,21 @@ if test -z "${R_HOME}"; then
    exit 1
 fi
 
-CC=`"${R_HOME}/bin/R" CMD config CC`
-CXX=`"${R_HOME}/bin/R" CMD config CXX`
-CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
-CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
-CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
+dnl config for C++11 compiler
+dnl borrowed from: https://github.com/cran/dfmta/blob/master/configure.ac
+AC_DEFUN([AX_GET_R_CONF_VAR],[$1=`"${R_HOME}/bin/R" CMD config $1`])
+AX_GET_R_CONF_VAR([CC])
+AX_GET_R_CONF_VAR([CFLAGS])
+AX_GET_R_CONF_VAR([CPPFLAGS])
+AX_GET_R_CONF_VAR([CXXCPP])
+AX_GET_R_CONF_VAR([CXX1X])
+AX_GET_R_CONF_VAR([CXX1XSTD])
+AX_GET_R_CONF_VAR([CXX1XFLAGS])
+AX_GET_R_CONF_VAR([CXX1XXPICFLAGS])
+
+CXX="${CXX1X} ${CXX1XSTD}"
+CXXFLAGS="${CXX1XFLAGS} ${CXX1XPICFLAGS}"
+CXXPICFLAGS="${CXX1XXPICFLAGS}"
 
 dnl skip checking C compilers as we also need to check C++ compiler
 dnl AC_LANG(C)
@@ -42,20 +52,20 @@ AC_TRY_RUN([
 #include <assert.h>
 #include <regex.h>
 int main(void) {
-	regex_t re;
-	regmatch_t rm;
+        regex_t re;
+        regmatch_t rm;
 
-	assert(regcomp(&re, "lo", 0) == 0);
-	rm.rm_so = 0, rm.rm_eo = 7;
-	assert(regexec(&re, "hel\0lo\n", 1, &rm, REG_STARTEND) == 0);
-	assert(rm.rm_so == 4 && rm.rm_eo == 6);
-	return 0;
+        assert(regcomp(&re, "lo", 0) == 0);
+        rm.rm_so = 0, rm.rm_eo = 7;
+        assert(regexec(&re, "hel\0lo\n", 1, &rm, REG_STARTEND) == 0);
+        assert(rm.rm_so == 4 && rm.rm_eo == 6);
+        return 0;
 }], [AC_DEFINE([HAVE_REG_STARTEND], [1], [Do you have a working REG_STARTEND?])
 AC_MSG_RESULT([yes])], [AC_MSG_RESULT([no])])
 
 
 AC_SUBST([PKG_CFLAGS], ["-D_USE_KNETFILE -I. ${CFLAGS}"])
-AC_SUBST([PKG_CPPFLAGS], ["-D_USE_KNETFILE -I. ${CPPFLAGS} ${CXXFLAGS}"])
+AC_SUBST([PKG_CXX1XFLAGS], ["-D_USE_KNETFILE -I. ${CPPFLAGS} ${CXX1XFLAGS}"])
 AC_SUBST([PKG_LIBS], ["-lz -lm ${LIB_BZIP2}"])
 
 AC_CONFIG_FILES([src/Makevars])
