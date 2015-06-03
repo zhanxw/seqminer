@@ -109,6 +109,71 @@ size_t findCovariateDimension(const std::string& fn, int column) {
   return ret;
 }
 
+/**
+ * Assign values in @param val separated by ":" to
+ * u[idx1, idx2, idx3][study][idx]
+ * NOTE: val can have one or three values,
+ *       otherwise return -1
+ */
+int assignInt(const std::string& val, SEXP u, int idx1, int idx2, int idx3,
+              int study, int idx) {
+  std::vector<std::string> values;
+  stringTokenize(val, ":", &values);
+  if (values.size() != 1 && values.size() != 3) {
+    return -1;
+  }
+
+  int temp;
+  SEXP v, s;
+  if (str2int(values[0], &temp)) {
+    v = VECTOR_ELT(u, idx1);
+    s = VECTOR_ELT(v, study);  // af
+    INTEGER(s)[idx] = temp;
+  }
+  if (values.size() == 3) {  // af_all:af_case:af_ctrl
+    if (str2int(values[1], &temp)) {
+      v = VECTOR_ELT(u, idx2);
+      s = VECTOR_ELT(v, study);  // af
+      INTEGER(s)[idx] = temp;
+    }
+    if (str2int(values[2], &temp)) {
+      v = VECTOR_ELT(u, idx3);
+      s = VECTOR_ELT(v, study);  // af
+      INTEGER(s)[idx] = temp;
+    }
+  }
+  return 0;
+}
+
+int assignDouble(const std::string& val, SEXP u, int idx1, int idx2, int idx3,
+                 int study, int idx) {
+  std::vector<std::string> values;
+  stringTokenize(val, ":", &values);
+  if (values.size() != 1 && values.size() != 3) {
+    return -1;
+  }
+  double tempDouble;
+  SEXP v, s;
+  if (str2double(values[0], &tempDouble)) {
+    v = VECTOR_ELT(u, idx1);
+    s = VECTOR_ELT(v, study);  // af
+    REAL(s)[idx] = tempDouble;
+  }
+  if (values.size() == 3) {  // af_all:af_case:af_ctrl
+    if (str2double(values[1], &tempDouble)) {
+      v = VECTOR_ELT(u, idx2);
+      s = VECTOR_ELT(v, study);  // af
+      REAL(s)[idx] = tempDouble;
+    }
+    if (str2double(values[2], &tempDouble)) {
+      v = VECTOR_ELT(u, idx3);
+      s = VECTOR_ELT(v, study);  // af
+      REAL(s)[idx] = tempDouble;
+    }
+  }
+  return 0;
+}
+
 #define RET_REF_INDEX 0
 #define RET_ALT_INDEX 1
 #define RET_NSAMPLE_INDEX 2
@@ -132,12 +197,25 @@ size_t findCovariateDimension(const std::string& fn, int column) {
 #define RET_HWE_CTRL_INDEX 20
 #define RET_AF_CASE_INDEX 21
 #define RET_AF_CTRL_INDEX 22
+// add the following to support binary traits
+#define RET_AC_CASE_INDEX 23
+#define RET_AC_CTRL_INDEX 24
+#define RET_CALLRATE_CASE_INDEX 25
+#define RET_CALLRATE_CTRL_INDEX 26
+#define RET_NREF_CASE_INDEX 27
+#define RET_NREF_CTRL_INDEX 28
+#define RET_NHET_CASE_INDEX 29
+#define RET_NHET_CTRL_INDEX 30
+#define RET_NALT_CASE_INDEX 31
+#define RET_NALT_CTRL_INDEX 32
+#define RET_N_CASE_INDEX 33
+#define RET_N_CTRL_INDEX 34
 
 SEXP impl_rvMetaReadData(
     SEXP arg_pvalFile, SEXP arg_covFile,
     const OrderedMap<std::string, std::string>& geneRange) {
   // PROFILE_FUNCTION();
-  
+
   int numAllocated = 0;
   SEXP ret = R_NilValue;
 
@@ -183,6 +261,8 @@ SEXP impl_rvMetaReadData(
   };
   std::map<std::string, std::set<std::string> > posAnnotationMap;
 
+  //////////////////////////////////////////////////
+  // allocate memory
   // initial return results
   // result[gene][chrom, pos, maf...][nstudy]
   int nGene = geneLocationMap.size();
@@ -230,6 +310,18 @@ SEXP impl_rvMetaReadData(
   names.push_back("hweCtrl");
   names.push_back("afCase");
   names.push_back("afCtrl");
+  names.push_back("acCase");
+  names.push_back("acCtrl");
+  names.push_back("callrateCase");
+  names.push_back("callrateCtrl");
+  names.push_back("nrefCase");
+  names.push_back("nrefCtrl");
+  names.push_back("nhetCase");
+  names.push_back("nhetCtrl");
+  names.push_back("naltCase");
+  names.push_back("naltCtrl");
+  names.push_back("nCase");
+  names.push_back("nCtrl");
 
   // REprintf("create zDims\n");
   std::vector<size_t> zDims(FLAG_covFile.size(), 0);
@@ -239,15 +331,17 @@ SEXP impl_rvMetaReadData(
     // REprintf("names.size() = %zu\n", names.size());
     //        iter != geneLocationMap.end() ; ++iter, ++i){
     SEXP s = VECTOR_ELT(ret, i);
-    numAllocated += createList(names.size(), &s);  // a list with 10 elements:
-                                                   // ref, alt, n, maf, stat,
-                                                   // direction, p, cov, pos,
-                                                   // anno
+    numAllocated +=
+        createList(names.size(), &s);  // a list with 10 or more elements:
+                                       // ref, alt, n, maf, stat,
+                                       // direction, p, cov, pos,
+                                       // anno, ...
     numAllocated += setListNames(names, &s);
 
     SEXP ref, alt, n, af, ac, callRate, hwe, nref, nhet, nalt, ustat, vstat,
         effect, p, cov, pos, anno, covXZ, covZZ, hweCase, hweCtrl, afCase,
-        afCtrl;
+        afCtrl, acCase, acCtrl, callrateCase, callrateCtrl, nrefCase, nrefCtrl,
+        nhetCase, nhetCtrl, naltCase, naltCtrl, nCase, nCtrl;
     numAllocated += createList(nStudy, &ref);
     numAllocated += createList(nStudy, &alt);
     numAllocated += createList(nStudy, &n);
@@ -271,6 +365,20 @@ SEXP impl_rvMetaReadData(
     numAllocated += createList(nStudy, &hweCtrl);
     numAllocated += createList(nStudy, &afCase);
     numAllocated += createList(nStudy, &afCtrl);
+    numAllocated += createList(nStudy, &afCtrl);
+    numAllocated += createList(nStudy, &afCtrl);
+    numAllocated += createList(nStudy, &acCase);
+    numAllocated += createList(nStudy, &acCtrl);
+    numAllocated += createList(nStudy, &callrateCase);
+    numAllocated += createList(nStudy, &callrateCtrl);
+    numAllocated += createList(nStudy, &nrefCase);
+    numAllocated += createList(nStudy, &nrefCtrl);
+    numAllocated += createList(nStudy, &nhetCase);
+    numAllocated += createList(nStudy, &nhetCtrl);
+    numAllocated += createList(nStudy, &naltCase);
+    numAllocated += createList(nStudy, &naltCtrl);
+    numAllocated += createList(nStudy, &nCase);
+    numAllocated += createList(nStudy, &nCtrl);
 
     int npos = geneLocationMap.valueAt(i).size();
     // std::vector<size_t> zDims(FLAG_covFile.size(), 0);
@@ -399,6 +507,58 @@ SEXP impl_rvMetaReadData(
       initDoubleArray(t);
       SET_VECTOR_ELT(afCtrl, j, t);
 
+      // acCase, acCtrl
+      numAllocated += createIntArray(npos, &t);
+      initIntArray(t);
+      SET_VECTOR_ELT(acCase, j, t);
+
+      numAllocated += createIntArray(npos, &t);
+      initIntArray(t);
+      SET_VECTOR_ELT(acCtrl, j, t);
+
+      // call rate case/ctrl
+      numAllocated += createDoubleArray(npos, &t);
+      initDoubleArray(t);
+      SET_VECTOR_ELT(callrateCase, j, t);
+
+      numAllocated += createDoubleArray(npos, &t);
+      initDoubleArray(t);
+      SET_VECTOR_ELT(callrateCtrl, j, t);
+
+      // ref/het/var in case/ctrl
+      numAllocated += createIntArray(npos, &t);
+      initIntArray(t);
+      SET_VECTOR_ELT(nrefCase, j, t);
+
+      numAllocated += createIntArray(npos, &t);
+      initIntArray(t);
+      SET_VECTOR_ELT(nrefCtrl, j, t);
+
+      numAllocated += createIntArray(npos, &t);
+      initIntArray(t);
+      SET_VECTOR_ELT(nhetCase, j, t);
+
+      numAllocated += createIntArray(npos, &t);
+      initIntArray(t);
+      SET_VECTOR_ELT(nhetCtrl, j, t);
+
+      numAllocated += createIntArray(npos, &t);
+      initIntArray(t);
+      SET_VECTOR_ELT(naltCase, j, t);
+
+      numAllocated += createIntArray(npos, &t);
+      initIntArray(t);
+      SET_VECTOR_ELT(naltCtrl, j, t);
+
+      // nCase, nCtrl
+      numAllocated += createIntArray(npos, &t);
+      initIntArray(t);
+      SET_VECTOR_ELT(nCase, j, t);
+
+      numAllocated += createIntArray(npos, &t);
+      initIntArray(t);
+      SET_VECTOR_ELT(nCtrl, j, t);
+
     }  // end looping study
     numAllocated += createStringArray(npos, &pos);
     initStringArray(pos);
@@ -429,6 +589,18 @@ SEXP impl_rvMetaReadData(
     SET_VECTOR_ELT(s, RET_HWE_CTRL_INDEX, hweCtrl);
     SET_VECTOR_ELT(s, RET_AF_CASE_INDEX, afCase);
     SET_VECTOR_ELT(s, RET_AF_CTRL_INDEX, afCtrl);
+    SET_VECTOR_ELT(s, RET_AC_CASE_INDEX, acCase);
+    SET_VECTOR_ELT(s, RET_AC_CTRL_INDEX, acCtrl);
+    SET_VECTOR_ELT(s, RET_CALLRATE_CASE_INDEX, callrateCase);
+    SET_VECTOR_ELT(s, RET_CALLRATE_CTRL_INDEX, callrateCtrl);
+    SET_VECTOR_ELT(s, RET_NREF_CASE_INDEX, nrefCase);
+    SET_VECTOR_ELT(s, RET_NREF_CTRL_INDEX, nrefCtrl);
+    SET_VECTOR_ELT(s, RET_NHET_CASE_INDEX, nhetCase);
+    SET_VECTOR_ELT(s, RET_NHET_CTRL_INDEX, nhetCtrl);
+    SET_VECTOR_ELT(s, RET_NALT_CASE_INDEX, naltCase);
+    SET_VECTOR_ELT(s, RET_NALT_CTRL_INDEX, naltCtrl);
+    SET_VECTOR_ELT(s, RET_N_CASE_INDEX, nCase);
+    SET_VECTOR_ELT(s, RET_N_CTRL_INDEX, nCtrl);
 
     SET_VECTOR_ELT(ret, i, s);
   };
@@ -493,7 +665,7 @@ SEXP impl_rvMetaReadData(
         PVAL_FILE_NHET_COL < 0 || PVAL_FILE_NALT_COL < 0 ||
         PVAL_FILE_USTAT_COL < 0 || PVAL_FILE_SQRTVSTAT_COL < 0 ||
         PVAL_FILE_EFFECT_COL < 0 || PVAL_FILE_PVAL_COL < 0) {
-      REprintf("Study [ %s ] does not have all necessary headers\n",
+      REprintf("Study [ %s ] does not have all required headers.\n",
                FLAG_pvalFile[study].c_str());
     }
 
@@ -557,89 +729,130 @@ SEXP impl_rvMetaReadData(
         }
 
         // af field may have one pvalue or three pvalue (all:case:control)
-        std::vector<std::string> afPvalues;
-        // REprintf("af = %s\n", fd[PVAL_FILE_AF_COL].c_str());
-        stringTokenize(fd[PVAL_FILE_AF_COL], ":", &afPvalues);
-        if (!afPvalues.empty()) {
-          if (str2double(afPvalues[0], &tempDouble)) {
+        std::vector<std::string> values;
+        stringTokenize(fd[PVAL_FILE_AF_COL], ":", &values);
+        if (values.empty()) {
+          REprintf("AF column has incorrect value [ %s ]",
+                   fd[PVAL_FILE_AF_COL].c_str());
+        } else {
+          if (str2double(values[0], &tempDouble)) {
             v = VECTOR_ELT(u, RET_AF_INDEX);
             s = VECTOR_ELT(v, study);  // af
             REAL(s)[idx] = tempDouble;
           }
-          if (afPvalues.size() == 3) {  // af_all:af_case:af_ctrl
-            if (str2double(afPvalues[1], &tempDouble)) {
+          if (values.size() == 3) {  // af_all:af_case:af_ctrl
+            if (str2double(values[1], &tempDouble)) {
               v = VECTOR_ELT(u, RET_AF_CASE_INDEX);
               s = VECTOR_ELT(v, study);  // af
               REAL(s)[idx] = tempDouble;
             }
-            if (str2double(afPvalues[2], &tempDouble)) {
+            if (str2double(values[2], &tempDouble)) {
               v = VECTOR_ELT(u, RET_AF_CTRL_INDEX);
               s = VECTOR_ELT(v, study);  // af
               REAL(s)[idx] = tempDouble;
             }
           }
-        } else {
-          REprintf("AF column has incorrect value [ %s ]",
-                   fd[PVAL_FILE_AF_COL].c_str());
         }
 
-        if (str2int(fd[PVAL_FILE_AC_COL], &tempInt)) {
-          v = VECTOR_ELT(u, RET_AC_INDEX);
-          s = VECTOR_ELT(v, study);  // ac
-          INTEGER(s)[idx] = tempInt;
+        // ac field
+        // if (str2int(fd[PVAL_FILE_AC_COL], &tempInt)) {
+        //   v = VECTOR_ELT(u, RET_AC_INDEX);
+        //   s = VECTOR_ELT(v, study);  // ac
+        //   INTEGER(s)[idx] = tempInt;
+        // }
+        if (assignInt(fd[PVAL_FILE_AC_COL], u, RET_AC_INDEX, RET_AC_CASE_INDEX,
+                      RET_AC_CTRL_INDEX, study, idx)) {
+          REprintf("AC column has incorrect value [ %s ]",
+                   fd[PVAL_FILE_AC_COL].c_str());
         }
 
-        if (str2double(fd[PVAL_FILE_CALLRATE_COL], &tempDouble)) {
-          v = VECTOR_ELT(u, RET_CALLRATE_INDEX);
-          s = VECTOR_ELT(v, study);  // callRate
-          REAL(s)[idx] = tempDouble;
+        // if (str2double(fd[PVAL_FILE_CALLRATE_COL], &tempDouble)) {
+        //   v = VECTOR_ELT(u, RET_CALLRATE_INDEX);
+        //   s = VECTOR_ELT(v, study);  // callRate
+        //   REAL(s)[idx] = tempDouble;
+        // }
+        if (assignDouble(fd[PVAL_FILE_CALLRATE_COL], u, RET_CALLRATE_INDEX,
+                         RET_CALLRATE_CASE_INDEX, RET_CALLRATE_CTRL_INDEX,
+                         study, idx)) {
+          REprintf("CALLRATE column has incorrect value [ %s ]",
+                   fd[PVAL_FILE_CALLRATE_COL].c_str());
         }
 
-        // hwe field may have one pvalue or three pvalue (all:case:control)
-        std::vector<std::string> hwePvalues;
-        // REprintf("hwe = %s\n", fd[PVAL_FILE_HWE_COL].c_str());
-        stringTokenize(fd[PVAL_FILE_HWE_COL], ":", &hwePvalues);
-        if (!hwePvalues.empty()) {
-          if (str2double(hwePvalues[0], &tempDouble)) {
-            v = VECTOR_ELT(u, RET_HWE_INDEX);
-            s = VECTOR_ELT(v, study);  // hwe
-            REAL(s)[idx] = tempDouble;
-          }
-          if (hwePvalues.size() == 3) {  // hwe_all:hwe_case:hwe_ctrl
-            if (str2double(hwePvalues[1], &tempDouble)) {
-              v = VECTOR_ELT(u, RET_HWE_CASE_INDEX);
-              s = VECTOR_ELT(v, study);  // hwe
-              REAL(s)[idx] = tempDouble;
-            }
-            if (str2double(hwePvalues[2], &tempDouble)) {
-              v = VECTOR_ELT(u, RET_HWE_CTRL_INDEX);
-              s = VECTOR_ELT(v, study);  // hwe
-              REAL(s)[idx] = tempDouble;
-            }
-          }
-        } else {
+        // // hwe field may have one pvalue or three pvalue (all:case:control)
+        // std::vector<std::string> hwePvalues;
+        // // REprintf("hwe = %s\n", fd[PVAL_FILE_HWE_COL].c_str());
+        // stringTokenize(fd[PVAL_FILE_HWE_COL], ":", &hwePvalues);
+        // if (!hwePvalues.empty()) {
+        //   if (str2double(hwePvalues[0], &tempDouble)) {
+        //     v = VECTOR_ELT(u, RET_HWE_INDEX);
+        //     s = VECTOR_ELT(v, study);  // hwe
+        //     REAL(s)[idx] = tempDouble;
+        //   }
+        //   if (hwePvalues.size() == 3) {  // hwe_all:hwe_case:hwe_ctrl
+        //     if (str2double(hwePvalues[1], &tempDouble)) {
+        //       v = VECTOR_ELT(u, RET_HWE_CASE_INDEX);
+        //       s = VECTOR_ELT(v, study);  // hwe
+        //       REAL(s)[idx] = tempDouble;
+        //     }
+        //     if (str2double(hwePvalues[2], &tempDouble)) {
+        //       v = VECTOR_ELT(u, RET_HWE_CTRL_INDEX);
+        //       s = VECTOR_ELT(v, study);  // hwe
+        //       REAL(s)[idx] = tempDouble;
+        //     }
+        //   }
+        // } else {
+        //   REprintf("HWE column has incorrect value [ %s ]",
+        //            fd[PVAL_FILE_HWE_COL].c_str());
+        // }
+        if (assignDouble(fd[PVAL_FILE_HWE_COL], u, RET_HWE_INDEX,
+                         RET_HWE_CASE_INDEX, RET_HWE_CTRL_INDEX, study, idx)) {
           REprintf("HWE column has incorrect value [ %s ]",
                    fd[PVAL_FILE_HWE_COL].c_str());
         }
 
-        if (str2int(fd[PVAL_FILE_NREF_COL], &tempInt)) {
-          v = VECTOR_ELT(u, RET_NREF_INDEX);
-          s = VECTOR_ELT(v, study);  // nref
-          INTEGER(s)[idx] = tempInt;
-        }
+        // assign REF, HET, ALT
+        // if (str2int(fd[PVAL_FILE_NREF_COL], &tempInt)) {
+        //   v = VECTOR_ELT(u, RET_NREF_INDEX);
+        //   s = VECTOR_ELT(v, study);  // nref
+        //   INTEGER(s)[idx] = tempInt;
+        // }
 
-        if (str2int(fd[PVAL_FILE_NHET_COL], &tempInt)) {
-          v = VECTOR_ELT(u, RET_NHET_INDEX);
-          s = VECTOR_ELT(v, study);  // nhet
-          INTEGER(s)[idx] = tempInt;
-        }
+        // if (str2int(fd[PVAL_FILE_NHET_COL], &tempInt)) {
+        //   v = VECTOR_ELT(u, RET_NHET_INDEX);
+        //   s = VECTOR_ELT(v, study);  // nhet
+        //   INTEGER(s)[idx] = tempInt;
+        // }
 
-        if (str2int(fd[PVAL_FILE_NALT_COL], &tempInt)) {
-          v = VECTOR_ELT(u, RET_NALT_INDEX);
-          s = VECTOR_ELT(v, study);  // nalt
-          INTEGER(s)[idx] = tempInt;
+        // if (str2int(fd[PVAL_FILE_NALT_COL], &tempInt)) {
+        //   v = VECTOR_ELT(u, RET_NALT_INDEX);
+        //   s = VECTOR_ELT(v, study);  // nalt
+        //   INTEGER(s)[idx] = tempInt;
+        // }
+        if (assignInt(fd[PVAL_FILE_NREF_COL], u, RET_NREF_INDEX,
+                      RET_NREF_CASE_INDEX, RET_NREF_CTRL_INDEX, study, idx)) {
+          REprintf("NREF column has incorrect value [ %s ]",
+                   fd[PVAL_FILE_NREF_COL].c_str());
         }
-
+        if (assignInt(fd[PVAL_FILE_NHET_COL], u, RET_NHET_INDEX,
+                      RET_NHET_CASE_INDEX, RET_NHET_CTRL_INDEX, study, idx)) {
+          REprintf("NHET column has incorrect value [ %s ]",
+                   fd[PVAL_FILE_NHET_COL].c_str());
+        }
+        if (assignInt(fd[PVAL_FILE_NALT_COL], u, RET_NALT_INDEX,
+                      RET_NALT_CASE_INDEX, RET_NALT_CTRL_INDEX, study, idx)) {
+          REprintf("NALT column has incorrect value [ %s ]",
+                   fd[PVAL_FILE_NALT_COL].c_str());
+        }
+        INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_N_CASE_INDEX), study))[idx] =
+            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CASE_INDEX), study))[idx] +
+            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CASE_INDEX), study))[idx] +
+            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CASE_INDEX), study))[idx];
+        
+        INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_N_CTRL_INDEX), study))[idx] =
+            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CTRL_INDEX), study))[idx] +
+            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CTRL_INDEX), study))[idx] +
+            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CTRL_INDEX), study))[idx];
+        
         if (str2double(fd[PVAL_FILE_USTAT_COL], &tempDouble)) {
           v = VECTOR_ELT(u, RET_USTAT_INDEX);
           s = VECTOR_ELT(v, study);  // ustat
@@ -760,19 +973,18 @@ SEXP impl_rvMetaReadData(
         tr.mergeRange();
         std::string line;
         std::vector<std::string> fd;
-        
+
         while (tr.readLine(&line)) {
-        
-        // while (true) {
-          
-        // PROFILE_SCOPE("inside cov loop") ;
-        // PROFILE_NAME_START("trReadLine");
-          
+          // while (true) {
+
+          // PROFILE_SCOPE("inside cov loop") ;
+          // PROFILE_NAME_START("trReadLine");
+
           //   bool tmpBool = tr.readLine(&line);
           // PROFILE_NAME_STOP("trReadLine");
-          
+
           // if (!tmpBool) break;
-          
+
           // REprintf("line = %s\n", line.c_str());
           stringNaturalTokenize(line, " \t", &fd);
           if ((int)fd.size() <= COV_FILE_MIN_COLUMN_NUM) continue;
@@ -782,7 +994,6 @@ SEXP impl_rvMetaReadData(
           stringNaturalTokenize(fd[COV_FILE_POS_COL], ',', &pos);
           stringNaturalTokenize(fd[COV_FILE_COV_COL], ':', &covArray);
           stringNaturalTokenize(covArray[0], ',', &cov);
-          
 
           if (pos.empty()) {
             REprintf("No position found in [ %s ]\n", line.c_str());
@@ -809,10 +1020,11 @@ SEXP impl_rvMetaReadData(
             continue;
           }
           int posi = location2idx.find(pi)->second;
-          // REprintf("%s:%d Pos %s = %d, covLen = %d\n", __FILE__, __LINE__, pi.c_str(), posi, covLen);
+          // REprintf("%s:%d Pos %s = %d, covLen = %d\n", __FILE__, __LINE__,
+          // pi.c_str(), posi, covLen);
           std::string pj;
           double tmp;
-          
+
           for (size_t j = 0; j < pos.size(); ++j) {
             pj = chrom + ":" + pos[j];
             if (location2idx.count(pj) == 0) {
@@ -825,7 +1037,7 @@ SEXP impl_rvMetaReadData(
               REAL(s)[posj * covLen + posi] = tmp;
             }
           }
-          
+
           // check if we have covXZ and covZZ fields
           if (covArray.size() == 1) continue;
 
@@ -908,7 +1120,7 @@ SEXP impl_rvMetaReadDataByRange(SEXP arg_pvalFile, SEXP arg_covFile,
   }
 
   // PROFILE_DUMP();
-  
+
   return impl_rvMetaReadData(arg_pvalFile, arg_covFile, geneRange);
 }  // impl_rvMetaReadDataByRange
 

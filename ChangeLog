@@ -1,3 +1,7 @@
+2015-06-02  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Support load summary statistics for binary trait
+
 2015-05-19  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Add timeout = 3 seconds when checking new version

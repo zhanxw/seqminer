@@ -406,14 +406,15 @@ tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsF
 .onAttach <- function(libname, pkgname){
   newVersionLink = "http://zhanxw.com/seqminer/version"
   timeout <- options("timeout")$timeout
+  warn <- options("warn")$warn
   options(timeout = 3)
   options(warn = -1)
   conn <- url(newVersionLink)
-  ret <- capture.output(tryCatch(readLines(conn, n = 2), error = function(e) {NULL}))
+  ret <- tryCatch(readLines(conn, n = 2), error = function(e) {NULL})
   close(conn)
-  options(warn = 0)
+  options(warn = warn)
   options(timeout = timeout)
-  
+
   if (!is.null(ret) && length(ret) == 2) {
     version <- ret[1]
     if (utils::packageVersion("seqminer") < version) {
