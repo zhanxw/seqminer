@@ -1,3 +1,7 @@
+2015-06-07  Xiaowei Zhan  <zhanxw@dumbo.csgstat.sph.umich.edu>
+
+	* Not suport Solaris 10 due to difficulties in setting up build env.
+
 2015-06-02  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Support load summary statistics for binary trait
