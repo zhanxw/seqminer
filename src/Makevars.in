@@ -2,8 +2,6 @@
 ## CC=@CC@
 ## CXX=@CXX@
 
-## refer: 1.2.4 Using C++11 code
-CXX_STD = CXX11
 
 PKG_CFLAGS=@PKG_CFLAGS@
 PKG_CXX1XFLAGS=@PKG_CXX1XFLAGS@

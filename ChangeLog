@@ -1,4 +1,8 @@
-2015-06-07  Xiaowei Zhan  <zhanxw@dumbo.csgstat.sph.umich.edu>
+2015-06-17  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Remove C++11 support. Not all R platforms has C++11 compiler
+
+2015-06-07  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Not suport Solaris 10 due to difficulties in setting up build env.
 

@@ -7,21 +7,13 @@ if test -z "${R_HOME}"; then
    exit 1
 fi
 
-dnl config for C++11 compiler
-dnl borrowed from: https://github.com/cran/dfmta/blob/master/configure.ac
+dnl adopted from: https://github.com/cran/dfmta/blob/master/configure.ac
 AC_DEFUN([AX_GET_R_CONF_VAR],[$1=`"${R_HOME}/bin/R" CMD config $1`])
 AX_GET_R_CONF_VAR([CC])
 AX_GET_R_CONF_VAR([CFLAGS])
+AX_GET_R_CONF_VAR([CXX])
 AX_GET_R_CONF_VAR([CPPFLAGS])
-AX_GET_R_CONF_VAR([CXXCPP])
-AX_GET_R_CONF_VAR([CXX1X])
-AX_GET_R_CONF_VAR([CXX1XSTD])
-AX_GET_R_CONF_VAR([CXX1XFLAGS])
-AX_GET_R_CONF_VAR([CXX1XXPICFLAGS])
-
-CXX="${CXX1X} ${CXX1XSTD}"
-CXXFLAGS="${CXX1XFLAGS} ${CXX1XPICFLAGS}"
-CXXPICFLAGS="${CXX1XXPICFLAGS}"
+AX_GET_R_CONF_VAR([CXXFLAGS])
 
 dnl skip checking C compilers as we also need to check C++ compiler
 dnl AC_LANG(C)
@@ -65,7 +57,7 @@ AC_MSG_RESULT([yes])], [AC_MSG_RESULT([no])])
 
 
 AC_SUBST([PKG_CFLAGS], ["-D_USE_KNETFILE -I. ${CFLAGS}"])
-AC_SUBST([PKG_CXX1XFLAGS], ["-D_USE_KNETFILE -I. ${CPPFLAGS} ${CXX1XFLAGS}"])
+AC_SUBST([PKG_CXX1XFLAGS], ["-D_USE_KNETFILE -I. ${CPPFLAGS} ${CXXFLAGS}"])
 AC_SUBST([PKG_LIBS], ["-lz -lm ${LIB_BZIP2}"])
 
 AC_CONFIG_FILES([src/Makevars])

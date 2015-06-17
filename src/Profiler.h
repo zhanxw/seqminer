@@ -1,12 +1,10 @@
 #ifndef _PROFILER_H_
 #define _PROFILER_H_
 
-#include <unordered_map>
+#include <map>
 #include <string>
 
 #include "SimpleTimer.h"
-
-class AccurateTimer;
 
 class Profiler {
  public:
@@ -34,7 +32,7 @@ class Profiler {
   };
 
  private:
-  static std::unordered_map<std::string, Metric> data;
+  static std::map<std::string, Metric> data;
 };
 
 #define PROFILE_DUMP() Profiler::dump();
