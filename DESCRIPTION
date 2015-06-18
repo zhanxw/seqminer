@@ -18,8 +18,6 @@ URL: http://seqminer.genomic.codes
 Packaged: 2014-04-14 05:00:07 UTC; root
 Repository: CRAN
 Date/Publication: 2013-01-20 17:22:08
-Depends:
-    stringr
 Suggests:
     testthat, SKAT
 SystemRequirements: zlib headers and libraries, optionally also bzip2 and POSIX-compliant regex functions.

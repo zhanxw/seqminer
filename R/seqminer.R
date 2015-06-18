@@ -374,7 +374,7 @@ tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsF
   body <- .Call("readTabixByRange", tabixFile, tabixRange, PACKAGE="seqminer");
 
   ## parse body to a table
-  body <- do.call(rbind, str_split(body, "\t"))
+  body <- do.call(rbind, strsplit(body, "\t"))
   body <- as.data.frame(body, stringsAsFactors = FALSE)
   if (ncol(body) > 0) {
     for (i in 1:ncol(body)) {
@@ -387,8 +387,8 @@ tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsF
       colNames <- paste0("V", 1L:num.col)
     } else {
       hdrLine <- header[length(header)]
-      hdrLine <- str_replace(hdrLine, "^#", "")
-      colNames <- make.names(str_split(hdrLine, "\t")[[1]])
+      hdrLine <- sub("^#", "", hdrLine)
+      colNames <- make.names(strsplit(hdrLine, "\t")[[1]])
       if (length(colNames) > ncol(body)) {
         colNames <- colNames[1:ncol(body)]
       } else if (length(colNames) < ncol(body)) {
@@ -433,7 +433,6 @@ tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsF
 #' @param scoreTestFiles character vector, score test output files (rvtests outputs using --meta score)
 #' @return a list of statistics fitted under the null mode (without genetic effects)
 #' @export
-#' @import stringr
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
 #' @examples
 #' scoreFileName = system.file("rvtests/rvtest.MetaScore.assoc.anno.gz", package = "seqminer")
@@ -466,9 +465,8 @@ rvmeta.readNullModel <- function(scoreTestFiles) {
     if (is.null(ret) || length(ret) < 1) {
       return(numeric(0))
     }
-    ## library(stringr)
     ## ret <- read.null.model(ret)
-    ret <- lapply(ret, function(x) { str_split(str_replace(x, "## - ", ""), "\t")[[1]]})
+    ret <- lapply(ret, function(x) { strsplit(sub("## - ", "", x), "\t")[[1]]})
     cnames <- ret[[1]]
     ret[[1]] <- NULL
     rnames <- lapply(ret, function(x) {x[1]})
@@ -584,16 +582,16 @@ tabix.createIndex.meta <- function(bgzipFile) {
 ## Annotations --------------------
 ##################################################
 
-#' validate the @param inVcf can be opened, and @param outtVcf can be write to
-#' will stop if errors occur
-#' @param inVcf: input file
-#' @param outVcf: output file
+#' validate the inVcf can be created, and outVcf can be write to.
+#' will stop if any error occurs
+#' @param inVcf input file
+#' @param outVcf output file
 #' @return NULL
 verifyFilename <- function(inVcf, outVcf) {
   if (!file.exists(inVcf)) {
     stop("Cannot open input file")
   }
-  tryCatch(file.create(outVcf), warning = function(w) {stop("Cannot create output file")})
+  tryCatch(file.create(outVcf), warning = function(w) {stop(gettextf("Cannot create output file: %s", outVcf))})
 }
 
 #' Validate annotate parameter is valid
@@ -645,9 +643,9 @@ validateAnnotationParameter <- function(param, debug = FALSE) {
   }
   if (!is.null(param$bed)) {
     ##library(stringr)
-    opt <- str_split(param$bed, ",")
+    opt <- strsplit(param$bed, ",")
     n <- length(opt)
-    parsed <- lapply(opt, function(x){unlist(str_split(x, "="))})
+    parsed <- lapply(opt, function(x){unlist(strsplit(x, "="))})
     for (i in seq_along(n)) {
       if (length(parsed[[i]]) != 2) {
         status <- FALSE
@@ -663,9 +661,9 @@ validateAnnotationParameter <- function(param, debug = FALSE) {
   }
   if (!is.null(param$genomeScore)) {
     ##library(stringr)
-    opt <- str_split(param$genomeScore, ",")
+    opt <- strsplit(param$genomeScore, ",")
     n <- length(opt)
-    parsed <- lapply(opt, function(x){unlist(str_split(x, "="))})
+    parsed <- lapply(opt, function(x){unlist(strsplit(x, "="))})
     for (i in seq_along(n)) {
       if (length(parsed[[i]]) != 2) {
         status <- FALSE
@@ -681,9 +679,9 @@ validateAnnotationParameter <- function(param, debug = FALSE) {
   }
   if (!is.null(param$tabix)) {
     ##library(stringr)
-    opt <- str_split(param$tabix, "),")
+    opt <- strsplit(param$tabix, "),")
     n <- length(opt)
-    parsed <- lapply(opt, function(x){unlist(str_split(x, "\\("))})
+    parsed <- lapply(opt, function(x){unlist(strsplit(x, "\\("))})
     for (i in seq_along(n)) {
       if (length(parsed[[i]]) != 2) {
         status <- FALSE
