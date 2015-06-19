@@ -1,3 +1,7 @@
+2015-06-18  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Remove stringr dependency
+
 2015-06-17  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Remove C++11 support. Not all R platforms has C++11 compiler
