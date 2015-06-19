@@ -27,6 +27,19 @@ class SimpleTimer {
   int _elapsed;
 };
 
+
+//////////////////////////////////////////////////
+// Accurate timer is platform dependent and also language (C++11) dependent
+// We use a series of preprocessors below.
+// make sure at most one of the following preprocessor is set
+// _USE_CXX11, _WIN32, _linux_, __APPLE__
+
+#if !defined(_UES_CXX11) && !defined(_WIN32) && !defined(_linux) && !defined __APPLE__
+#pragma message "Use crude timer"
+class AccurateTimer: public SimpleTimer {};
+#endif
+
+
 #ifdef _USE_CXX11
 //////////////////////////////////////////////////
 // C++11 standard version of accurate timer
@@ -58,10 +71,51 @@ class AccurateTimer {
 
   double _elapsed;
 };
+#endif
 
-#else
+#ifdef __APPLE__
+#pragma message "Use native Apple Timer"
+#include <time.h>
+#include <sys/time.h>
+#include <mach/clock.h>
+#include <mach/mach.h>
 
-#ifndef _WIN32 
+class AccurateTimer {
+public:
+  AccurateTimer() {
+    start();
+    _elapsed = 0.;    
+  }
+  void start() { clock_gettime(&_start);
+  }
+  double stop() {
+    clock_gettime(&_end);
+    _elapsed += (_end.tv_sec - _start.tv_sec) + 1.0e-9 * (_end.tv_nsec - _start.tv_nsec);
+    return _elapsed;
+  }
+  void restart() { clock_gettime(&_start); }
+  double getSeconds() { return _elapsed; }
+
+ private:
+  void clock_gettime(struct timespec* ts) {
+    clock_serv_t cclock;
+    mach_timespec_t mts;
+    host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+    clock_get_time(cclock, &mts);
+    mach_port_deallocate(mach_task_self(), cclock);
+    ts->tv_sec = mts.tv_sec;
+    ts->tv_nsec = mts.tv_nsec;
+  }
+ private:
+  struct timespec _start;
+  struct timespec _end;
+  
+  double _elapsed;
+};
+
+#endif
+
+#ifdef _linux_
 //////////////////////////////////////////////////
 // Linux/BSD high accuracy timer
 #include <ctime>
@@ -86,9 +140,9 @@ public:
   
   double _elapsed;
 };
+#endif
 
-#else
-
+#ifdef _WIN32
 //////////////////////////////////////////////////
 // Windows version of accurate timer
 
@@ -126,7 +180,6 @@ public:
   double _elapsed;
 };
 
+#endif  // end #ifdef _WIN32
 
-#endif  // end #ifndef _WIN32
-#endif // end _USE_CXX11
 #endif /* _SIMPLETIMER_H_ */
