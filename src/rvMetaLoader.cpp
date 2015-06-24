@@ -667,6 +667,8 @@ SEXP impl_rvMetaReadData(
         PVAL_FILE_EFFECT_COL < 0 || PVAL_FILE_PVAL_COL < 0) {
       REprintf("Study [ %s ] does not have all required headers.\n",
                FLAG_pvalFile[study].c_str());
+      continue;
+      
     }
 
     // loop per gene
@@ -954,6 +956,8 @@ SEXP impl_rvMetaReadData(
           COV_FILE_POS_COL < 0 || COV_FILE_COV_COL < 0) {
         REprintf("Study [ %s ] does not have all necessary headers\n",
                  FLAG_covFile[study].c_str());
+        continue;
+        
       }
 
       // loop per gene
@@ -1175,17 +1179,18 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
                                           .add(COV_FILE_COV_COL)
                                           .max();
 
-  if (COV_FILE_CHROM_COL < 0 && COV_FILE_START_COL < 0 &&
-      COV_FILE_END_COL < 0 && COV_FILE_NUM_MARKER_COL < 0 &&
-      COV_FILE_POS_COL < 0 && COV_FILE_COV_COL < 0) {
+  if (COV_FILE_CHROM_COL < 0 || COV_FILE_START_COL < 0 ||
+      COV_FILE_END_COL < 0 || COV_FILE_NUM_MARKER_COL < 0 ||
+      COV_FILE_POS_COL < 0 || COV_FILE_COV_COL < 0) {
     REprintf("File [ %s ] does not have all necessary headers\n",
              FLAG_covFile.c_str());
+    return ret;
   }
 
   // Rprintf("open %s\n", FLAG_covFile.c_str());
   tabix_t* t = ti_open(FLAG_covFile.c_str(), 0);
   if (t == 0) {
-    REprintf("Cannot open %s file!\n", FLAG_covFile.c_str());
+    // REprintf("Cannot open %s file!\n", FLAG_covFile.c_str());
     return ret;
   }
   // Rprintf("open OK\n");
