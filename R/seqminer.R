@@ -727,6 +727,26 @@ makeAnnotationParameter <- function(param = NULL) {
       ret[[names(param)[i]]] <- param[[i]]
     }
   }
+  ## expand tilde
+  if(!is.null(ret$reference)) {
+    ret$reference <- path.expand(ret$reference)
+  }
+  if(!is.null(ret$geneFile)) {
+    ret$geneFile <- path.expand(ret$geneFile)
+  }
+  if(!is.null(ret$codonFile)) {
+    ret$codonFile <- path.expand(ret$codonFile)
+  }
+  if(!is.null(ret$priorityFile)) {
+    ret$priorityFile <- path.expand(ret$priorityFile)
+  }
+  if(!is.null(ret$bed)) {
+    ret$bed <- gsub(pattern = "~", replacement = path.expand("~"), x = ret$bed)
+  }
+  if(!is.null(ret$tabix)) {
+    ret$tabix <- gsub(pattern = "~", replacement = path.expand("~"), x = ret$tabix)
+  }
+
   ## print(ret)
   ret
 }
@@ -917,10 +937,10 @@ download.annotation.resource <- function(outputDirectory) {
   ## download function
   download <- function(url) {
     fn <- basename(url)
-    if (file.exists(fn)) {
+    destfile <- file.path(outDir, fn)
+    if (file.exists(destfile)) {
       warning(gettextf("Overwriting %s", fn))
     }
-    destfile <- file.path(outDir, fn)
     download.file(url, destfile)
   }
   ## download resources

@@ -6,7 +6,9 @@ library(seqminer)
 ## Now we are able to query the summary statistics file by region or by gene
 ## e.g. Extract by region
 ##
-## A quick way to obtain all summary statistics from score statistic file:
+## A quick way to obtain all summary statistics from score statistic file.
+## Here we used a summary statistics file that have been annotated.
+## For how to annotate the summary statistics file, see demo(annotate, package = "seqminer")
 score.file <- system.file("rvtests/rvtest.MetaScore.assoc.anno.gz", package = "seqminer")
 stats <- rvmeta.readScoreByRange(score.file,
                                     "1:196621000-196623000")
