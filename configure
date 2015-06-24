@@ -2034,6 +2034,17 @@ CXX=`"${R_HOME}/bin/R" CMD config CXX`
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: CC = $CC" >&5
+$as_echo "$as_me: CC = $CC" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: CFLAGS = $CFLAGS" >&5
+$as_echo "$as_me: CFLAGS = $CFLAGS" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: CXX = $CXX" >&5
+$as_echo "$as_me: CXX = $CXX" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: CPPFLAGS = $CPPFLAGS" >&5
+$as_echo "$as_me: CPPFLAGS = $CPPFLAGS" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: CXXFLAGS = $CXXFLAGS" >&5
+$as_echo "$as_me: CXXFLAGS = $CXXFLAGS" >&6;}
+
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'

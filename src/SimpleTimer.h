@@ -32,9 +32,9 @@ class SimpleTimer {
 // Accurate timer is platform dependent and also language (C++11) dependent
 // We use a series of preprocessors below.
 // make sure at most one of the following preprocessor is set
-// _USE_CXX11, _WIN32, _linux_, __APPLE__
+// _USE_CXX11, _WIN32, __linux, __APPLE__
 
-#if !defined(_UES_CXX11) && !defined(_WIN32) && !defined(_linux) && !defined __APPLE__
+#if !defined(_UES_CXX11) && !defined(_WIN32) && !defined(__linux) && !defined __APPLE__
 #pragma message "Use crude timer"
 class AccurateTimer: public SimpleTimer {};
 #endif
@@ -115,7 +115,7 @@ public:
 
 #endif
 
-#ifdef _linux_
+#ifdef __linux
 //////////////////////////////////////////////////
 // Linux/BSD high accuracy timer
 #include <ctime>

@@ -15,6 +15,13 @@ AX_GET_R_CONF_VAR([CXX])
 AX_GET_R_CONF_VAR([CPPFLAGS])
 AX_GET_R_CONF_VAR([CXXFLAGS])
 
+dnl print out flags to ease debugging
+AC_MSG_NOTICE([CC = $CC])
+AC_MSG_NOTICE([CFLAGS = $CFLAGS])
+AC_MSG_NOTICE([CXX = $CXX])
+AC_MSG_NOTICE([CPPFLAGS = $CPPFLAGS])
+AC_MSG_NOTICE([CXXFLAGS = $CXXFLAGS])
+
 dnl skip checking C compilers as we also need to check C++ compiler
 dnl AC_LANG(C)
 dnl AC_PROG_CC

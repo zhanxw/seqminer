@@ -87,7 +87,7 @@ pause <- readline("Hit ENTER to continue...")
 
 ## Thanks for using seqminer
 ## You can send feedbacks/comments to:
-##   Xiaowei Zhan <zhanxw@gmail.com> or
+##   Xiaowei Zhan <zhanxw@gmail.com> and
 ##   Dajiang Liu <dajiang.liu@psu.edu>
 ## More documentations
-##   http://zhanxw.github.io/anno/
+##   http://zhanxw.com/seqminer/
