@@ -815,6 +815,7 @@ annotateVcf <- function(inVcf, outVcf, params) {
   storage.mode(inVcf) <- "character"
   storage.mode(outVcf) <- "character"
   .Call("anno", inVcf, outVcf, params)
+  invisible(NULL)
 }
 
 #' Annotate a plain text file
@@ -844,6 +845,7 @@ annotatePlain <- function(inFile, outFile, params) {
   storage.mode(inFile) <- "character"
   storage.mode(outFile) <- "character"
   .Call("anno", inFile, outFile, params)
+  invisible(NULL)
 }
 
 #' Test whether a vector of positions are inside given ranges
@@ -879,3 +881,71 @@ getCovPair <- function(covData, rangeList1, rangeList2) {
   dimnames(ret) <- list(pos[idx1], pos[idx2])
   ret
 }
+
+#' Test whether directory is writable
+#' @param outDir the name of the directory
+#' @return TRUE if the file is writable
+#' isDirWritable("~")
+isDirWritable <- function(outDir) {
+  name <- tempfile(tmpdir = outDir, fileext = "tmp")
+  ret <- file.create(name, showWarnings = FALSE)
+  if (ret) {
+    unlink(name)
+  }
+  return (ret)
+}
+
+#' Download annotation resources to a directory
+#' @param outputDirectory the directory to store annotation resources
+#' @return will not return anything
+#' @export
+#' @examples
+#' \dontrun{
+#' download.annotation.resource("/tmp")
+#' }
+download.annotation.resource <- function(outputDirectory) {
+  outDir = outputDirectory
+  ## prepare a writable dir
+  if (!dir.exists(outDir)) {
+    message(gettextf("Create output directory: %s", outDir))
+    dir.create(outDir, recursive = TRUE)
+  }
+  if (!isDirWritable(outDir)) {
+    stop(gettextf("Unable to write to directory: %s", outDir))
+  }
+
+  ## download function
+  download <- function(url) {
+    fn <- basename(url)
+    if (file.exists(fn)) {
+      warning(gettextf("Overwriting %s", fn))
+    }
+    destfile <- file.path(outDir, fn)
+    download.file(url, destfile)
+  }
+  ## download resources
+  message("Begin download TabAnno resource files (human hg19)...")
+
+
+  message("Download reference file and its index:")
+  download("http://qbrc.swmed.edu/zhanxw/software/anno/resources/hs37d5.fa")
+  download("http://qbrc.swmed.edu/zhanxw/software/anno/resources/hs37d5.fa.fai")
+
+  message("Download gene definition:")
+  download("http://qbrc.swmed.edu/zhanxw/software/anno/resources/refFlat_hg19.txt.gz")
+
+  message("Download TabAnno codon definition and annotation priority files:")
+  download("http://qbrc.swmed.edu/zhanxw/software/anno/codon.txt")
+  download("http://qbrc.swmed.edu/zhanxw/software/anno/priority.txt")
+
+  message("Download completed")
+  message(gettextf("You can begin to use it:"))
+  message(gettextf(" param <- makeAnnotationParameter(list(reference = \"%s\", geneFile = \"%s\", codonFile = \"%s\", priorityFile = \"%s\" ))",
+                   file.path(outDir, "hs37d5.fa"),
+                   file.path(outDir, "refFlat_hg19.txt.gz"),
+                   file.path(outDir, "codon.txt"),
+                   file.path(outDir, "priority.txt")))
+  invisible(NULL)
+}
+
+

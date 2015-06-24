@@ -83,7 +83,7 @@ genotypeList <- readVCFToListByGene(fileName = output,
                                     vcfIndv = "GT")
 print(genotypeList)
 print(genotypeList)
-pause <- readline("Hit ENTER to continue...")
+pause <- readline("Hit ENTER to quit...")
 
 ## Thanks for using seqminer
 ## You can send feedbacks/comments to:

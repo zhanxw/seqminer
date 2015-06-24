@@ -12,7 +12,7 @@ stats <- rvmeta.readScoreByRange(score.file,
                                     "1:196621000-196623000")
 print(stats)
 
-## You can also read covariance from covariance file:
+## You can also read covariances from covariance file:
 cov.file <- system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
 stats <- rvmeta.readCovByRange(score.file,
                                     "1:196621000-196623000")
@@ -31,7 +31,7 @@ stats <- rvmeta.readDataByGene(score.file, cov.file, geneFile = gene.file,
                                gene = "CFH")
 
 print(stats)
-pause <- readline("Hit ENTER to continue...")
+pause <- readline("Hit ENTER to quit...")
 
 ## Thanks for using seqminer
 ## You can send feedbacks/comments to:
