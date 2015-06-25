@@ -1,3 +1,7 @@
+2015-06-25  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Fix UBSAN reported error: when NA_INTEGER + NA_INTEGER causes int overflow
+
 2015-06-18  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Remove stringr dependency
