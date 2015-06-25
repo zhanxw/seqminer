@@ -120,7 +120,7 @@ readVCFToMatrixByRange <- function(fileName, range, annoType) {
   storage.mode(range)    <- "character"
   storage.mode(annoType) <- "character"
   .Call("readVCFToMatrixByRange", fileName, range, annoType, PACKAGE="seqminer");
-};
+}
 
 #' Read a gene from VCF file and return a genotype matrix
 #'
@@ -145,7 +145,7 @@ readVCFToMatrixByGene <- function(fileName, geneFile, geneName, annoType) {
   storage.mode(geneName) <- "character"
   storage.mode(annoType) <- "character"
   .Call("readVCFToMatrixByGene", fileName, geneFile, geneName, annoType, PACKAGE="seqminer");
-};
+}
 
 #' Read information from VCF file in a given range and return a list
 #'
@@ -172,7 +172,7 @@ readVCFToListByRange <- function(fileName, range, annoType, vcfColumn, vcfInfo, 
   storage.mode(vcfInfo)  <- "character"
   storage.mode(vcfIndv)  <- "character"
   .Call("readVCFToListByRange", fileName, range, annoType, vcfColumn, vcfInfo, vcfIndv, PACKAGE="seqminer");
-};
+}
 
 #' Read information from VCF file in a given range and return a list
 #'
@@ -204,7 +204,7 @@ readVCFToListByGene <- function(fileName, geneFile, geneName, annoType, vcfColum
   storage.mode(vcfInfo)  <- "character"
   storage.mode(vcfIndv)  <- "character"
   .Call("readVCFToListByGene", fileName, geneFile, geneName, annoType, vcfColumn, vcfInfo, vcfIndv, PACKAGE="seqminer");
-};
+}
 
 #' Read association statistics by gene from METAL-format files. Both score statistics and covariance statistics will be extracted.
 #'
@@ -233,7 +233,7 @@ rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName) 
   } else {
     .Call("rvMetaReadDataByGene", scoreTestFiles, covFiles, geneFile, geneName, PACKAGE="seqminer");
   }
-};
+}
 
 #' Read association statistics by range from METAL-format files. Both score statistics and covariance statistics will be extracted.
 #'
@@ -278,7 +278,7 @@ rvmeta.readCovByRange <- function(covFile, tabixRange) {
   storage.mode(covFile) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readCovByRange", covFile, tabixRange, PACKAGE="seqminer");
-};
+}
 
 #' Read score test statistics by range from METAL-format files.
 #'
@@ -295,7 +295,7 @@ rvmeta.readScoreByRange <- function(scoreTestFiles, tabixRange) {
   storage.mode(scoreTestFiles) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readScoreByRange", scoreTestFiles, tabixRange, PACKAGE="seqminer");
-};
+}
 
 #' Read skew by range from METAL-format files.
 #'
@@ -312,7 +312,7 @@ rvmeta.readSkewByRange <- function(skewFile, tabixRange) {
   storage.mode(skewFile) <- "character"
   storage.mode(tabixRange) <- "character"
   .Call("readSkewByRange", skewFile, tabixRange, PACKAGE="seqminer");
-};
+}
 
 #' Read tabix file, similar to running tabix in command line.
 #'
@@ -480,7 +480,7 @@ rvmeta.readNullModel <- function(scoreTestFiles) {
   }
   ret <- lapply(scoreTestFiles, function(x) { model.to.matrix(read.null.model(x))})
   ret
-};
+}
 
 #' Write score-based association statistics files.
 #'
@@ -502,6 +502,7 @@ rvmeta.writeScoreData <- function (rvmetaData, outName, createIndex = FALSE) {
   if (createIndex) {
     tabix.createIndex.meta(outName)
   }
+  invisible(NULL)
 }
 
 #' Write covariance association statistics files.
@@ -516,11 +517,12 @@ rvmeta.writeScoreData <- function (rvmetaData, outName, createIndex = FALSE) {
 #' covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
 #' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
 #' cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
-#' rvmeta.writeCovData(cfh, "cfh.MetaCov.assoc")
+#' rvmeta.writeCovData(cfh, "cfh.MetaCov.assoc.gz")
 rvmeta.writeCovData <- function (rvmetaData, outName) {
   storage.mode(outName) <- "character"
   .Call("rvMetaWriteCovData", rvmetaData, outName, PACKAGE="seqminer");
   tabix.createIndex.meta(outName)
+  invisible(NULL)
 }
 
 #' Create tabix index file, similar to running tabix in command line.
@@ -546,6 +548,7 @@ tabix.createIndex <- function(bgzipFile, sequenceColumn = 1, startColumn = 4, en
   storage.mode(metaChar) <- "character"
   storage.mode(skipLines) <- "integer"
   .Call("createTabixIndex", bgzipFile, sequenceColumn, startColumn, endColumn, metaChar, skipLines, PACKAGE="seqminer");
+  invisible(NULL)
 }
 
 #' Create tabix index for bgzipped VCF file
@@ -560,6 +563,7 @@ tabix.createIndex <- function(bgzipFile, sequenceColumn = 1, startColumn = 4, en
 tabix.createIndex.vcf <- function(bgzipVcfFile) {
   stopifnot(file.exists(bgzipVcfFile))
   tabix.createIndex(bgzipVcfFile, 1, 2, 0, '#', 0)
+  invisible(NULL)
 }
 
 #' Create tabix index for bgzipped MetaScore/MetaCov file
@@ -576,6 +580,7 @@ tabix.createIndex.vcf <- function(bgzipVcfFile) {
 tabix.createIndex.meta <- function(bgzipFile) {
   stopifnot(file.exists(bgzipFile))
   tabix.createIndex(bgzipFile, 1, 2, 2, '#', 0)
+  invisible(NULL)
 }
 
 ##################################################

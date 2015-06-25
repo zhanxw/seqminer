@@ -113,8 +113,9 @@ int sumInt(const int a, const int b, const int c) {
   if (a == NA_INTEGER || b == NA_INTEGER || c == NA_INTEGER) {
     return NA_INTEGER;
   }
-  return (a + b +c);
+  return (a + b + c);
 }
+
 /**
  * Assign values in @param val separated by ":" to
  * u[idx1, idx2, idx3][study][idx]
@@ -147,7 +148,7 @@ int assignInt(const std::string& val, SEXP u, int idx1, int idx2, int idx3,
       s = VECTOR_ELT(v, study);  // af_ctrl
       INTEGER(s)[idx] = temp;
     }
-  } 
+  }
   return 0;
 }
 
@@ -176,7 +177,7 @@ int assignDouble(const std::string& val, SEXP u, int idx1, int idx2, int idx3,
       s = VECTOR_ELT(v, study);  // af
       REAL(s)[idx] = tempDouble;
     }
-  } 
+  }
   return 0;
 }
 
@@ -674,7 +675,6 @@ SEXP impl_rvMetaReadData(
       REprintf("Study [ %s ] does not have all required headers.\n",
                FLAG_pvalFile[study].c_str());
       continue;
-      
     }
 
     // loop per gene
@@ -852,15 +852,21 @@ SEXP impl_rvMetaReadData(
                    fd[PVAL_FILE_NALT_COL].c_str());
         }
         INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_N_CASE_INDEX), study))[idx] =
-            sumInt(INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CASE_INDEX), study))[idx],
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CASE_INDEX), study))[idx] ,
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CASE_INDEX), study))[idx]);
-        
-        INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_N_CTRL_INDEX), study))[idx] = sumInt(
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CTRL_INDEX), study))[idx] ,
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CTRL_INDEX), study))[idx] ,
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CTRL_INDEX), study))[idx]);
-        
+            sumInt(INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CASE_INDEX),
+                                      study))[idx],
+                   INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CASE_INDEX),
+                                      study))[idx],
+                   INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CASE_INDEX),
+                                      study))[idx]);
+
+        INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_N_CTRL_INDEX), study))[idx] =
+            sumInt(INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CTRL_INDEX),
+                                      study))[idx],
+                   INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CTRL_INDEX),
+                                      study))[idx],
+                   INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CTRL_INDEX),
+                                      study))[idx]);
+
         if (str2double(fd[PVAL_FILE_USTAT_COL], &tempDouble)) {
           v = VECTOR_ELT(u, RET_USTAT_INDEX);
           s = VECTOR_ELT(v, study);  // ustat
@@ -963,7 +969,6 @@ SEXP impl_rvMetaReadData(
         REprintf("Study [ %s ] does not have all necessary headers\n",
                  FLAG_covFile[study].c_str());
         continue;
-        
       }
 
       // loop per gene

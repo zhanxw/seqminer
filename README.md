@@ -5,7 +5,7 @@ seqminer
 
 Efficiently Read Sequence Data (VCF Format, BCF Format and METAL Format) into R
 
-Quick introduction is available: http://zhanxw.com/seqminer/
+Quick introduction is available: http://seqminer.genomic.codes/
 
 Install the latest stable version:
 
