@@ -109,6 +109,12 @@ size_t findCovariateDimension(const std::string& fn, int column) {
   return ret;
 }
 
+int sumInt(const int a, const int b, const int c) {
+  if (a == NA_INTEGER || b == NA_INTEGER || c == NA_INTEGER) {
+    return NA_INTEGER;
+  }
+  return (a + b +c);
+}
 /**
  * Assign values in @param val separated by ":" to
  * u[idx1, idx2, idx3][study][idx]
@@ -133,15 +139,15 @@ int assignInt(const std::string& val, SEXP u, int idx1, int idx2, int idx3,
   if (values.size() == 3) {  // af_all:af_case:af_ctrl
     if (str2int(values[1], &temp)) {
       v = VECTOR_ELT(u, idx2);
-      s = VECTOR_ELT(v, study);  // af
+      s = VECTOR_ELT(v, study);  // af_case
       INTEGER(s)[idx] = temp;
     }
     if (str2int(values[2], &temp)) {
       v = VECTOR_ELT(u, idx3);
-      s = VECTOR_ELT(v, study);  // af
+      s = VECTOR_ELT(v, study);  // af_ctrl
       INTEGER(s)[idx] = temp;
     }
-  }
+  } 
   return 0;
 }
 
@@ -170,7 +176,7 @@ int assignDouble(const std::string& val, SEXP u, int idx1, int idx2, int idx3,
       s = VECTOR_ELT(v, study);  // af
       REAL(s)[idx] = tempDouble;
     }
-  }
+  } 
   return 0;
 }
 
@@ -846,14 +852,14 @@ SEXP impl_rvMetaReadData(
                    fd[PVAL_FILE_NALT_COL].c_str());
         }
         INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_N_CASE_INDEX), study))[idx] =
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CASE_INDEX), study))[idx] +
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CASE_INDEX), study))[idx] +
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CASE_INDEX), study))[idx];
+            sumInt(INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CASE_INDEX), study))[idx],
+            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CASE_INDEX), study))[idx] ,
+            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CASE_INDEX), study))[idx]);
         
-        INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_N_CTRL_INDEX), study))[idx] =
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CTRL_INDEX), study))[idx] +
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CTRL_INDEX), study))[idx] +
-            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CTRL_INDEX), study))[idx];
+        INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_N_CTRL_INDEX), study))[idx] = sumInt(
+            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NREF_CTRL_INDEX), study))[idx] ,
+            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NHET_CTRL_INDEX), study))[idx] ,
+            INTEGER(VECTOR_ELT(VECTOR_ELT(u, RET_NALT_CTRL_INDEX), study))[idx]);
         
         if (str2double(fd[PVAL_FILE_USTAT_COL], &tempDouble)) {
           v = VECTOR_ELT(u, RET_USTAT_INDEX);
