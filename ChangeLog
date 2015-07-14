@@ -1,3 +1,7 @@
+2015-07-14  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Expand tilde in the file names before passing them to C
+
 2015-06-25  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Fix UBSAN reported error: when NA_INTEGER + NA_INTEGER causes int overflow
