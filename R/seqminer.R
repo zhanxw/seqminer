@@ -378,7 +378,7 @@ tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsF
   body <- as.data.frame(body, stringsAsFactors = FALSE)
   if (ncol(body) > 0) {
     for (i in 1:ncol(body)) {
-      body[,i] <- type.convert(body[,i], as.is = !stringsAsFactors)
+      body[,i] <- utils::type.convert(body[,i], as.is = !stringsAsFactors)
     }
 
     num.col <- ncol(body)
@@ -946,7 +946,7 @@ download.annotation.resource <- function(outputDirectory) {
     if (file.exists(destfile)) {
       warning(gettextf("Overwriting %s", fn))
     }
-    download.file(url, destfile)
+    utils::download.file(url, destfile)
   }
   ## download resources
   message("Begin download TabAnno resource files (human hg19)...")
