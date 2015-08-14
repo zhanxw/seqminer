@@ -24,7 +24,8 @@ SEXP impl_readTabixByRange(SEXP arg_tabixFile, SEXP arg_range) {
   }
 
   for (size_t i = 0; i < FLAG_range.size(); ++i) {
-    tr.addRange(FLAG_range[i]);  
+    int ret = tr.addRange(FLAG_range[i]);
+    // REprintf("add range %s , ret = %d\n", FLAG_range[i].c_str(), ret);
   }
 
   std::string line;

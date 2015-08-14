@@ -32,6 +32,44 @@ local.file.exists <- function(fileName) {
   return(file.exists(fileName))
 }
 
+#' Check if the inputs are valid tabix range such as chr1:2-300
+#' @param range characer vector
+#' @keywords internal
+#' @examples
+#' valid <- isTabixRange(c("chr1:1-200", "X:1", "1:100-100"))
+#' stopifnot(all(valid))
+#' invalid <- isTabixRange(c(":1", "chr1", ":-"))
+#' stopifnot(all(!invalid))
+isTabixRange <- function(range) {
+  isValid <- function(x) {
+    ret = strsplit(x = x, split = ":")[[1]]
+    if (length(ret) != 2) {
+      return(FALSE)
+    }
+    chrom = ret[1]
+    if (nchar(chrom) == 0) {
+      return (FALSE)
+    }
+    ret = strsplit(x = ret[2], split = "-")[[1]]
+    if (length(ret) == 2) {
+      beg = suppressWarnings(as.integer(ret[1]))
+      end = suppressWarnings(as.integer(ret[2]))
+      if (is.na(beg) || is.na(end) || beg > end) {
+        return(FALSE)
+      }
+    } else if (length(ret) == 1) {
+      beg = suppressWarnings(as.integer(ret[1]))
+      if (is.na(beg)) {
+        return(FALSE)
+      }
+    } else {
+      return(FALSE)
+    }
+    return(TRUE)
+  }
+  sapply(range, isValid)
+}
+
 #' Check input file has tabix index
 #'
 #' @param fileName character vector, representing file names an input file name
@@ -116,6 +154,7 @@ hasIndex <- function(fileName) {
 readVCFToMatrixByRange <- function(fileName, range, annoType) {
   stopifnot(local.file.exists(fileName), length(fileName) == 1)
   stopifnot(hasIndex(fileName))
+  stopifnot(all(isTabixRange(range)))
   fileName <- path.expand(fileName)
 
   storage.mode(fileName) <- "character"
@@ -168,6 +207,7 @@ readVCFToMatrixByGene <- function(fileName, geneFile, geneName, annoType) {
 readVCFToListByRange <- function(fileName, range, annoType, vcfColumn, vcfInfo, vcfIndv) {
   stopifnot(local.file.exists(fileName), length(fileName) == 1)
   stopifnot(hasIndex(fileName))
+  stopifnot(all(isTabixRange(range)))
   fileName <- path.expand(fileName)
 
   storage.mode(fileName) <- "character"
@@ -260,6 +300,7 @@ rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName) 
 rvmeta.readDataByRange <- function (scoreTestFiles, covFiles, ranges) {
   stopifnot(local.file.exists(scoreTestFiles))
   stopifnot(is.null(covFiles) || (local.file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
+  stopifnot(all(isTabixRange(ranges)))
   scoreTestFiles <- path.expand(scoreTestFiles)
   covFiles <- path.expand(covFiles)
 
@@ -287,6 +328,7 @@ rvmeta.readDataByRange <- function (scoreTestFiles, covFiles, ranges) {
 #' cfh <- rvmeta.readCovByRange(covFileName, "1:196621007-196716634")
 rvmeta.readCovByRange <- function(covFile, tabixRange) {
   stopifnot(local.file.exists(covFile))
+  stopifnot(all(isTabixRange(tabixRange)))
   covFile <- path.expand(covFile)
 
   storage.mode(covFile) <- "character"
@@ -306,6 +348,7 @@ rvmeta.readCovByRange <- function(covFile, tabixRange) {
 #' cfh <- rvmeta.readScoreByRange(scoreFileName, "1:196621007-196716634")
 rvmeta.readScoreByRange <- function(scoreTestFiles, tabixRange) {
   stopifnot(local.file.exists(scoreTestFiles))
+  stopifnot(all(isTabixRange(tabixRange)))
   scoreTestFiles <- path.expand(scoreTestFiles)
 
   storage.mode(scoreTestFiles) <- "character"
@@ -325,6 +368,7 @@ rvmeta.readScoreByRange <- function(scoreTestFiles, tabixRange) {
 #' cfh <- rvmeta.readSkewByRange(skewFileName, "1:196621007-196716634")
 rvmeta.readSkewByRange <- function(skewFile, tabixRange) {
   stopifnot(local.file.exists(skewFile))
+  stopifnot(all(isTabixRange(tabixRange)))
   skewFile <- path.expand(skewFile)
 
   storage.mode(skewFile) <- "character"
@@ -344,6 +388,7 @@ rvmeta.readSkewByRange <- function(skewFile, tabixRange) {
 #' snp <- tabix.read(fileName, "1:196623337-196632470")
 tabix.read <- function(tabixFile, tabixRange) {
   stopifnot(local.file.exists(tabixFile))
+  stopifnot(all(isTabixRange(tabixRange)))
   tabixFile <- path.expand(tabixFile)
 
   storage.mode(tabixFile) <- "character"
@@ -390,6 +435,7 @@ tabix.read.header <- function(tabixFile, skippedLine = FALSE) {
 #' snp <- tabix.read.table(fileName, "1:196623337-196632470")
 tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsFactors = FALSE) {
   stopifnot(local.file.exists(tabixFile))
+  stopifnot(all(isTabixRange(tabixRange)))
   tabixFile <- path.expand(tabixFile)
 
   storage.mode(tabixFile) <- "character"
@@ -428,6 +474,7 @@ tabix.read.table <- function(tabixFile, tabixRange, col.names = TRUE, stringsAsF
 }
 
 .onAttach <- function(libname, pkgname){
+  # check new version
   newVersionLink = "http://zhanxw.com/seqminer/version"
   timeout <- options("timeout")$timeout
   warn <- options("warn")$warn
