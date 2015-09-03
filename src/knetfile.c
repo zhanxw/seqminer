@@ -57,9 +57,6 @@
 #endif
 
 
-#endif
-
-
 /* In winsock.h, the type of a socket is SOCKET, which is: "typedef
  * u_int SOCKET". An invalid SOCKET is: "(SOCKET)(~0)", or signed
  * integer -1. In knetfile.c, I use "int" for socket type
