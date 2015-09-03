@@ -36,13 +36,16 @@ local.file.exists <- function(fileName) {
 #' @param range characer vector
 #' @keywords internal
 #' @examples
-#' valid <- isTabixRange(c("chr1:1-200", "X:1", "1:100-100"))
+#' valid <- isTabixRange(c("chr1:1-200", "X:1", "1:100-100", "chr1", "1:1-20,1:30-40))
 #' stopifnot(all(valid))
-#' invalid <- isTabixRange(c(":1", "chr1", ":-"))
+#' invalid <- isTabixRange(c(":1", "chr1::"":-"))
 #' stopifnot(all(!invalid))
 isTabixRange <- function(range) {
   isValid <- function(x) {
     ret = strsplit(x = x, split = ":")[[1]]
+    if (length(ret) == 1) { # e.g. "chr1"
+      return(TRUE)
+    }
     if (length(ret) != 2) {
       return(FALSE)
     }
@@ -67,7 +70,10 @@ isTabixRange <- function(range) {
     }
     return(TRUE)
   }
-  sapply(range, isValid)
+  input <- strsplit(range, ",")
+  do.call(c, lapply(input, function(x){
+    isValid(x)
+    }))
 }
 
 #' Check input file has tabix index
@@ -1049,5 +1055,4 @@ download.annotation.resource <- function(outputDirectory) {
                    file.path(outDir, "priority.txt")))
   invisible(NULL)
 }
-
 
