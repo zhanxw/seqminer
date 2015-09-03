@@ -53,6 +53,14 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+
+
+// Intel compiler needs explicit sys/select.h include
+#ifdef __INTEL_COMPILER
+  #include <sys/select.h>
+#endif
+
+
 #endif
 
 
