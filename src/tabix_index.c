@@ -1,3 +1,6 @@
+#define _POSIX_C_SOURCE 200112L /* Rsamtools: c99 fileno */
+#define _SVID_SOURCE            /* Rsamtools: c99 strdup */
+
 #include "R.h"
 
 #include <ctype.h>
