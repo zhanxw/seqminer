@@ -1,3 +1,6 @@
+#define _POSIX_C_SOURCE 200112L /* Rsamtools: c99 fileno */
+#define _SVID_SOURCE            /* Rsamtools: c99 strdup */
+
 /* The MIT License
 
    Copyright (c) 2008 Genome Research Ltd (GRL).
@@ -50,6 +53,10 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/select.h>
+#endif
+
+
 #endif
 
 

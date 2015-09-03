@@ -70,10 +70,8 @@ isTabixRange <- function(range) {
     }
     return(TRUE)
   }
-  input <- strsplit(range, ",")
-  do.call(c, lapply(input, function(x){
-    isValid(x)
-    }))
+  ranges <- strsplit(x = range, split = ",")[[1]]
+  sapply(ranges, isValid)
 }
 
 #' Check input file has tabix index
