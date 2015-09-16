@@ -963,8 +963,9 @@ SEXP impl_rvMetaReadData(
                                               .add(COV_FILE_POS_COL)
                                               .add(COV_FILE_COV_COL)
                                               .max();
+      // Note: no need to check these, as rareMetalWorker does not have them:
+      // COV_FILE_END_COL < 0 || COV_FILE_NUM_MARKER_COL < 0 ||
       if (COV_FILE_CHROM_COL < 0 || COV_FILE_START_COL < 0 ||
-          COV_FILE_END_COL < 0 || COV_FILE_NUM_MARKER_COL < 0 ||
           COV_FILE_POS_COL < 0 || COV_FILE_COV_COL < 0) {
         REprintf("Study [ %s ] does not have all necessary headers\n",
                  FLAG_covFile[study].c_str());
@@ -1653,8 +1654,10 @@ SEXP impl_readSkewByRange(SEXP arg_skewFile, SEXP arg_range) {
                                            .add(SKEW_FILE_SKEW_COL)
                                            .max();
 
+  // Note: no need to check these, as rareMetalWorker does not have them:
+  // SKEW_FILE_END_POS_COL < 0 || SKEW_FILE_NUM_MARKER_COL < 0 ||
+  
   if (SKEW_FILE_CHROM_COL < 0 || SKEW_FILE_START_POS_COL < 0 ||
-      SKEW_FILE_END_POS_COL < 0 || SKEW_FILE_NUM_MARKER_COL < 0 ||
       SKEW_FILE_MARKER_POS_COL < 0 || SKEW_FILE_SKEW_COL < 0) {
     REprintf("File [ %s ] does not have all necessary headers\n",
              FLAG_skewFile.c_str());
