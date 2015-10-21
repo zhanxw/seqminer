@@ -2,7 +2,7 @@ Package: seqminer
 Type: Package
 Title: Efficiently Read Sequence Data (VCF Format, BCF Format and METAL
         Format) into R
-Version: 4.9
+Version: 5.0
 Date: 2015-09-16
 Author: Xiaowei Zhan <zhanxw@gmail.com> and Dajiang Liu
     <dajiang.liu@gmail.com>, with contributions from Heng Li

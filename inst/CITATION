@@ -2,10 +2,12 @@ year <- sub("-.*", "", meta$Date)
 note <- sprintf("seqminer version %s", meta$Version)
 
 bibentry(bibtype = "article",
-         title = "SeqMiner: a toolset for annotating and querying next-generation sequence data",
+         title = "SEQMINER: An R-Package to Facilitate the Functional Interpretation of Sequence-Based Associations",
          author = c(person("Xiaowei", "Zhan"), person("Dajiang J", "Liu")),
          journal = "Genetic Epidemiology",
          year = {2015},
          note = note,
-         url = "http://seqminer.genomic.codes"
+         web = "http://seqminer.genomic.codes",
+         url = "http://dx.doi.org/10.1002/gepi.21918",
+         doi = "10.1002/gepi.21918"
          )

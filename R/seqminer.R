@@ -275,7 +275,9 @@ rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName) 
   stopifnot(is.null(covFiles) || (local.file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
   stopifnot(file.exists(geneFile), length(geneFile) == 1)
   scoreTestFiles <- path.expand(scoreTestFiles)
-  covFiles <- path.expand(covFiles)
+  if (!is.null(covFiles)) {
+    covFiles <- path.expand(covFiles)
+  }
 
   storage.mode(scoreTestFiles) <- "character"
   storage.mode(covFiles) <- "character"
@@ -306,7 +308,9 @@ rvmeta.readDataByRange <- function (scoreTestFiles, covFiles, ranges) {
   stopifnot(is.null(covFiles) || (local.file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
   stopifnot(all(isTabixRange(ranges)))
   scoreTestFiles <- path.expand(scoreTestFiles)
-  covFiles <- path.expand(covFiles)
+  if (!is.null(covFiles)) {
+    covFiles <- path.expand(covFiles)
+  }
 
   storage.mode(scoreTestFiles) <- "character"
   storage.mode(covFiles) <- "character"

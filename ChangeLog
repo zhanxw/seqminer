@@ -1,3 +1,11 @@
+2015-10-20  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Improve code stability
+
+2015-09-29  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Update CITATION
+
 2015-09-16  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Relax covariance file format restriction to accomodate rmw
