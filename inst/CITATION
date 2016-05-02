@@ -5,9 +5,13 @@ bibentry(bibtype = "article",
          title = "SEQMINER: An R-Package to Facilitate the Functional Interpretation of Sequence-Based Associations",
          author = c(person("Xiaowei", "Zhan"), person("Dajiang J", "Liu")),
          journal = "Genetic Epidemiology",
+         volume={39},
+         number={8},
+         pages={619--623},
          year = {2015},
          note = note,
          web = "http://seqminer.genomic.codes",
+         publisher={"Wiley Online Library"},
          url = "http://dx.doi.org/10.1002/gepi.21918",
          doi = "10.1002/gepi.21918"
          )

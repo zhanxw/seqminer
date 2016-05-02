@@ -663,7 +663,6 @@ public:
     int exonNum; // which exon
     int codonNum; // which codon
     int codonPos[3] = {0, 0, 0}; // the codon position
-    /* AnnotationType type; // could be one of */
     int intronNum; // which intron
     bool isEssentialSpliceSite;
 

@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#define UNUSED(x) (void)(x)
+
 SEXP impl_readTabixByRange(SEXP arg_tabixFile, SEXP arg_range) {
   SEXP ret = R_NilValue;
 
@@ -25,9 +27,10 @@ SEXP impl_readTabixByRange(SEXP arg_tabixFile, SEXP arg_range) {
 
   for (size_t i = 0; i < FLAG_range.size(); ++i) {
     int ret = tr.addRange(FLAG_range[i]);
+    // used ret
+    UNUSED(ret);
     // REprintf("add range %s , ret = %d\n", FLAG_range[i].c_str(), ret);
   }
-
 
   std::string line;
   std::vector<std::string> res;
