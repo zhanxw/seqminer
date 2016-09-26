@@ -58,7 +58,7 @@ public:
   void include() {this->inUse = true;};
   void exclude() {this->inUse = false;};
   bool isInUse() {return this->inUse;};
-
+#ifdef __GNUC__
   const VCFValue& operator [] (const unsigned int i) const __attribute__ ((deprecated)) {
     if (i >= fd.size()){
       FATAL("index out of bound!");
@@ -71,6 +71,7 @@ public:
     }
     return (this->fd[i]);
   };
+#endif  
   const VCFValue& get(unsigned int i, bool* isMissing) const {
     if (i >= fd.size()) {
       *isMissing = true;

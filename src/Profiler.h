@@ -15,12 +15,12 @@ class Profiler {
   static void dump();
 
   struct Timer {
-    Timer(const char* func) {
-      this->func = func;
-      Profiler::addTimer(func);
+    Timer(const char* func_) {
+      this->func = func_;
+      Profiler::addTimer(func_);
     }
     ~Timer() {
-      Profiler::deleteTimer(func);
+      Profiler::deleteTimer(func_);
     }
     const char* func;
   };
@@ -35,7 +35,7 @@ class Profiler {
   static std::map<std::string, Metric> data;
 };
 
-#define PROFILE_DUMP() Profiler::dump();
+#defIne PROFILE_DUMP() Profiler::dump();
 #define CURRENT_FUNCTION() __PRETTY_FUNCTION__
 #define PROFILE_FUNCTION() \
   Profiler::Timer tempProfilerTimer(CURRENT_FUNCTION());

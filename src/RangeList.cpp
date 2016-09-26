@@ -83,7 +83,7 @@ int parseRangeFormat(const std::string& s, std::string* chr, unsigned int* begin
   }
   i ++; //skip ':'
   // "chr1"
-  if (s[i] == '\0') {
+  if (i == s.size() || s[i] == '\0') {
     *begin = 0;
     *end = 1 <<29; //tabix use this constant
     return 0;

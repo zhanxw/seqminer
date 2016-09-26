@@ -389,13 +389,13 @@ class RangeList{
       }
       return false;
     };
-    const std::vector<PositionPair>* getRegions(const std::string& chrom) const{
+    const std::vector<PositionPair>* getRegions(const std::string& chrom_) const{
       std::map< std::string, std::vector<PositionPair> >::const_iterator iter;
-      iter = this->rangeCollection->getRangeMap().find(chrom);
+      iter = this->rangeCollection->getRangeMap().find(chrom_);
       if (iter != this->rangeCollection->getRangeMap().end()) {
         return &(iter->second);
       }
-      REprintf( "ERROR: Don't contain chromosome %s!\n", chrom.c_str());
+      REprintf( "ERROR: Don't contain chromosome %s!\n", chrom_.c_str());
       return NULL;
     };
     const std::vector<PositionPair>* getRegions(int index) const{

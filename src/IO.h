@@ -386,18 +386,18 @@ class BufferedReader : public AbstractFileReader {
     }
     this->buf = NULL;
   }
-  int read(void* buf, int len) {
+  int read(void* buf_, int len) {
     // use current buffer to fill in buf
     int idx = 0;
     while (this->bufPtr < this->bufEnd && len > 0) {
-      ((char*)buf)[idx++] = this->buf[this->bufPtr++];
+      ((char*)buf_)[idx++] = this->buf[this->bufPtr++];
       len--;
     }
     if (len == 0) {
       return idx;
     }
     // fill rest of buf
-    int nRead = this->fp->read(((char*)buf) + idx, len);
+    int nRead = this->fp->read(((char*)buf_) + idx, len);
     idx += nRead;
     // refill buffer
     this->bufEnd = this->fp->read(this->buf, this->bufCap);
@@ -433,7 +433,7 @@ class LineReader {
       this->fp = NULL;
     }
   }
-  LineReader(AbstractFileReader* fp) { this->fp = fp; }
+  LineReader(AbstractFileReader* fp_) { this->fp = fp_; }
   virtual ~LineReader() {
     if (this->fp) {
       fp->close();
@@ -709,22 +709,22 @@ class BGZipFileWriter : public AbstractFileWriter {
 #define DEFAULT_WRITER_BUFFER 4096
 class BufferedFileWriter : public AbstractFileWriter {
  public:
-  BufferedFileWriter(AbstractFileWriter* f,
-                     int bufLen = DEFAULT_WRITER_BUFFER) {
+  BufferedFileWriter(AbstractFileWriter* f_,
+                     int bufLen_ = DEFAULT_WRITER_BUFFER) {
     this->bufLen = DEFAULT_WRITER_BUFFER;
-    this->buf = new char[bufLen + 1];  // last char in the buffer is always '\0'
+    this->buf = new char[bufLen_ + 1];  // last char in the buffer is always '\0'
     // that help to use fputs()
     if (!this->buf) {
       REprintf("Cannot create BufferedFileWriter\n");
       REprintf("Critical error happening!\n");  // abort();
     }
-    this->buf[bufLen] = '\0';
+    this->buf[bufLen_] = '\0';
     this->bufPtr = 0;
 
     if (!this->buf) {
       REprintf("Buffer allocation failed!\n");
     }
-    this->f = f;
+    this->f = f_;
   }
   ~BufferedFileWriter() {
     if (this->buf) {

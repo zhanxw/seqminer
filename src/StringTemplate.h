@@ -33,11 +33,11 @@
 
 
 class StringTemplate{
-public:
+ public:
   struct KEY;
   struct VALUE;
   class Array {
- public:
+   public:
     int translate(std::string* str, const std::map<std::string, VALUE>& dict) const;
     /**
      * Parse s[beg...end]  beg: inclusive end: exclusive
@@ -48,7 +48,7 @@ public:
       this->dict.clear();
       this->delim.clear();
     };
- private:
+   private:
     std::vector<KEY> data;
     std::map<std::string, VALUE> dict; // store key->value pair
     std::string delim;
@@ -71,7 +71,7 @@ public:
     VALUE_TYPE type;
     std::string string;
     std::vector<std::string> array;
-  } ;
+  };
 
   struct KEY{
     KEY_TYPE type;
@@ -84,7 +84,6 @@ public:
       keyword.clear();
       array.clear();
     }
-
   };
 
   explicit StringTemplate() {};
@@ -94,7 +93,7 @@ public:
   explicit StringTemplate(const std::string& s) {
     this->parse(s);
   };
-private:
+ private:
   // forbid two default copy-constructor
   StringTemplate(const StringTemplate& s) {
     if (this != &s){
@@ -108,7 +107,7 @@ private:
     this->dict = s.dict;
     return (*this);
   };
-public:
+ public:
   StringTemplate& operator= (const char* s) {
     this->clear();
     this->parse(s);
@@ -124,10 +123,11 @@ public:
   std::map<std::string, VALUE> dict; // store key->value pair
 
   static bool isValidKeyword(const char c){
-      if (!isalnum(c) && c != '_')
-        return false;
-      return true;
-  };
+    if (!isalnum(c) && c != '_')
+      return false;
+    return true;
+  }
+  
   static bool isValidKeyword(const char* s){
     while ( *s != '\0') {
       if (! isValidKeyword(*s))
@@ -136,7 +136,7 @@ public:
     }
     return true;
   }
-  
+
   void add(const char* key, const char* value) {
     VALUE v;
     v.type = STRING;
@@ -199,7 +199,7 @@ public:
     return 0;
   };
   /**
-   * Split template into chunks of 3 types: text, keyword, array 
+   * Split template into chunks of 3 types: text, keyword, array
    *  @return 0: when parse succeeds
    */
   int parse(const std::string& s) {
@@ -319,7 +319,7 @@ int StringTemplate::Array::translate(std::string* str, const std::map<std::strin
                 maxStringArraySize = v.array.size();
               } else {
                 if (v.array.size() != (size_t) maxStringArraySize) {
-                    REprintf("Unbalanced vector size. Stopped when tranlating %s!\n", k.keyword.c_str());
+                  REprintf("Unbalanced vector size. Stopped when tranlating %s!\n", k.keyword.c_str());
                 }
               }
               if (idx < v.array.size()) {
@@ -362,8 +362,9 @@ int StringTemplate::Array::parse(const char* s, int param_beg, int param_end){
   };
   int beg = real_beg;
   int end = real_beg;
-  KEY* pKey = new KEY;
-  KEY& key = *pKey;
+  // KEY* pKey = new KEY;
+  // KEY& key = *pKey;
+  KEY key;
   key.type = TEXT;
   while (true) {
     if (end == real_end) {
@@ -426,7 +427,7 @@ int StringTemplate::Array::parse(const char* s, int param_beg, int param_end){
       case UNDEFINED_KEY:
         REprintf("UNDEFINED_KEY not handled!\n");
         break;
-        
+
     }
     end ++ ;
   };

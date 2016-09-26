@@ -128,10 +128,10 @@ int PlinkInputFile::readIntoMatrix(SimpleMatrix* mat, std::vector<std::string>* 
         for (int p = 0; p < peopleToRead; p++) {
             for (int m = 0; m < markerToRead; m++) {
                 // get file position
-                int pos = 3 + (numPeople / 4 + 1 ) * markerIdx[m] + peopleIdx[p] / 4;
+                int pos_ = 3 + (numPeople / 4 + 1 ) * markerIdx[m] + peopleIdx[p] / 4;
                 int offset = peopleIdx[p] % 4;
                 unsigned char c;
-                fseek(this->fpBed, pos, SEEK_SET);
+                fseek(this->fpBed, pos_, SEEK_SET);
                 int ret = fread(&c, sizeof(unsigned char), 1, fpBed);
                 UNUSED(ret);
                 unsigned char geno = (c & mask[offset]) >> (offset << 1);
@@ -158,10 +158,10 @@ int PlinkInputFile::readIntoMatrix(SimpleMatrix* mat, std::vector<std::string>* 
         for (int p = 0; p < numPeople; p++) {
             for (int m = 0; m < numMarker; m++){
                 // get file position
-                int pos = 3 + (numMarker / 4  + 1) * peopleIdx[p] + markerIdx[m] / 4;
+                int pos_ = 3 + (numMarker / 4  + 1) * peopleIdx[p] + markerIdx[m] / 4;
                 int offset = markerIdx[m] % 4;
                 unsigned char c;
-                fseek(this->fpBed, pos, SEEK_SET);
+                fseek(this->fpBed, pos_, SEEK_SET);
                 int ret = fread(&c, sizeof(unsigned char), 1, fpBed);
                 UNUSED(ret);
                 

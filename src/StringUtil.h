@@ -332,12 +332,12 @@ inline bool hasLeadingChr(const std::string& s) {
  */
 class StringTokenizer {
  public:
-  StringTokenizer(const std::string& i, char token) : data(i) {
-    this->token = token;
+  StringTokenizer(const std::string& i, char tok) : data(i) {
+    this->token = tok;
     reset();
   }
-  StringTokenizer(const std::string& i, const std::string& token) : data(i) {
-    this->token = token;
+  StringTokenizer(const std::string& i, const std::string& tok) : data(i) {
+    this->token = tok;
     reset();
   }
   void reset() {

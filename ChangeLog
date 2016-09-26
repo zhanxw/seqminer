@@ -1,7 +1,17 @@
+2016-09-26  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Add namespace std
+	* Fix some compilers warnings
+
+2016-05-04  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Revise DESCRIPTION
+
 2016-05-02  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Fix header macro (use _DEFAULT_SOURCE)
 	* Fix off-by-one bug when reporting codon number
+	* Fix memory leak
 
 2015-10-20  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 

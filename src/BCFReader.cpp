@@ -150,7 +150,7 @@ int BCFReader::open(const std::string& fn) {
 }
 
 
-bool BCFReader::readLine(std::string* line) {
+bool BCFReader::readLine(std::string* line_) {
   // openOK?
   if (cannotOpen) return false;
 
@@ -159,7 +159,7 @@ bool BCFReader::readLine(std::string* line) {
   if (range.empty()) {
     // read line by line
     if (my_vcf_read(bp, hin, b) > 0) {
-      my_vcf_write(bout, hout, b, line);
+      my_vcf_write(bout, hout, b, line_);
       return true;
     }
     return false;
@@ -182,7 +182,7 @@ bool BCFReader::readLine(std::string* line) {
         if (b->tid != tid || b->pos >= end) break; // current record has passed prespecified region
         if (!(l > begin && end > b->pos)) continue; // not sure when this will happen
 
-        my_vcf_write(bout, hout, b, line);
+        my_vcf_write(bout, hout, b, line_);
         return true;
       }
     }
@@ -215,7 +215,7 @@ bool BCFReader::readLine(std::string* line) {
           if (!(l > begin && end > b->pos)) continue; // not sure when this will happen
 
           ++rangeIterator;
-          my_vcf_write(bout, hout, b, line);
+          my_vcf_write(bout, hout, b, line_);
           return true;
         }
       }

@@ -56,11 +56,11 @@ class VCFInputFile{
   /**
    * Report a line that does not conform to VCF standard.
    */
-  void reportReadError(const std::string& line) {
-    if (line.size() > 50) {
-      REprintf( "Error line [ %s ... ]\n", line.substr(0, 50).c_str());
+  void reportReadError(const std::string& line_) {
+    if (line_.size() > 50) {
+      REprintf( "Error line [ %s ... ]\n", line_.substr(0, 50).c_str());
     } else {
-      REprintf( "Error line [ %s ]\n", line.c_str());
+      REprintf( "Error line [ %s ]\n", line_.c_str());
     }
   }
   /**
