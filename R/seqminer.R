@@ -911,8 +911,8 @@ getRefBase <- function(reference, chrom, position, len = NULL) {
 #' annotateVcf (inVcf, outVcf, param)
 annotateVcf <- function(inVcf, outVcf, params) {
   params$inputFormat = "vcf"
-  param <- makeAnnotationParameter(param)
-  res <- validateAnnotationParameter(param)
+  params <- makeAnnotationParameter(params)
+  res <- validateAnnotationParameter(params)
   if (!res[[1]])  {
     cat(paste(res[[2]], collapse = "\n"))
     stop("Stop due to critical error")
@@ -942,8 +942,8 @@ annotateVcf <- function(inVcf, outVcf, params) {
 #' annotatePlain(inFile, outFile, param)
 annotatePlain <- function(inFile, outFile, params) {
   params$inputFormat = "plain"
-  param <- makeAnnotationParameter(param)
-  res <- validateAnnotationParameter(param)
+  params <- makeAnnotationParameter(params)
+  res <- validateAnnotationParameter(params)
   if (!res[[1]])  {
     cat(res[[2]])
     stop("Stop due to critical error")
