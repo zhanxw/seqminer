@@ -20,7 +20,7 @@ class Profiler {
       Profiler::addTimer(func_);
     }
     ~Timer() {
-      Profiler::deleteTimer(func_);
+      Profiler::deleteTimer(func);
     }
     const char* func;
   };
@@ -35,7 +35,7 @@ class Profiler {
   static std::map<std::string, Metric> data;
 };
 
-#defIne PROFILE_DUMP() Profiler::dump();
+#define PROFILE_DUMP() Profiler::dump();
 #define CURRENT_FUNCTION() __PRETTY_FUNCTION__
 #define PROFILE_FUNCTION() \
   Profiler::Timer tempProfilerTimer(CURRENT_FUNCTION());
