@@ -1,3 +1,7 @@
+2016-12-19  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Add support for multi-allelic sites
+
 2016-09-26  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Add namespace std

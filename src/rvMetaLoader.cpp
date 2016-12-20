@@ -28,9 +28,9 @@ void set2string(const std::set<std::string>& in, std::string* out,
   for (iter = in.begin(); iter != in.end(); ++iter) {
     if (!out->empty()) {
       out->push_back(sep);
-    };
+    }
     out->append(*iter);
-  };
+  }
 }
 
 /**
@@ -48,12 +48,22 @@ void addLocationPerGene(
   std::vector<std::string> fd;
   std::string key;
   int val;
+  std::map<std::string, int> keySeen;
   while (tr.readLine(&line)) {
     stringNaturalTokenize(line, "\t ", &fd);
     if (fd.size() < 2) continue;
     key = fd[0] + ":" + fd[1];
-    if ((*location)[gene].count(key))  // not update existing variant
+    int occurence = keySeen[key];
+    if (occurence != 0) { // multi-allelic site
+      key += '/';
+      key += toStr(occurence);
+    }
+    keySeen[key]++;
+
+    if ((*location)[gene].count(key) != 0) { // should not happen
+      REprintf("Probably an eror is happening... key = [ %s ]", key.c_str());
       continue;
+    }
     val = (*location)[gene].size();
     (*location)[gene][key] = val;
   }
@@ -265,8 +275,8 @@ SEXP impl_rvMetaReadData(
     for (int i = 0; i < nStudy; ++i) {
       sortLocationPerGene(&(geneLocationMap[key]));
     }
-  };
-  std::map<std::string, std::set<std::string> > posAnnotationMap;
+  }
+  std::map<std::string, std::set<std::string> > posAnnotationMap; // todo document this line
 
   //////////////////////////////////////////////////
   // allocate memory
@@ -340,9 +350,9 @@ SEXP impl_rvMetaReadData(
     SEXP s = VECTOR_ELT(ret, i);
     numAllocated +=
         createList(names.size(), &s);  // a list with 10 or more elements:
-                                       // ref, alt, n, maf, stat,
-                                       // direction, p, cov, pos,
-                                       // anno, ...
+    // ref, alt, n, maf, stat,
+    // direction, p, cov, pos,
+    // anno, ...
     numAllocated += setListNames(names, &s);
 
     SEXP ref, alt, n, af, ac, callRate, hwe, nref, nhet, nalt, ustat, vstat,
@@ -450,7 +460,7 @@ SEXP impl_rvMetaReadData(
 
       // Rprintf("Create double array %d for study %d\n", npos * npos, j);
       if (FLAG_covFile.empty()) {
-        /// if skip covFile, then just set cov to be 1 by 1 matrix of NA
+        /// if skip covFile, just set cov to be 1 by 1 matrix of NA
         numAllocated += createDoubleArray(1, &t);
         numAllocated += setDim(1, 1, &t);
       } else {
@@ -610,7 +620,7 @@ SEXP impl_rvMetaReadData(
     SET_VECTOR_ELT(s, RET_N_CTRL_INDEX, nCtrl);
 
     SET_VECTOR_ELT(ret, i, s);
-  };
+  }
   // REprintf("finish allocate memory\n");
 
   // return results
@@ -646,23 +656,23 @@ SEXP impl_rvMetaReadData(
 
     Maximum maximum;
     const int PVAL_FILE_MIN_COLUMN_NUM = maximum.add(PVAL_FILE_CHROM_COL)
-                                             .add(PVAL_FILE_POS_COL)
-                                             .add(PVAL_FILE_REF_COL)
-                                             .add(PVAL_FILE_ALT_COL)
-                                             .add(PVAL_FILE_NINFORMATIVE_COL)
-                                             .add(PVAL_FILE_AF_COL)
-                                             .add(PVAL_FILE_AC_COL)
-                                             .add(PVAL_FILE_CALLRATE_COL)
-                                             .add(PVAL_FILE_HWE_COL)
-                                             .add(PVAL_FILE_NREF_COL)
-                                             .add(PVAL_FILE_NHET_COL)
-                                             .add(PVAL_FILE_NALT_COL)
-                                             .add(PVAL_FILE_USTAT_COL)
-                                             .add(PVAL_FILE_SQRTVSTAT_COL)
-                                             .add(PVAL_FILE_EFFECT_COL)
-                                             .add(PVAL_FILE_PVAL_COL)
-                                             .add(PVAL_FILE_ANNO_COL)
-                                             .max();
+        .add(PVAL_FILE_POS_COL)
+        .add(PVAL_FILE_REF_COL)
+        .add(PVAL_FILE_ALT_COL)
+        .add(PVAL_FILE_NINFORMATIVE_COL)
+        .add(PVAL_FILE_AF_COL)
+        .add(PVAL_FILE_AC_COL)
+        .add(PVAL_FILE_CALLRATE_COL)
+        .add(PVAL_FILE_HWE_COL)
+        .add(PVAL_FILE_NREF_COL)
+        .add(PVAL_FILE_NHET_COL)
+        .add(PVAL_FILE_NALT_COL)
+        .add(PVAL_FILE_USTAT_COL)
+        .add(PVAL_FILE_SQRTVSTAT_COL)
+        .add(PVAL_FILE_EFFECT_COL)
+        .add(PVAL_FILE_PVAL_COL)
+        .add(PVAL_FILE_ANNO_COL)
+        .max();
 
     if (PVAL_FILE_CHROM_COL < 0 || PVAL_FILE_POS_COL < 0 ||
         PVAL_FILE_REF_COL < 0 || PVAL_FILE_ALT_COL < 0 ||
@@ -677,7 +687,7 @@ SEXP impl_rvMetaReadData(
       continue;
     }
 
-    // loop per gene
+    // loop per gene for a given study
     for (size_t idx = 0; idx < geneRange.size(); ++idx) {
       const std::string& gene = geneRange.keyAt(idx);
       const std::string& range = geneRange.valueAt(idx);
@@ -686,7 +696,7 @@ SEXP impl_rvMetaReadData(
       if (!geneLocationMap.find(gene)) continue;
       const std::map<std::string, int>& location2idx = geneLocationMap[gene];
 
-      std::set<std::string> processedSite;
+      std::map<std::string, int> processedSite;
       TabixReader tr(FLAG_pvalFile[study]);
       tr.addRange(range);
       std::string line;
@@ -701,13 +711,12 @@ SEXP impl_rvMetaReadData(
         p = fd[PVAL_FILE_CHROM_COL];
         p += ':';
         p += fd[PVAL_FILE_POS_COL];
-        if (processedSite.count(p) == 0) {
-          processedSite.insert(p);
-        } else {
-          Rprintf("Position %s appeared more than once, skipping...\n",
-                  p.c_str());
-          continue;
+        int occurence = processedSite[p];
+        if (occurence > 0) { // multi-allelic sites
+          p += '/';
+          p += toStr(occurence);
         }
+        processedSite[p] ++;
 
         SEXP u, v, s;
         // std::string& gene = locationGeneMap[p];
@@ -890,7 +899,7 @@ SEXP impl_rvMetaReadData(
           v = VECTOR_ELT(u, RET_PVAL_INDEX);
           s = VECTOR_ELT(v, study);  // pval
           REAL(s)[idx] = tempDouble;
-        };
+        }
 
         if (PVAL_FILE_ANNO_COL >= 0 && (int)fd.size() >= PVAL_FILE_ANNO_COL) {
           const std::string& s = fd[PVAL_FILE_ANNO_COL];
@@ -924,7 +933,7 @@ SEXP impl_rvMetaReadData(
         std::string ret;
         set2string(posAnnotationMap[it->first], &ret, ',');
         SET_STRING_ELT(anno, idx, mkChar(ret.c_str()));
-      };
+      }
     }
   }
 
@@ -957,12 +966,12 @@ SEXP impl_rvMetaReadData(
 
       Maximum maximum;
       const int COV_FILE_MIN_COLUMN_NUM = maximum.add(COV_FILE_CHROM_COL)
-                                              .add(COV_FILE_START_COL)
-                                              .add(COV_FILE_END_COL)
-                                              .add(COV_FILE_NUM_MARKER_COL)
-                                              .add(COV_FILE_POS_COL)
-                                              .add(COV_FILE_COV_COL)
-                                              .max();
+          .add(COV_FILE_START_COL)
+          .add(COV_FILE_END_COL)
+          .add(COV_FILE_NUM_MARKER_COL)
+          .add(COV_FILE_POS_COL)
+          .add(COV_FILE_COV_COL)
+          .max();
       // Note: no need to check these, as rareMetalWorker does not have them:
       // COV_FILE_END_COL < 0 || COV_FILE_NUM_MARKER_COL < 0 ||
       if (COV_FILE_CHROM_COL < 0 || COV_FILE_START_COL < 0 ||
@@ -981,7 +990,8 @@ SEXP impl_rvMetaReadData(
         if (!geneLocationMap.find(gene)) continue;
         const std::map<std::string, int>& location2idx = geneLocationMap[gene];
 
-        std::set<std::string> processedSite;
+        std::map<std::string, int> processedSite; // across rows, number of analyzed first position
+        std::map<std::string, int> processedSitePerLine; // within the same row, number of position processed
 
         // REprintf("Read file %s ", FLAG_covFile[study].c_str());
         TabixReader tr(FLAG_covFile[study]);
@@ -1032,10 +1042,19 @@ SEXP impl_rvMetaReadData(
           s = VECTOR_ELT(v, study);
 
           std::string pi = chrom + ":" + pos[0];
+          int& occurence_i = processedSite[pi];
+          processedSitePerLine[pi] = occurence_i;
+          if (occurence_i > 0) { //multi-allelic site
+            pi += '/';
+            pi += toStr(occurence_i);
+          }
           if (location2idx.count(pi) == 0) {
+            REprintf("Warning: location [ %s ] found in cov file but not score file", pi.c_str());
             continue;
           }
           int posi = location2idx.find(pi)->second;
+          occurence_i ++;
+
           // REprintf("%s:%d Pos %s = %d, covLen = %d\n", __FILE__, __LINE__,
           // pi.c_str(), posi, covLen);
           std::string pj;
@@ -1043,17 +1062,23 @@ SEXP impl_rvMetaReadData(
 
           for (size_t j = 0; j < pos.size(); ++j) {
             pj = chrom + ":" + pos[j];
+            int& occurence_j = processedSitePerLine[pj];
+            if (occurence_j > 0) { // multi-allelic site
+              pj += '/';
+              pj += toStr(occurence_j);
+            }
+            occurence_j ++;
             if (location2idx.count(pj) == 0) {
               continue;
             }
             int posj = location2idx.find(pj)->second;
+
             // REprintf("i = %d, j = %d\n", posi, posj);
             if (str2double(cov[j], &tmp)) {
               REAL(s)[posi * covLen + posj] = tmp;
               REAL(s)[posj * covLen + posi] = tmp;
             }
           }
-
           // check if we have covXZ and covZZ fields
           if (covArray.size() == 1) continue;
 
@@ -1184,12 +1209,12 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
 
   Maximum maximum;
   const int COV_FILE_MIN_COLUMN_NUM = maximum.add(COV_FILE_CHROM_COL)
-                                          .add(COV_FILE_START_COL)
-                                          .add(COV_FILE_END_COL)
-                                          .add(COV_FILE_NUM_MARKER_COL)
-                                          .add(COV_FILE_POS_COL)
-                                          .add(COV_FILE_COV_COL)
-                                          .max();
+      .add(COV_FILE_START_COL)
+      .add(COV_FILE_END_COL)
+      .add(COV_FILE_NUM_MARKER_COL)
+      .add(COV_FILE_POS_COL)
+      .add(COV_FILE_COV_COL)
+      .max();
 
   if (COV_FILE_CHROM_COL < 0 || COV_FILE_START_COL < 0 ||
       COV_FILE_END_COL < 0 || COV_FILE_NUM_MARKER_COL < 0 ||
@@ -1215,9 +1240,18 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
   std::string line;
   std::vector<std::string> fd;
   std::string chrom;
+  // to accomodate multi-allelic, position can be: 1:100, 1:100/1, 1:100/2 ...
   std::map<std::string, int> pos2idx;
-  std::vector<int> positionPerRow;
-  std::vector<std::string> position;
+  // across rows, number of times the first position has been processed
+  std::map<std::string, int> firstPositionProcessed;
+  // within the same row, number of times position has been processed
+  // must have this to support adjacent multi-allelic sites
+  //e.g.
+  // line 1: pos = 100,100,200,200
+  // line 2: pos = 100,200,200
+  std::map<std::string, int> positionProcessedInRow;
+  std::vector<int> positionPerRow; // number of pos per row in the cov file
+  std::vector<std::string> position; // record positions - used a dim names
 
   // these are used each line
   std::vector<std::string> cov;
@@ -1269,16 +1303,32 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
       }
 
       int considerPos = 0;
+      positionProcessedInRow.clear();
       for (size_t i = 0; i < fdPos.size(); ++i) {
         // Rprintf("fdPos[%zu] = %s\n", i, fdPos[i].c_str());
         int p = atoi(fdPos[i]);
         if (p > end) continue;
         // consider in-range positions only (tabix already consider p >= beg)
+
+        if (i == 0) {
+          positionProcessedInRow[fdPos[i]] = firstPositionProcessed[fdPos[i]];
+          firstPositionProcessed[fdPos[i]] ++;
+        }
+
+        // add suffix to fdPos[i] if necessary
+        int& occurence = positionProcessedInRow[fdPos[i]];
+        if (occurence > 0) {
+          fdPos[i] += '/';
+          fdPos[i] += toStr(occurence);
+        }
+
         if (pos2idx.count(fdPos[i]) == 0) {
           pos2idx[fdPos[i]] = position.size();
           position.push_back(fdPos[i]);
         }
-        ++considerPos;
+
+        ++ occurence;
+        ++ considerPos;
       }
       // REprintf("fdPos.size() = %zu, considerPos = %d\n", fdPos.size(),
       // considerPos);
@@ -1305,7 +1355,7 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
       }
       positionPerRow.push_back(considerPos);
       // REprintf("considerPos = %d\n", considerPos);
-    }
+    } // end while
     ti_iter_destroy(iter);
     // Rprintf("parse end\n");
   } else {
@@ -1441,23 +1491,23 @@ SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range) {
 
   Maximum maximum;
   const int PVAL_FILE_MIN_COLUMN_NUM = maximum.add(PVAL_FILE_CHROM_COL)
-                                           .add(PVAL_FILE_POS_COL)
-                                           .add(PVAL_FILE_REF_COL)
-                                           .add(PVAL_FILE_ALT_COL)
-                                           .add(PVAL_FILE_NINFORMATIVE_COL)
-                                           .add(PVAL_FILE_AF_COL)
-                                           .add(PVAL_FILE_AC_COL)
-                                           .add(PVAL_FILE_CALLRATE_COL)
-                                           .add(PVAL_FILE_HWE_COL)
-                                           .add(PVAL_FILE_NREF_COL)
-                                           .add(PVAL_FILE_NHET_COL)
-                                           .add(PVAL_FILE_NALT_COL)
-                                           .add(PVAL_FILE_USTAT_COL)
-                                           .add(PVAL_FILE_SQRTVSTAT_COL)
-                                           .add(PVAL_FILE_EFFECT_COL)
-                                           .add(PVAL_FILE_PVAL_COL)
-                                           .add(PVAL_FILE_ANNO_COL)
-                                           .max();
+      .add(PVAL_FILE_POS_COL)
+      .add(PVAL_FILE_REF_COL)
+      .add(PVAL_FILE_ALT_COL)
+      .add(PVAL_FILE_NINFORMATIVE_COL)
+      .add(PVAL_FILE_AF_COL)
+      .add(PVAL_FILE_AC_COL)
+      .add(PVAL_FILE_CALLRATE_COL)
+      .add(PVAL_FILE_HWE_COL)
+      .add(PVAL_FILE_NREF_COL)
+      .add(PVAL_FILE_NHET_COL)
+      .add(PVAL_FILE_NALT_COL)
+      .add(PVAL_FILE_USTAT_COL)
+      .add(PVAL_FILE_SQRTVSTAT_COL)
+      .add(PVAL_FILE_EFFECT_COL)
+      .add(PVAL_FILE_PVAL_COL)
+      .add(PVAL_FILE_ANNO_COL)
+      .max();
 
   if (PVAL_FILE_CHROM_COL < 0 || PVAL_FILE_POS_COL < 0 ||
       PVAL_FILE_REF_COL < 0 || PVAL_FILE_ALT_COL < 0 ||
@@ -1544,13 +1594,13 @@ SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range) {
     } else {
       annoFull.push_back("");
     }
-  };
+  }
 
   if (fieldLen < 0) {
     REprintf("No valid input line read, please check your file [ %s ]\n",
              FLAG_scoreFile.c_str());
     return ret;
-  };
+  }
 
   // REprintf("Construct return values\n");
   int retListLen;
@@ -1647,16 +1697,16 @@ SEXP impl_readSkewByRange(SEXP arg_skewFile, SEXP arg_range) {
 
   Maximum maximum;
   const int SKEW_FILE_MIN_COLUMN_NUM = maximum.add(SKEW_FILE_CHROM_COL)
-                                           .add(SKEW_FILE_START_POS_COL)
-                                           .add(SKEW_FILE_END_POS_COL)
-                                           .add(SKEW_FILE_NUM_MARKER_COL)
-                                           .add(SKEW_FILE_MARKER_POS_COL)
-                                           .add(SKEW_FILE_SKEW_COL)
-                                           .max();
+      .add(SKEW_FILE_START_POS_COL)
+      .add(SKEW_FILE_END_POS_COL)
+      .add(SKEW_FILE_NUM_MARKER_COL)
+      .add(SKEW_FILE_MARKER_POS_COL)
+      .add(SKEW_FILE_SKEW_COL)
+      .max();
 
   // Note: no need to check these, as rareMetalWorker does not have them:
   // SKEW_FILE_END_POS_COL < 0 || SKEW_FILE_NUM_MARKER_COL < 0 ||
-  
+
   if (SKEW_FILE_CHROM_COL < 0 || SKEW_FILE_START_POS_COL < 0 ||
       SKEW_FILE_MARKER_POS_COL < 0 || SKEW_FILE_SKEW_COL < 0) {
     REprintf("File [ %s ] does not have all necessary headers\n",
@@ -1761,12 +1811,12 @@ SEXP impl_readSkewByRange(SEXP arg_skewFile, SEXP arg_range) {
     }
     ++lineRead;
   }
-// Rprintf("read %d lines\n", lineRead);
+  // Rprintf("read %d lines\n", lineRead);
 
-// dim (i, j, k ) assume dimension is 3 and size is n for each dimension
-// dim (i, j, k ) is (j + i *n + k * n * n) th element (1-based)
-// for 0-based, it is ((i + k * n) *n) + j - 1
-//
+  // dim (i, j, k ) assume dimension is 3 and size is n for each dimension
+  // dim (i, j, k ) is (j + i *n + k * n * n) th element (1-based)
+  // for 0-based, it is ((i + k * n) *n) + j - 1
+  //
 #if 0
   std::vector<std::string> listNames;
   int retListIdx = 0;
