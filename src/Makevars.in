@@ -2,14 +2,18 @@
 ## CC=@CC@
 ## CXX=@CXX@
 
-
 PKG_CFLAGS=@PKG_CFLAGS@
 PKG_CXX1XFLAGS=@PKG_CXX1XFLAGS@
 PKG_LIBS=@PKG_LIBS@
 
-# below is for debug purpose
-#PKG_CFLAGS+=-O0 -ggdb
-#PKG_CXXFLAGS+=-O0 -ggdb
+## ## uncomment below to enable debugging
+## ##  use `R -d gdb` to start,
+## ##  type `c` to start R
+## ##  type `library(seqminer)` to load the package
+## ##  type `Ctrl+C` to return to GDB and set breakpoints
+## PKG_CFLAGS+=-O0 -ggdb
+## PKG_CXXFLAGS+=-O0 -ggdb
+##
 
 ## Regular expression
 ## We first check regex.h provided by libc.

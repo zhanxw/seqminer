@@ -1,3 +1,7 @@
+2016-12-21  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Improve alignment for multi-allelic meta results in rvmeta.readData
+
 2016-12-19  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Add support for multi-allelic sites
