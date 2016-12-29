@@ -1,3 +1,7 @@
+2016-12-29  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Fix a bug dealing with multi-allelic when loading multiple files 
+
 2016-12-21  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Improve alignment for multi-allelic meta results in rvmeta.readData

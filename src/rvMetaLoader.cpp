@@ -74,7 +74,7 @@ void addLocationPerGene(
           fd[PVAL_FILE_REF_COL] + "/" + fd[PVAL_FILE_ALT_COL];
     int occurence = keySeen[key];
     if (occurence != 0) {
-      REprintf("Encounter a duplicated site: [ %s ]\n", key.c_str());
+      REprintf("Encounter a duplicated site: [ %s ] in file [ %s ]\n", key.c_str(), fn.c_str());
       key += '/';
       key += toStr(occurence);
     }
@@ -648,7 +648,10 @@ SEXP impl_rvMetaReadData(
 
   // cov file does not have ref/alt allele,
   // we will record how to map variant location to its index
-  std::vector<std::map<std::string, int> > covLocation2indice(nStudy);
+  std::vector<std::vector<std::map<std::string, int> > > covLocation2indice(geneRange.size());
+  for (size_t i = 0; i != geneRange.size(); ++i) {
+    covLocation2indice[i].resize(nStudy);
+  }
 
   // return results
   Rprintf("Read score tests...\n");
@@ -723,11 +726,12 @@ SEXP impl_rvMetaReadData(
       if (!geneLocationMap.find(gene)) continue;
       const std::map<std::string, int>& location2idx = geneLocationMap[gene];
 
-      std::map<std::string, int>& covLocation2idx = covLocation2indice[study];
+      std::map<std::string, int>& covLocation2idx = covLocation2indice[idx][study];
       std::set<std::string> processedVariant;
       std::map<std::string, int> processedLocation;
       TabixReader tr(FLAG_pvalFile[study]);
       tr.addRange(range);
+      tr.mergeRange();
       std::string line;
       std::vector<std::string> fd;
       // temp values
@@ -744,15 +748,19 @@ SEXP impl_rvMetaReadData(
         p2 = fd[PVAL_FILE_CHROM_COL] + ":" + fd[PVAL_FILE_POS_COL];
         if (processedVariant.count(p)) {
           REprintf(
-              "Error: encountered a duplicated site: [ %s ], will overwrite "
+              "Error: encounter a duplicated site: [ %s ] in file [ %s ], will overwrite "
               "previous results!\n",
-              p.c_str());
+              p.c_str(),
+              FLAG_pvalFile[study].c_str());
         }
         processedVariant.insert(p);
         int& occurence = processedLocation[p2];
         if (occurence > 0) {
           p2 += "/";
           p2 += toStr(occurence);
+          if (occurence > 1) {
+            REprintf("for debug: is this site has >= 4 alleles??\n");
+          }
         }
         occurence++;
 
@@ -765,6 +773,9 @@ SEXP impl_rvMetaReadData(
         // int idx = geneLocationMap[gene][p];
         int idx = location2idx.find(p)->second;
         covLocation2idx[p2] = idx;
+        // if (covLocation2idx.size() > location2idx.size()) {
+        //   REprintf("%s:%d This should not happen\n", __FILE__, __LINE__);
+        // }
 
         // Rprintf("working on index %d, with position %s\n", idx, p.c_str());
         u = VECTOR_ELT(ret, geneIndex[gene]);
@@ -1029,7 +1040,7 @@ SEXP impl_rvMetaReadData(
         // if (geneLocationMap.find(gene) == geneLocationMap.end()) continue;
         if (!geneLocationMap.find(gene)) continue;
         const std::map<std::string, int>& variant2idx = geneLocationMap[gene];
-        std::map<std::string, int>& location2idx = covLocation2indice[study];
+        const std::map<std::string, int>& location2idx = covLocation2indice[idx][study];
 
         std::map<std::string, int>
             processedSite;  // across rows, number of analyzed first position
@@ -1101,7 +1112,7 @@ SEXP impl_rvMetaReadData(
                 FLAG_pvalFile[study].c_str());
             continue;
           }
-          int posi = location2idx[pi];
+          int posi = location2idx.find(pi)->second;
           occurence_i++;
 
           // REprintf("%s:%d Pos %s = %d, covLen = %d\n", __FILE__, __LINE__,
@@ -1120,9 +1131,12 @@ SEXP impl_rvMetaReadData(
             if (location2idx.count(pj) == 0) {
               continue;
             }
-            int posj = location2idx[pj];
+            int posj = location2idx.find(pj)->second;
 
             // REprintf("i = %d, j = %d\n", posi, posj);
+            // if (posi >= covLen || posj >= covLen) {
+            //   REprintf("Something unusal happens at %s:%d\n", __FILE__, __LINE__);
+            // }
             if (str2double(cov[j], &tmp)) {
               REAL(s)[posi * covLen + posj] = tmp;
               REAL(s)[posj * covLen + posi] = tmp;
