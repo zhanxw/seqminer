@@ -18,5 +18,4 @@ Install the development version ([devtools](https://github.com/hadley/devtools) 
 
 Citation: 
 
-Zhan, X. and Liu, D. J. (2015), SEQMINER: An R-Package to Facilitate the Functional Interpretation of Sequence-Based Associations. Genet. Epidemiol., 39: 619–623. doi:10.1002/gepi.21918
-[link](http://onlinelibrary.wiley.com/doi/10.1002/gepi.21918/abstract)
+[Zhan, X. and Liu, D. J. (2015), SEQMINER: An R-Package to Facilitate the Functional Interpretation of Sequence-Based Associations. Genet. Epidemiol., 39: 619–623. doi:10.1002/gepi.21918](http://onlinelibrary.wiley.com/doi/10.1002/gepi.21918/abstract)
