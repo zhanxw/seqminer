@@ -1,4 +1,9 @@
 language: r
+cache: packages
+r:
+  - oldrel
+  - release
+  - devel
 
 # Be strict when checking our package
 warnings_are_errors: true
