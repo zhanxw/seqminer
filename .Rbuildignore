@@ -1,5 +1,5 @@
-^.*\.Rproj$
-^\.Rproj\.user$
-^tools
+^\.gitignore$
 ^\.travis\.yml$
+^\.git$
 ^appveyor\.yml$
+.*~$

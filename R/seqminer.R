@@ -10,7 +10,7 @@
 #'
 #' @docType package
 #' @name SeqMiner
-#' @useDynLib seqminer
+#' @useDynLib seqminer, .registration = TRUE, .fixes = "C_"
 #' @importFrom utils packageVersion
 NULL
 
@@ -256,12 +256,17 @@ readVCFToListByGene <- function(fileName, geneFile, geneName, annoType, vcfColum
   .Call("readVCFToListByGene", fileName, geneFile, geneName, annoType, vcfColumn, vcfInfo, vcfIndv, PACKAGE="seqminer");
 }
 
+##################################################
+## Handle RareMETAL formats
+##################################################
+
 #' Read association statistics by gene from METAL-format files. Both score statistics and covariance statistics will be extracted.
 #'
 #' @param scoreTestFiles character vector, score test output files (rvtests outputs using --meta score)
 #' @param covFiles character vector, covaraite files (rvtests outputs using --meta cov)
 #' @param geneFile character, a text file listing all genes in refFlat format
 #' @param geneName character vector, which gene(s) to be extracted
+#' @param multiAllelic boolean, whether to read multi-allelic sites as multiple variants or not
 #' @return a list of statistics including chromosome, position, allele frequency, score statistics, covariance and annotation(if input files are annotated).
 #' @export
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
@@ -270,24 +275,26 @@ readVCFToListByGene <- function(fileName, geneFile, geneName, annoType, vcfColum
 #' covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
 #' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
 #' cfh <- rvmeta.readDataByGene(scoreFileName, covFileName, geneFile, "CFH")
-rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName) {
+rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName, multiAllelic = FALSE) {
   stopifnot(local.file.exists(scoreTestFiles))
   stopifnot(is.null(covFiles) || (local.file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
   stopifnot(file.exists(geneFile), length(geneFile) == 1)
+  stopifnot(!is.null(multiAllelic))
+
   scoreTestFiles <- path.expand(scoreTestFiles)
   if (!is.null(covFiles)) {
     covFiles <- path.expand(covFiles)
+  } else {
+    covFiles <- ""
   }
+  multiAllelic <- as.integer(multiAllelic)
 
   storage.mode(scoreTestFiles) <- "character"
   storage.mode(covFiles) <- "character"
   storage.mode(geneFile) <- "character"
   storage.mode(geneName) <- "character"
-  if (is.null(covFiles)) {
-    .Call("rvMetaReadDataByGene", scoreTestFiles, "", geneFile, geneName, PACKAGE="seqminer");
-  } else {
-    .Call("rvMetaReadDataByGene", scoreTestFiles, covFiles, geneFile, geneName, PACKAGE="seqminer");
-  }
+  storage.mode(multiAllelic) <- "integer"
+  .Call("rvMetaReadDataByGene", scoreTestFiles, covFiles, geneFile, geneName, multiAllelic, PACKAGE="seqminer");
 }
 
 #' Read association statistics by range from METAL-format files. Both score statistics and covariance statistics will be extracted.
@@ -295,6 +302,7 @@ rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName) 
 #' @param scoreTestFiles character vector, score test output files (rvtests outputs using --meta score)
 #' @param covFiles character vector, covaraite files (rvtests outputs using --meta cov)
 #' @param ranges character, a text indicating which range in the VCF file to extract. e.g. 1:100-200
+#' @param multiAllelic boolean, whether to read multi-allelic sites as multiple variants or not
 #' @return a list of statistics including chromosome, position, allele frequency, score statistics, covariance and annotation(if input files are annotated).
 #' @export
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
@@ -303,25 +311,25 @@ rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName) 
 #' covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
 #' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
 #' cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
-rvmeta.readDataByRange <- function (scoreTestFiles, covFiles, ranges) {
+rvmeta.readDataByRange <- function (scoreTestFiles, covFiles, ranges, multiAllelic = FALSE) {
   stopifnot(local.file.exists(scoreTestFiles))
   stopifnot(is.null(covFiles) || (local.file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
   stopifnot(all(isTabixRange(ranges)))
+  stopifnot(!is.null(multiAllelic))
+
   scoreTestFiles <- path.expand(scoreTestFiles)
   if (!is.null(covFiles)) {
     covFiles <- path.expand(covFiles)
+  } else {
+    covFiles <- ""
   }
+  multiAllelic <- as.integer(multiAllelic)
 
   storage.mode(scoreTestFiles) <- "character"
   storage.mode(covFiles) <- "character"
   storage.mode(ranges) <- "character"
-  if (is.null(covFiles)) {
-    .Call("rvMetaReadDataByRange", scoreTestFiles, "",
-          ranges, PACKAGE = "seqminer")
-  } else {
-    .Call("rvMetaReadDataByRange", scoreTestFiles, covFiles,
-          ranges, PACKAGE = "seqminer")
-  }
+  storage.mode(multiAllelic) <- "integer"
+  .Call("rvMetaReadDataByRange", scoreTestFiles, covFiles, ranges, multiAllelic, PACKAGE = "seqminer")
 }
 
 #' Read covariance by range from METAL-format files.
@@ -337,6 +345,7 @@ rvmeta.readDataByRange <- function (scoreTestFiles, covFiles, ranges) {
 rvmeta.readCovByRange <- function(covFile, tabixRange) {
   stopifnot(local.file.exists(covFile))
   stopifnot(all(isTabixRange(tabixRange)))
+
   covFile <- path.expand(covFile)
 
   storage.mode(covFile) <- "character"
@@ -357,6 +366,7 @@ rvmeta.readCovByRange <- function(covFile, tabixRange) {
 rvmeta.readScoreByRange <- function(scoreTestFiles, tabixRange) {
   stopifnot(local.file.exists(scoreTestFiles))
   stopifnot(all(isTabixRange(tabixRange)))
+
   scoreTestFiles <- path.expand(scoreTestFiles)
 
   storage.mode(scoreTestFiles) <- "character"
@@ -392,8 +402,12 @@ rvmeta.readSkewByRange <- function(skewFile, tabixRange) {
 #' @export
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
 #' @examples
-#' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
-#' snp <- tabix.read(fileName, "1:196623337-196632470")
+#' if (.Platform$endian == "little") {
+#'   fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+#'   snp <- tabix.read(fileName, "1:196623337-196632470")
+#' } else {
+#'   messgae("Tabix does not work well for big endian for now")
+#' }
 tabix.read <- function(tabixFile, tabixRange) {
   stopifnot(local.file.exists(tabixFile))
   stopifnot(all(isTabixRange(tabixRange)))

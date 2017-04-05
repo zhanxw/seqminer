@@ -2,8 +2,12 @@
 #include <R.h>
 #include <Rinternals.h>
 
-extern "C" SEXP impl_rvMetaReadDataByGene(SEXP arg_pvalFile, SEXP arg_covFile, SEXP arg_geneFile, SEXP arg_gene);
-extern "C" SEXP impl_rvMetaReadDataByRange(SEXP arg_pvalFile, SEXP arg_covFile, SEXP arg_range);
+typedef enum GroupingUnit {
+  GROUP_BY_CHROM_POS = 1,
+  GROUP_BY_CHROM_POS_REF_ALT = 2} GroupingUnit;
+
+extern "C" SEXP impl_rvMetaReadDataByGene(SEXP arg_pvalFile, SEXP arg_covFile, SEXP arg_geneFile, SEXP arg_gene, SEXP arg_multiAllelic);
+extern "C" SEXP impl_rvMetaReadDataByRange(SEXP arg_pvalFile, SEXP arg_covFile, SEXP arg_range, SEXP arg_multiAllelic);
 
 extern "C" SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range);
 extern "C" SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range);

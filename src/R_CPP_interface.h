@@ -10,6 +10,7 @@
 #include <vector>
 #include <set>
 
+#include <cstring>
 
 void extractString(SEXP in, std::string* out);
 

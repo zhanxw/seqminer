@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//////////////////////////////////////////////////
+// VCF/BCF related
+//////////////////////////////////////////////////
 extern SEXP impl_readVCFToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_geneName, SEXP arg_annoType);
 SEXP readVCFToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_geneName, SEXP arg_annoType) {
   return impl_readVCFToMatrixByGene(arg_fileName, arg_geneFile, arg_geneName, arg_annoType);
@@ -24,14 +27,17 @@ SEXP readVCFToListByRange(SEXP arg_fileName, SEXP arg_range, SEXP arg_annoType, 
   return impl_readVCFToListByRange(arg_fileName, arg_range, arg_annoType, arg_columns, arg_infoTag, arg_indvTag);
 }
 
-extern SEXP impl_rvMetaReadDataByGene(SEXP arg_pvalFile, SEXP arg_covFile, SEXP arg_geneFile, SEXP arg_gene);
-SEXP rvMetaReadDataByGene(SEXP arg_pvalFile, SEXP arg_covFile, SEXP arg_geneFile, SEXP arg_gene) {
-  return impl_rvMetaReadDataByGene(arg_pvalFile, arg_covFile, arg_geneFile, arg_gene);
+//////////////////////////////////////////////////
+// RareMETAL related
+//////////////////////////////////////////////////
+extern SEXP impl_rvMetaReadDataByGene(SEXP arg_pvalFile, SEXP arg_covFile, SEXP arg_geneFile, SEXP arg_gene, SEXP arg_multiAllelic);
+SEXP rvMetaReadDataByGene(SEXP arg_pvalFile, SEXP arg_covFile, SEXP arg_geneFile, SEXP arg_gene, SEXP arg_multiAllelic) {
+  return impl_rvMetaReadDataByGene(arg_pvalFile, arg_covFile, arg_geneFile, arg_gene, arg_multiAllelic);
 }
 
-extern SEXP impl_rvMetaReadDataByRange(SEXP arg_pvalFile, SEXP arg_covFile, SEXP arg_range);
-SEXP rvMetaReadDataByRange(SEXP arg_pvalFile, SEXP arg_covFile, SEXP arg_range) {
-  return impl_rvMetaReadDataByRange(arg_pvalFile, arg_covFile, arg_range);
+extern SEXP impl_rvMetaReadDataByRange(SEXP arg_pvalFile, SEXP arg_covFile, SEXP arg_range, SEXP arg_multiAllelic);
+SEXP rvMetaReadDataByRange(SEXP arg_pvalFile, SEXP arg_covFile, SEXP arg_range, SEXP arg_multiAllelic) {
+  return impl_rvMetaReadDataByRange(arg_pvalFile, arg_covFile, arg_range, arg_multiAllelic);
 }
 
 extern SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range);
@@ -49,6 +55,9 @@ SEXP readSkewByRange(SEXP arg_covFile, SEXP arg_range) {
   return impl_readSkewByRange(arg_covFile, arg_range);
 }
 
+//////////////////////////////////////////////////
+// tabix related
+//////////////////////////////////////////////////
 extern SEXP impl_readTabixByRange(SEXP arg_tabixFile, SEXP arg_range);
 SEXP readTabixByRange(SEXP arg_tabixFile, SEXP arg_range) {
   return impl_readTabixByRange(arg_tabixFile, arg_range);

@@ -35,12 +35,19 @@ void set2string(const std::set<std::string>& in, std::string* out,
 
 /**
  * Read @param fn, for each variant in @param range, put each location to @param
- * location under the key @param gene
- * e.g.: locate[gene1][1:100] = 0, locate[gene1][1:120] = 1, ....
+ * location under the key @param gene.
+ * The locations are used for storing results.
+ * @param multiAllelic, determine the format of keys
+ * (e.g. gene1 = chrom:pos, chrom:pos_ref/alt)
+ * e.g.: location[gene1][1:100] = 0, location[gene1][1:120] = 1, ....
  */
 void addLocationPerGene(
     const std::string& gene, const std::string& range, const std::string& fn,
+    const int multiAllelic,
     OrderedMap<std::string, std::map<std::string, int> >* location) {
+  const GroupingUnit groupByUnit =
+      multiAllelic == 0 ? GROUP_BY_CHROM_POS : GROUP_BY_CHROM_POS_REF_ALT;
+
   // check required column headers
   PvalFileFormat pvalHeader;
   if (pvalHeader.open(fn) < 0) {
@@ -52,8 +59,13 @@ void addLocationPerGene(
   const int PVAL_FILE_REF_COL = pvalHeader.get("REF");
   const int PVAL_FILE_ALT_COL = pvalHeader.get("ALT");
 
-  if (PVAL_FILE_CHROM_COL < 0 || PVAL_FILE_POS_COL < 0 ||
-      PVAL_FILE_REF_COL < 0 || PVAL_FILE_ALT_COL < 0) {
+  if (groupByUnit == GROUP_BY_CHROM_POS_REF_ALT &&
+      (PVAL_FILE_CHROM_COL < 0 || PVAL_FILE_POS_COL < 0 ||
+       PVAL_FILE_REF_COL < 0 || PVAL_FILE_ALT_COL < 0)) {
+    REprintf("Study [ %s ] does not have all required headers.\n", fn.c_str());
+    return;
+  } else if (groupByUnit == GROUP_BY_CHROM_POS &&
+             (PVAL_FILE_CHROM_COL < 0 || PVAL_FILE_POS_COL < 0)) {
     REprintf("Study [ %s ] does not have all required headers.\n", fn.c_str());
     return;
   }
@@ -70,24 +82,41 @@ void addLocationPerGene(
   while (tr.readLine(&line)) {
     stringNaturalTokenize(line, "\t ", &fd);
     if (fd.size() < 2) continue;
-    key = fd[PVAL_FILE_CHROM_COL] + ":" + fd[PVAL_FILE_POS_COL] + "_" +
-          fd[PVAL_FILE_REF_COL] + "/" + fd[PVAL_FILE_ALT_COL];
-    int occurence = keySeen[key];
-    if (occurence != 0) {
-      REprintf("Encounter a duplicated site: [ %s ] in file [ %s ]\n", key.c_str(), fn.c_str());
-      key += '/';
-      key += toStr(occurence);
+    if (groupByUnit == GROUP_BY_CHROM_POS) {
+      key = fd[PVAL_FILE_CHROM_COL] + ":" + fd[PVAL_FILE_POS_COL];
+      int occurence = keySeen[key];
+      if (occurence != 0) {
+        REprintf(
+            "Skipped: encounter a duplicated site: [ %s ] in file [ %s ]\n",
+            key.c_str(), fn.c_str());
+        // key += '/';
+        // key += toStr(occurence);
+      }
+    } else if (groupByUnit == GROUP_BY_CHROM_POS_REF_ALT) {
+      key = fd[PVAL_FILE_CHROM_COL] + ":" + fd[PVAL_FILE_POS_COL] + "_" +
+            fd[PVAL_FILE_REF_COL] + "/" + fd[PVAL_FILE_ALT_COL];
+      int occurence = keySeen[key];
+      if (occurence != 0) {
+        Rprintf(
+            "Please check: encounter a duplicated site: [ %s ] in file [ %s "
+            "]\n",
+            key.c_str(), fn.c_str());
+        // key += '_';
+        // key += toStr(occurence);
+      }
     }
     keySeen[key]++;
 
-    if ((*location)[gene].count(key) != 0) {  // should not happen
-      // REprintf("Probably an eror is happening... key = [ %s ]\n",
-      // key.c_str());
-      continue;
-    }
+    // The following code intend to check duplications, but it's not work well,
+    // as in repeated calls, the same variant appears in mulitiple input files
+    // if ((*location)[gene].count(key) != 0) {
+    //   // REprintf("Probably an eror is happening... key = [ %s ]\n",
+    //   // key.c_str());
+    //   continue;
+    // }
     val = (*location)[gene].size();
     (*location)[gene][key] = val;
-  }
+  }  // end while (tr.readLine(&line))
 }  // end addLocationPerGene
 
 /**
@@ -249,10 +278,12 @@ int assignDouble(const std::string& val, SEXP u, int idx1, int idx2, int idx3,
 #define RET_N_CASE_INDEX 33
 #define RET_N_CTRL_INDEX 34
 
-SEXP impl_rvMetaReadData(
-    SEXP arg_pvalFile, SEXP arg_covFile,
-    const OrderedMap<std::string, std::string>& geneRange) {
+SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
+                         const OrderedMap<std::string, std::string>& geneRange,
+                         const int multiAllelic) {
   // PROFILE_FUNCTION();
+  GroupingUnit groupByUnit =
+      multiAllelic == 0 ? GROUP_BY_CHROM_POS : GROUP_BY_CHROM_POS_REF_ALT;
 
   int numAllocated = 0;
   SEXP ret = R_NilValue;
@@ -291,14 +322,16 @@ SEXP impl_rvMetaReadData(
     const std::string& key = geneRange.keyAt(idx);
     const std::string& value = geneRange.valueAt(idx);
     for (int i = 0; i < nStudy; ++i) {
-      addLocationPerGene(key, value, FLAG_pvalFile[i], &geneLocationMap);
+      addLocationPerGene(key, value, FLAG_pvalFile[i], multiAllelic,
+                         &geneLocationMap);
     }
-    for (int i = 0; i < nStudy; ++i) {
-      sortLocationPerGene(&(geneLocationMap[key]));
-    }
+    // for (int i = 0; i < nStudy; ++i) {
+    sortLocationPerGene(&(geneLocationMap[key]));
+    // }
   }
-  // annotation text consumes lots of memor. This stores position=>annotation
-  // mapping
+
+  // annotation text consumes lots of memory.
+  // This stores position => annotation mapping.
   std::map<std::string, std::set<std::string> > posAnnotationMap;
 
   //////////////////////////////////////////////////
@@ -648,14 +681,17 @@ SEXP impl_rvMetaReadData(
 
   // cov file does not have ref/alt allele,
   // we will record how to map variant location to its index
-  std::vector<std::vector<std::map<std::string, int> > > covLocation2indice(geneRange.size());
+  std::vector<std::vector<std::map<std::string, int> > > covLocation2indice(
+      geneRange.size());
   for (size_t i = 0; i != geneRange.size(); ++i) {
     covLocation2indice[i].resize(nStudy);
   }
 
   // return results
   Rprintf("Read score tests...\n");
-  // read pval file and fill in values
+
+  //////////////////////////////////////////////////
+  // read pval file and fill in most of the values
   for (int study = 0; study < nStudy; ++study) {
     Rprintf("In study %d\n", study);
     // read header
@@ -726,7 +762,8 @@ SEXP impl_rvMetaReadData(
       if (!geneLocationMap.find(gene)) continue;
       const std::map<std::string, int>& location2idx = geneLocationMap[gene];
 
-      std::map<std::string, int>& covLocation2idx = covLocation2indice[idx][study];
+      std::map<std::string, int>& covLocation2idx =
+          covLocation2indice[idx][study];
       std::set<std::string> processedVariant;
       std::map<std::string, int> processedLocation;
       TabixReader tr(FLAG_pvalFile[study]);
@@ -736,34 +773,47 @@ SEXP impl_rvMetaReadData(
       std::vector<std::string> fd;
       // temp values
       std::string p;   // meaning position, e.g. 1:100_A/T
-      std::string p2;  // short position, e.g. 1:100, that is for cov file
-
+      std::string p2;  // short form of position and occurence
+                       // e.g. 1:100, 1:100_1, 1:100_2 ...(for cov file)
       int tempInt;
       double tempDouble;
       while (tr.readLine(&line)) {
         stringNaturalTokenize(line, " \t", &fd);
         if ((int)fd.size() <= PVAL_FILE_MIN_COLUMN_NUM) continue;
-        p = fd[PVAL_FILE_CHROM_COL] + ":" + fd[PVAL_FILE_POS_COL] + "_" +
-            fd[PVAL_FILE_REF_COL] + "/" + fd[PVAL_FILE_ALT_COL];
-        p2 = fd[PVAL_FILE_CHROM_COL] + ":" + fd[PVAL_FILE_POS_COL];
-        if (processedVariant.count(p)) {
-          REprintf(
-              "Error: encounter a duplicated site: [ %s ] in file [ %s ], will overwrite "
-              "previous results!\n",
-              p.c_str(),
-              FLAG_pvalFile[study].c_str());
-        }
-        processedVariant.insert(p);
-        int& occurence = processedLocation[p2];
-        if (occurence > 0) {
-          p2 += "/";
-          p2 += toStr(occurence);
-          if (occurence > 1) {
-            REprintf("for debug: is this site has >= 4 alleles??\n");
+        if (groupByUnit == GROUP_BY_CHROM_POS) {
+          p = fd[PVAL_FILE_CHROM_COL] + ":" + fd[PVAL_FILE_POS_COL];
+          p2 = p;
+          if (processedVariant.count(p)) {
+            REprintf(
+                "Error: encounter a duplicated location: [ %s ] in file [ %s "
+                "], "
+                "will "
+                "overwrite "
+                "previous results!\n",
+                p.c_str(), FLAG_pvalFile[study].c_str());
           }
+          processedVariant.insert(p);
+        } else if (groupByUnit == GROUP_BY_CHROM_POS_REF_ALT) {
+          p = fd[PVAL_FILE_CHROM_COL] + ":" + fd[PVAL_FILE_POS_COL] + "_" +
+              fd[PVAL_FILE_REF_COL] + "/" + fd[PVAL_FILE_ALT_COL];
+          p2 = fd[PVAL_FILE_CHROM_COL] + ":" + fd[PVAL_FILE_POS_COL];
+          if (processedVariant.count(p)) {
+            REprintf(
+                "Error: encounter a duplicated site: [ %s ] in file [ %s ], "
+                "please check input file!\n",
+                p.c_str(), FLAG_pvalFile[study].c_str());
+          }
+          processedVariant.insert(p);
+          int& occurence = processedLocation[p2];
+          if (occurence > 0) {
+            p2 += "/";
+            p2 += toStr(occurence);
+            if (occurence > 1) {
+              REprintf("for debug: is this site has >= 4 alleles??\n");
+            }
+          }
+          occurence++;
         }
-        occurence++;
-
         SEXP u, v, s;
         // std::string& gene = locationGeneMap[p];
         /// if (FLAG_gene.count(gene) == 0) continue;
@@ -962,6 +1012,8 @@ SEXP impl_rvMetaReadData(
     }
     Rprintf("Done read score file: %s\n", FLAG_pvalFile[study].c_str());
   }  // end loop by study
+
+  //////////////////////////////////////////////////
   // fill in position and annotation
   // iter = geneLocationMap.begin();
   for (int i = 0; i < (int)geneLocationMap.size(); ++i) {
@@ -987,6 +1039,7 @@ SEXP impl_rvMetaReadData(
     }
   }
 
+  //////////////////////////////////////////////////
   // read cov file and record pos2idx
   if (FLAG_covFile.empty()) {
     Rprintf("Skip reading cov files ... \n");
@@ -1040,7 +1093,8 @@ SEXP impl_rvMetaReadData(
         // if (geneLocationMap.find(gene) == geneLocationMap.end()) continue;
         if (!geneLocationMap.find(gene)) continue;
         const std::map<std::string, int>& variant2idx = geneLocationMap[gene];
-        const std::map<std::string, int>& location2idx = covLocation2indice[idx][study];
+        const std::map<std::string, int>& location2idx =
+            covLocation2indice[idx][study];
 
         std::map<std::string, int>
             processedSite;  // across rows, number of analyzed first position
@@ -1097,45 +1151,60 @@ SEXP impl_rvMetaReadData(
           s = VECTOR_ELT(v, study);
 
           std::string pi = chrom + ":" + pos[0];
-          int& occurence_i = processedSite[pi];
-          processedSitePerLine.clear();
-          processedSitePerLine[pi] = occurence_i;
-          if (occurence_i > 0) {  // multi-allelic site
-            pi += '/';
-            pi += toStr(occurence_i);
+          int posi;
+          if (groupByUnit == GROUP_BY_CHROM_POS_REF_ALT) {
+            int& occurence_i = processedSite[pi];
+            processedSitePerLine.clear();
+            processedSitePerLine[pi] = occurence_i;
+            if (occurence_i > 0 &&
+                groupByUnit ==
+                    GROUP_BY_CHROM_POS_REF_ALT) {  // multi-allelic site
+              pi += '/';
+              pi += toStr(occurence_i);
+            }
+            if (location2idx.count(pi) == 0) {
+              REprintf(
+                  "Warning: location [ %s ] found in cov file [ %s ] but not "
+                  "score file [ %s ]\n",
+                  pi.c_str(), FLAG_covFile[study].c_str(),
+                  FLAG_pvalFile[study].c_str());
+              continue;
+            }
+            posi = location2idx.find(pi)->second;
+            occurence_i++;
+          } else {
+            posi = location2idx.find(pi)->second;
           }
-          if (location2idx.count(pi) == 0) {
-            REprintf(
-                "Warning: location [ %s ] found in cov file [ %s ] but not "
-                "score file [ %s ]\n",
-                pi.c_str(), FLAG_covFile[study].c_str(),
-                FLAG_pvalFile[study].c_str());
-            continue;
-          }
-          int posi = location2idx.find(pi)->second;
-          occurence_i++;
 
           // REprintf("%s:%d Pos %s = %d, covLen = %d\n", __FILE__, __LINE__,
           //          pi.c_str(), posi, covLen);
           std::string pj;
+          int posj;
           double tmp;
 
           for (size_t j = 0; j < pos.size(); ++j) {
             pj = chrom + ":" + pos[j];
-            int& occurence_j = processedSitePerLine[pj];
-            if (occurence_j > 0) {  // multi-allelic site
-              pj += '/';
-              pj += toStr(occurence_j);
+            if (groupByUnit == GROUP_BY_CHROM_POS_REF_ALT) {
+              int& occurence_j = processedSitePerLine[pj];
+              if (occurence_j > 0 &&
+                  groupByUnit ==
+                      GROUP_BY_CHROM_POS_REF_ALT) {  // multi-allelic site
+                pj += '/';
+                pj += toStr(occurence_j);
+              }
+              occurence_j++;
+            } else {
+              // do nothing
             }
-            occurence_j++;
             if (location2idx.count(pj) == 0) {
               continue;
             }
-            int posj = location2idx.find(pj)->second;
+            posj = location2idx.find(pj)->second;
 
             // REprintf("i = %d, j = %d\n", posi, posj);
             // if (posi >= covLen || posj >= covLen) {
-            //   REprintf("Something unusal happens at %s:%d\n", __FILE__, __LINE__);
+            //   REprintf("Something unusal happens at %s:%d\n", __FILE__,
+            //   __LINE__);
             // }
             if (str2double(cov[j], &tmp)) {
               REAL(s)[posi * covLen + posj] = tmp;
@@ -1212,7 +1281,7 @@ SEXP impl_rvMetaReadData(
 }  // impl_rvMetaReadData
 
 SEXP impl_rvMetaReadDataByRange(SEXP arg_pvalFile, SEXP arg_covFile,
-                                SEXP arg_range) {
+                                SEXP arg_range, SEXP arg_multiAllelic) {
   std::vector<std::string> FLAG_range;
   extractStringArray(arg_range, &FLAG_range);
 
@@ -1224,12 +1293,14 @@ SEXP impl_rvMetaReadDataByRange(SEXP arg_pvalFile, SEXP arg_covFile,
   }
 
   // PROFILE_DUMP();
-
-  return impl_rvMetaReadData(arg_pvalFile, arg_covFile, geneRange);
+  int multiAllelic = INTEGER(arg_multiAllelic)[0];
+  return impl_rvMetaReadData(arg_pvalFile, arg_covFile, geneRange,
+                             multiAllelic);
 }  // impl_rvMetaReadDataByRange
 
 SEXP impl_rvMetaReadDataByGene(SEXP arg_pvalFile, SEXP arg_covFile,
-                               SEXP arg_geneFile, SEXP arg_gene) {
+                               SEXP arg_geneFile, SEXP arg_gene,
+                               SEXP arg_multiAllelic) {
   // load gene
   std::string FLAG_geneFile;
   std::set<std::string> FLAG_gene;
@@ -1239,7 +1310,9 @@ SEXP impl_rvMetaReadDataByGene(SEXP arg_pvalFile, SEXP arg_covFile,
   OrderedMap<std::string, std::string> geneRange;
   loadGeneFile(FLAG_geneFile, FLAG_gene, &geneRange);
 
-  return impl_rvMetaReadData(arg_pvalFile, arg_covFile, geneRange);
+  int multiAllelic = INTEGER(arg_multiAllelic)[0];
+  return impl_rvMetaReadData(arg_pvalFile, arg_covFile, geneRange,
+                             multiAllelic);
 }  // impl_rvMetaReadDataByGene
 
 /**
