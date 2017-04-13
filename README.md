@@ -3,6 +3,7 @@ SEQMINER
 
 [![Build Status](https://travis-ci.org/zhanxw/seqminer.svg?branch=master)](https://travis-ci.org/zhanxw/seqminer)
 ![](http://cranlogs.r-pkg.org/badges/seqminer)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/zhanxw/seqminer?branch=master&svg=true)](https://ci.appveyor.com/project/zhanxw/seqminer)
 
 Efficiently Read Sequence Data (VCF Format, BCF Format and METAL Format) into R
 
