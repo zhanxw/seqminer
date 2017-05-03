@@ -1173,6 +1173,14 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
             posi = location2idx.find(pi)->second;
             occurence_i++;
           } else {
+            if (location2idx.count(pi) == 0) {
+              REprintf(
+                  "Warning: location [ %s ] found in cov file [ %s ] but not "
+                  "score file [ %s ]\n",
+                  pi.c_str(), FLAG_covFile[study].c_str(),
+                  FLAG_pvalFile[study].c_str());
+              continue;
+            }
             posi = location2idx.find(pi)->second;
           }
 

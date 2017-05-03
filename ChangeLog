@@ -1,3 +1,7 @@
+2017-05-03  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Fix crashes when reading meta-analysis score and cov files together
+
 2017-04-05  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Add option multiAllelic (default: FALSE) to support bi-/multi- allelic
