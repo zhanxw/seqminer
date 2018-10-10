@@ -22,7 +22,7 @@ if (.Platform$endian == "little") {
   fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
   snp <- tabix.read(fileName, "1:196623337-196632470")
 } else {
-  messgae("Tabix does not work well for big endian for now")
+  message("Tabix does not work well for big endian for now")
 }
 }
 \seealso{

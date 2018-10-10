@@ -7,7 +7,7 @@
 #include <map>
 #include "StringUtil.h"
 #include "TypeConversion.h"
-#include "IO.h"
+#include "FileIO.h"
 
 #include "tabix.h"
 

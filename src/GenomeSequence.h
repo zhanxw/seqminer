@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "IO.h"
+#include "FileIO.h"
 #include "TypeConversion.h"
 
 // .fai format

@@ -1,5 +1,5 @@
 #include "PeopleSet.h"
-#include "IO.h"
+#include "FileIO.h"
 
 // class PeopleSet
 void PeopleSet::readID(const char* allPeopleID){

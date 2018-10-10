@@ -8,7 +8,7 @@
 #include "VCFInfo.h"
 #include "OrderedMap.h"
 #include "Utils.h"
-#include "IO.h"
+#include "FileIO.h"
 #include "RangeList.h"
 #include "Exception.h"
 

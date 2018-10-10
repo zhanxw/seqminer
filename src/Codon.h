@@ -3,7 +3,7 @@
 
 #include <map>
 #include <string>
-#include "IO.h"
+#include "FileIO.h"
 #include "Utils.h"
 
 class Codon{

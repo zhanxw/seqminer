@@ -7,7 +7,7 @@
 
 #include "R.h"
 
-#include "IO.h"
+#include "FileIO.h"
 #include "Utils.h"
 #include "OrderedMap.h"
 #include "RangeList.h"

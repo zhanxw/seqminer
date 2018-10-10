@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <climits>
 
-#include "IO.h"
+#include "FileIO.h"
 
 void RangeCollection::obtainRange(const int index, std::string* chrom, unsigned int* beg, unsigned int* end) const {
   unsigned int t = index;

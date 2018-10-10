@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 #include <cstdio>
-#include "IO.h"
+#include "FileIO.h"
 #include "TypeConversion.h"
 
 class GenomeScore {

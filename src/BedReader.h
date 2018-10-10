@@ -1,7 +1,7 @@
 #ifndef _BEDREADER_H_
 #define _BEDREADER_H_
 
-#include "IO.h"
+#include "FileIO.h"
 #include "TypeConversion.h"
 #include "StringUtil.h"
 #include <map>

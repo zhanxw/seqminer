@@ -1,5 +1,5 @@
-#ifndef _IO_H_
-#define _IO_H_
+#ifndef _FILEIO_H_
+#define _FILEIO_H_
 
 #define UNUSED(x) ((void)(x))
 #include <stdio.h>   //fopen
@@ -926,4 +926,4 @@ class FileWriter {
   int bufLen;
 };  // end class FileWriter
 
-#endif /* _IO_H_ */
+#endif /* _FILEIO_H_ */

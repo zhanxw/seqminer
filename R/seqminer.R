@@ -406,7 +406,7 @@ rvmeta.readSkewByRange <- function(skewFile, tabixRange) {
 #'   fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
 #'   snp <- tabix.read(fileName, "1:196623337-196632470")
 #' } else {
-#'   messgae("Tabix does not work well for big endian for now")
+#'   message("Tabix does not work well for big endian for now")
 #' }
 tabix.read <- function(tabixFile, tabixRange) {
   stopifnot(local.file.exists(tabixFile))
@@ -862,11 +862,15 @@ makeAnnotationParameter <- function(param = NULL) {
 #' @export
 #' @seealso makeAnnotationParameter
 #' @examples
-#' param <- list(reference = system.file("tabanno/test.fa", package = "seqminer"),
-#'               geneFile = system.file("tabanno/test.gene.txt", package = "seqminer"))
-#' param <- makeAnnotationParameter(param)
-#' print(param)
-#' annotateGene(param, c("1", "1"), c(3, 5) , c("A", "C"), c("G", "C"))
+#' if (.Platform$endian == "little") {
+#'   param <- list(reference = system.file("tabanno/test.fa", package = "seqminer"),
+#'                 geneFile = system.file("tabanno/test.gene.txt", package = "seqminer"))
+#'   param <- makeAnnotationParameter(param)
+#'   print(param)
+#'   annotateGene(param, c("1", "1"), c(3, 5) , c("A", "C"), c("G", "C"))
+#' } else {
+#'   message("Tabix does not work well for big endian for now")
+#' }
 annotateGene <- function(param, chrom, position, ref, alt) {
   param <- makeAnnotationParameter(param)
   res <- validateAnnotationParameter(param)

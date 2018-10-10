@@ -7,7 +7,7 @@
 #include <unistd.h>
 #endif
 
-#include "IO.h"
+#include "FileIO.h"
 #include "AnnotationInputFile.h"
 #include "OrderedMap.h"
 

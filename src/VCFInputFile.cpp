@@ -1,6 +1,6 @@
 #include "VCFInputFile.h"
 #include "Utils.h"
-#include "IO.h"
+#include "FileIO.h"
 
 #include "TabixReader.h"
 #include "BCFReader.h"
