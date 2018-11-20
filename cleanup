@@ -1,3 +1,4 @@
 #!/bin/sh
 
-rm -f config.* src/Makevars src/config.h
+make -C src/zstd clean
+rm -f config.* src/Makevars src/sqlite/*.o src/config.h

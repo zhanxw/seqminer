@@ -34,10 +34,18 @@ int storeIntResult(const std::vector<std::string>& in , SEXP& ret, int idx);
 
 int storeResult(const std::vector<double>& in , SEXP& ret, int idx);
 
-int storeDoubleResult(const std::vector<std::string>& in , SEXP& ret, int idx); 
+int storeDoubleResult(const std::vector<std::string>& in , SEXP& ret, int idx);
+
+int storeResult(const std::vector<bool>& in ,  SEXP& ret, int idx) ;
+
+int storeResult(const std::vector<std::vector<double> >& in ,  SEXP& ret, int idx) ;
+
+int storeResult(const std::vector<std::vector<std::vector<double> > >& in ,  SEXP& ret, int idx);
+
 int storeResult(const std::string& key, const std::vector<std::string>& val , SEXP ret, int idx); 
 
 int storeResult(const std::string& key, const std::vector<int>& val , SEXP& ret, int idx);
+
 
 int setDim(int nrow, int ncol, SEXP* s);
 int setDim(int i, int j, int k, SEXP* s);
@@ -74,6 +82,8 @@ void initStringArray(SEXP s);
  * Another set of utility function
  */
 int storeResult(const std::vector<std::string>& in , SEXP* ret) ;
+int storeResult(const std::vector<double>& in, SEXP* ret);
+int storeResult(const std::vector<std::vector<double> >& in, SEXP* ret);
 
 int getDim(SEXP s, std::vector<int>* d);
 

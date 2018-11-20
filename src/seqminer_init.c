@@ -23,6 +23,10 @@ extern SEXP rvMetaReadDataByGene(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rvMetaReadDataByRange(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rvMetaWriteCovData(SEXP, SEXP);
 extern SEXP rvMetaWriteScoreData(SEXP, SEXP);
+extern SEXP readBGENToListByGene(SEXP, SEXP, SEXP);
+extern SEXP readBGENToListByRange(SEXP, SEXP);
+extern SEXP readBGENToMatrixByGene(SEXP, SEXP, SEXP);
+extern SEXP readBGENToMatrixByRange(SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"anno",                   (DL_FUNC) &anno,                   3},
@@ -44,6 +48,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"rvMetaReadDataByRange",  (DL_FUNC) &rvMetaReadDataByRange,  4},
     {"rvMetaWriteCovData",     (DL_FUNC) &rvMetaWriteCovData,     2},
     {"rvMetaWriteScoreData",   (DL_FUNC) &rvMetaWriteScoreData,   2},
+    {"readBGENToListByGene",    (DL_FUNC) &readBGENToListByGene,    3},
+    {"readBGENToListByRange",   (DL_FUNC) &readBGENToListByRange,   2},
+    {"readBGENToMatrixByGene",  (DL_FUNC) &readBGENToMatrixByGene,  3},
+    {"readBGENToMatrixByRange", (DL_FUNC) &readBGENToMatrixByRange, 2},
     {NULL, NULL, 0}
 };
 

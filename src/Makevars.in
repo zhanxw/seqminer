@@ -13,7 +13,7 @@ PKG_LIBS=@PKG_LIBS@
 ## ##  type `Ctrl+C` to return to GDB and set breakpoints
 ## PKG_CFLAGS+=-O0 -ggdb
 ## PKG_CXXFLAGS+=-O0 -ggdb
-##
+
 
 ## Regular expression
 ## We first check regex.h provided by libc.
@@ -21,3 +21,23 @@ PKG_LIBS=@PKG_LIBS@
 ## linking problem. For example, when we include <pcreposix.h>,
 ## during linking, libc library may be used instead of the pcre library. 
 ## That will crash our program. So we wont use PCRE (@LIB_PCRE@).
+
+## use SQLITE
+PKG_CXX1XFLAGS+=-I. \
+             -DRSQLITE_USE_BUNDLED_SQLITE \
+             -DSQLITE_ENABLE_RTREE \
+             -DSQLITE_ENABLE_FTS3 \
+             -DSQLITE_ENABLE_FTS3_PARENTHESIS \
+             -DSQLITE_ENABLE_FTS5 \
+             -DSQLITE_ENABLE_JSON1 \
+             -DSQLITE_ENABLE_STAT4 \
+             -DSQLITE_SOUNDEX
+
+# R_HOME=$(shell R RHOME)
+# ZSTDR_CFLAGS=$("${R_HOME}/bin/R" CMD config CFLAGS)
+# zstd/lib/libzstd.a:
+# 	cd src/zstd && make lib CFLAGS="${ZSTDR_CFLAGS} -fPIC"
+
+PKG_LIBS += sqlite/sqlite3.o zstd/lib/libzstd.a
+
+$(SHLIB): $(PKG_LIBS)

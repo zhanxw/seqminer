@@ -6,7 +6,9 @@
 #include <errno.h>
 #include <limits.h>
 #include <math.h> // for HUGE_VALF, HUGE_VALL
+#include <set>
 #include <sstream>
+#include <vector>
 
 ////////////////////////////////////////////////////////////////////////
 // define HUGE_VALF, HUGE_VALL for Solaris 10
@@ -47,6 +49,48 @@ inline std::string toString(T i){
     ss << i;
     return ss.str();
 }
+
+template <class T>
+ inline std::string toString(const std::set<T>& in, const std::string& sep) {
+   if (in.empty()) {
+     return "";
+   }
+   std::stringstream ss;
+   typename std::set<T>::const_iterator iter = in.begin();
+   for (; iter != in.end(); ++iter) {
+     ss << *iter;
+     ss << sep;
+   }
+   std::string ret = ss.str();
+   ret.resize(ret.size() - sep.size());
+   return ret;
+ }
+
+ template <>
+ inline std::string toString(const std::set<uint8_t>& in,
+                             const std::string& sep) {
+   std::stringstream ss;
+   std::set<uint8_t>::const_iterator iter = in.begin();
+   for (; iter != in.end(); ++iter) {
+     ss << (int)*iter;
+     ss << sep;
+   }
+   std::string ret = ss.str();
+   ret.resize(ret.size() - sep.size());
+   return ret;
+ }
+
+template <class T>
+inline std::string toString(const std::vector<T>& in, const std::string& sep) {
+   std::stringstream ss;
+   for (size_t i = 0; i != in.size(); ++i) {
+     if (i) {
+       ss << sep;
+     }
+     ss << in[i];
+   }
+   return ss.str();
+ }
 
 // convert double/float to string type
 // we try to mimic the '%g' in printf

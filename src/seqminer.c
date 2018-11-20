@@ -83,6 +83,9 @@ SEXP rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
   return impl_rvMetaWriteCovData(arg_data, arg_outPrefix);
 }
 
+//////////////////////////////////////////////////
+// Annotation related
+//////////////////////////////////////////////////
 extern SEXP impl_createTabixIndex(SEXP arg_tabixFile,
                                       SEXP arg_seqnameColumn,
                                       SEXP arg_startColumn,
@@ -107,3 +110,28 @@ extern SEXP impl_isInRange(SEXP arg_position, SEXP arg_range);
 SEXP isInRange(SEXP arg_position, SEXP arg_range) {
   return impl_isInRange(arg_position, arg_range);
 }
+
+//////////////////////////////////////////////////
+// BGEN related
+//////////////////////////////////////////////////
+extern SEXP impl_readBGENToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_geneName);
+SEXP readBGENToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_geneName) {
+  return impl_readBGENToMatrixByGene(arg_fileName, arg_geneFile, arg_geneName);
+}
+
+extern SEXP impl_readBGENToMatrixByRange(SEXP arg_fileName, SEXP arg_range);
+SEXP readBGENToMatrixByRange(SEXP arg_fileName, SEXP arg_range) {
+  return impl_readBGENToMatrixByRange(arg_fileName, arg_range);
+}
+
+
+extern SEXP impl_readBGENToListByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_geneName);
+SEXP readBGENToListByGene(SEXP arg_fileName, SEXP arg_geneFile, SEXP arg_geneName) {
+  return impl_readBGENToListByGene(arg_fileName, arg_geneFile, arg_geneName);
+}
+
+extern SEXP impl_readBGENToListByRange(SEXP arg_fileName, SEXP arg_range);
+SEXP readBGENToListByRange(SEXP arg_fileName, SEXP arg_range) {
+  return impl_readBGENToListByRange(arg_fileName, arg_range);
+}
+

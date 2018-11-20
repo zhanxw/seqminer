@@ -62,10 +62,27 @@ int main(void) {
 }], [AC_DEFINE([HAVE_REG_STARTEND], [1], [Do you have a working REG_STARTEND?])
 AC_MSG_RESULT([yes])], [AC_MSG_RESULT([no])])
 
+dnl compile sqlite-amalgamation-3250300
+dnl specify sqlite.o in Makevars.in
+
+dnl compile zstd-1.3.7
+ZSTDR_CFLAGS=$("${R_HOME}/bin/R" CMD config CFLAGS)
+
+
+dnl $(cd src/zstd && make lib CFLAGS="${ZSTDR_CFLAGS} -fPIC")
+
+
+AC_MSG_NOTICE([Finished building zstd library])
+base_dir=$(pwd)
+ZSTD_LIBS="$base_dir/src/zstd/lib/libzstd.a"
+
+
+AC_CONFIG_COMMANDS([zstd compiling],
+                   [make -C src/zstd lib CFLAGS="-fPIC ${ZSTDR_CFLAGS}"])
 
 AC_SUBST([PKG_CFLAGS], ["-D_USE_KNETFILE -I. ${CFLAGS}"])
 AC_SUBST([PKG_CXX1XFLAGS], ["-D_USE_KNETFILE -I. ${CPPFLAGS} ${CXXFLAGS}"])
-AC_SUBST([PKG_LIBS], ["-lz -lm ${LIB_BZIP2}"])
+AC_SUBST([PKG_LIBS], ["-lz -lm ${LIB_BZIP2} ${ZSTD_LIBS}"])
 
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT

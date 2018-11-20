@@ -111,6 +111,49 @@ int storeDoubleResult(const std::vector<std::string>& in, SEXP& ret, int idx) {
   return 1;
 }
 
+int storeResult(const std::vector<bool>& in ,  SEXP& ret, int idx) {
+  SEXP s;  // = VECTOR_ELT(ret, i);
+  int n = in.size();
+  PROTECT(s = allocVector(LGLSXP, n));
+  for (int i = 0; i < n; ++i) {
+    LOGICAL(s)[i] = in[i];
+  }
+  SET_VECTOR_ELT(ret, idx, s);
+  return 1;
+}
+
+int storeResult(const std::vector<std::vector<double> >& in ,  SEXP& ret, int idx) {
+  SEXP s;  // = VECTOR_ELT(ret, i);
+  int n = in.size();
+  double tmp;
+  int numAllocated = 0;
+  PROTECT(s = allocVector(VECSXP, n));
+  numAllocated ++;
+  for (int i = 0; i < n; ++i) {
+    SEXP si;
+    numAllocated += storeResult(in[i], &si);
+    SET_VECTOR_ELT(s, i, si);
+  }
+  SET_VECTOR_ELT(ret, idx, s);
+  return numAllocated;
+}
+
+int storeResult(const std::vector<std::vector<std::vector<double> > >& in ,  SEXP& ret, int idx) {
+  SEXP s;  // = VECTOR_ELT(ret, i);
+  int n = in.size();
+  double tmp;
+  int numAllocated = 0;
+  PROTECT(s = allocVector(VECSXP, n));
+  numAllocated ++;
+  for (int i = 0; i < n; ++i) {
+    SEXP si;
+    numAllocated += storeResult(in[i], &si);
+    SET_VECTOR_ELT(s, i, si);
+  }
+  SET_VECTOR_ELT(ret, idx, s);
+  return numAllocated;
+}
+
 int storeResult(const std::string& key, const std::vector<std::string>& val,
                 SEXP ret, int idx) {
   SEXP s;  // = VECTOR_ELT(ret, i);
@@ -249,6 +292,26 @@ int storeResult(const std::vector<std::string>& in, SEXP* ret) {
   alloc += createStringArray(in.size(), ret);
   for (size_t i = 0; i < in.size(); ++i) {
     SET_STRING_ELT((*ret), i, mkChar(in[i].c_str()));
+  }
+  return alloc;
+}
+
+int storeResult(const std::vector<double>& in, SEXP* ret) {
+  int alloc = 0;
+  alloc += createDoubleArray(in.size(), ret);
+  for (size_t i = 0; i < in.size(); ++i) {
+    REAL(*ret)[i] =  in[i];
+  }
+  return alloc;
+}
+
+int storeResult(const std::vector<std::vector<double> >& in, SEXP* ret) {
+  int alloc = 0;
+  alloc += createList(in.size(), ret);
+  for (size_t i = 0; i < in.size(); ++i) {
+    SEXP si;
+    alloc += storeResult(in[i], &si);
+    SET_VECTOR_ELT( (*ret), i, si);
   }
   return alloc;
 }
