@@ -1088,27 +1088,6 @@ download.annotation.resource <- function(outputDirectory) {
 ##################################################
 ## BGEN file formats
 ##################################################
-#' Check if required BGEN library is installed
-#' @return bool
-#' @export
-#' @examples
-#' isBGENSupported()
-isBGENSupported <- function() {
-  pkg <- utils::installed.packages()
-  return ("rbgen" %in% pkg[,1])
-}
-
-#' Stop if required BGEN library is not installed
-#' @return bool
-#' @export
-#' @examples
-#' makeSureBGENSupported()
-makeSureBGENSupported <- function() {
-  if (isBGENSupported()) {
-    return (TRUE)
-  }
-  stop('ERROR: please install rbgen packages:\ninstall.packages( "http://www.well.ox.ac.uk/~gav/resources/rbgen_v1.1.4.tgz", repos = NULL, type = "source" )\n')
-}
 
 #' Read a gene from BGEN file and return a genotype matrix
 #'
