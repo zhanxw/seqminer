@@ -20,9 +20,9 @@ genotype matrix
 Read a gene from BGEN file and return a genotype matrix
 }
 \examples{
-fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
+fileName = system.file("bgen/all.anno.filtered.extract.bgen", package = "seqminer")
 geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
-# cfh <- readBGENToMatrixByGene(fileName, geneFile, "CFH", "Synonymous")
+cfh <- readBGENToMatrixByGene(fileName, geneFile, "CFH")
 }
 \seealso{
 http://zhanxw.com/seqminer/ for online manual and examples

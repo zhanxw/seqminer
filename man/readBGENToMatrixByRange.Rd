@@ -18,8 +18,8 @@ genotype matrix
 Read a gene from BGEN file and return a genotype matrix
 }
 \examples{
-fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
-# cfh <- readBGENToMatrixByRange(fileName, "1:196621007-196716634", "Nonsynonymous")
+fileName = system.file("bgen/all.anno.filtered.extract.bgen", package = "seqminer")
+cfh <- readBGENToMatrixByRange(fileName, "1:196621007-196716634")
 }
 \seealso{
 http://zhanxw.com/seqminer/ for online manual and examples

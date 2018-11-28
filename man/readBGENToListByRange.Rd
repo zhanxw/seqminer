@@ -18,8 +18,8 @@ a list of genes, and each elements has specified vcfColumn, vcfinfo, vcfIndv
 Read information from BGEN file in a given range and return a list
 }
 \examples{
-fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
-# cfh <- readBGENToListByRange(fileName, "1:196621007-196716634")
+fileName = system.file("bgen/all.anno.filtered.extract.bgen", package = "seqminer")
+cfh <- readBGENToListByRange(fileName, "1:196621007-196716634")
 }
 \seealso{
 http://zhanxw.com/seqminer/ for online manual and examples
