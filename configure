@@ -3114,25 +3114,13 @@ fi
 
 
 
-ZSTDR_CFLAGS=$("${R_HOME}/bin/R" CMD config CFLAGS)
-
-
-
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: Finished building zstd library" >&5
-$as_echo "$as_me: Finished building zstd library" >&6;}
-base_dir=$(pwd)
-ZSTD_LIBS="$base_dir/src/zstd/lib/libzstd.a"
-
-
-ac_config_commands="$ac_config_commands zstd compiling"
 
 
 PKG_CFLAGS="-D_USE_KNETFILE -I. ${CFLAGS}"
 
 PKG_CPPFLAGS="-D_USE_KNETFILE -I. ${CPPFLAGS} ${CXXFLAGS}"
 
-PKG_LIBS="-lz -lm ${LIB_BZIP2} ${ZSTD_LIBS}"
+PKG_LIBS="-lz -lm ${LIB_BZIP2}"
 
 
 ac_config_files="$ac_config_files src/Makevars"
@@ -3670,7 +3658,6 @@ cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
 # Files that config.status was made for.
 config_files="$ac_config_files"
 config_headers="$ac_config_headers"
-config_commands="$ac_config_commands"
 
 _ACEOF
 
@@ -3699,9 +3686,6 @@ $config_files
 
 Configuration headers:
 $config_headers
-
-Configuration commands:
-$config_commands
 
 Report bugs to <zhanxw@gmail.com>."
 
@@ -3831,8 +3815,6 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "src/config.h") CONFIG_HEADERS="$CONFIG_HEADERS src/config.h" ;;
-    "zstd") CONFIG_COMMANDS="$CONFIG_COMMANDS zstd" ;;
-    "compiling") CONFIG_COMMANDS="$CONFIG_COMMANDS compiling" ;;
     "src/Makevars") CONFIG_FILES="$CONFIG_FILES src/Makevars" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
@@ -3847,7 +3829,6 @@ done
 if $ac_need_defaults; then
   test "${CONFIG_FILES+set}" = set || CONFIG_FILES=$config_files
   test "${CONFIG_HEADERS+set}" = set || CONFIG_HEADERS=$config_headers
-  test "${CONFIG_COMMANDS+set}" = set || CONFIG_COMMANDS=$config_commands
 fi
 
 # Have a temporary directory for convenience.  Make it in the build tree
@@ -4144,7 +4125,7 @@ cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
 fi # test -n "$CONFIG_HEADERS"
 
 
-eval set X "  :F $CONFIG_FILES  :H $CONFIG_HEADERS    :C $CONFIG_COMMANDS"
+eval set X "  :F $CONFIG_FILES  :H $CONFIG_HEADERS    "
 shift
 for ac_tag
 do
@@ -4377,17 +4358,9 @@ $as_echo "$as_me: $ac_file is unchanged" >&6;}
   fi
  ;;
 
-  :C)  { $as_echo "$as_me:${as_lineno-$LINENO}: executing $ac_file commands" >&5
-$as_echo "$as_me: executing $ac_file commands" >&6;}
- ;;
-  esac
-
-
-  case $ac_file$ac_mode in
-    "zstd":C) make -C src/zstd lib CFLAGS="-fPIC ${ZSTDR_CFLAGS}" ;;
-    "compiling":C) make -C src/zstd lib CFLAGS="-fPIC ${ZSTDR_CFLAGS}" ;;
 
   esac
+
 done # for ac_tag
 
 

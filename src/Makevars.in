@@ -33,11 +33,47 @@ PKG_CPPFLAGS+=-I. \
              -DSQLITE_ENABLE_STAT4 \
              -DSQLITE_SOUNDEX
 
+## for zstd
+PKG_CPPFLAGS+=-Izstd/lib -Izstd/lib/common -DXXH_NAMESPACE=ZSTD_ -Izstd/lib/legacy -DZSTD_LEGACY_SUPPORT=5
+
 # R_HOME=$(shell R RHOME)
 # ZSTDR_CFLAGS=$("${R_HOME}/bin/R" CMD config CFLAGS)
 # zstd/lib/libzstd.a:
 # 	cd src/zstd && make lib CFLAGS="${ZSTDR_CFLAGS} -fPIC"
 
-PKG_LIBS += sqlite/sqlite3.o zstd/lib/libzstd.a
+ZSTD_OBJ = zstd/lib/common/debug.o \
+           zstd/lib/common/entropy_common.o \
+           zstd/lib/common/error_private.o \
+           zstd/lib/common/fse_decompress.o \
+           zstd/lib/common/pool.o \
+           zstd/lib/common/threading.o \
+           zstd/lib/common/xxhash.o \
+           zstd/lib/common/zstd_common.o \
+           zstd/lib/compress/fse_compress.o \
+           zstd/lib/compress/hist.o \
+           zstd/lib/compress/huf_compress.o \
+           zstd/lib/compress/zstd_compress.o \
+           zstd/lib/compress/zstd_double_fast.o \
+           zstd/lib/compress/zstd_fast.o \
+           zstd/lib/compress/zstd_lazy.o \
+           zstd/lib/compress/zstd_ldm.o \
+           zstd/lib/compress/zstd_opt.o \
+           zstd/lib/compress/zstdmt_compress.o \
+           zstd/lib/decompress/huf_decompress.o \
+           zstd/lib/decompress/zstd_decompress.o \
+           zstd/lib/deprecated/zbuff_common.o \
+           zstd/lib/deprecated/zbuff_compress.o \
+           zstd/lib/deprecated/zbuff_decompress.o \
+           zstd/lib/dictBuilder/cover.o \
+           zstd/lib/dictBuilder/divsufsort.o \
+           zstd/lib/dictBuilder/fastcover.o \
+           zstd/lib/dictBuilder/zdict.o \
+           zstd/lib/legacy/zstd_v05.o \
+           zstd/lib/legacy/zstd_v06.o \
+           zstd/lib/legacy/zstd_v07.o
 
-$(SHLIB): $(PKG_LIBS)
+SQLITE_OBJ = sqlite/sqlite3.o
+
+PKG_LIBS += $(ZSTD_OBJ) $(SQLITE_OBJ)
+
+$(SHLIB): $(ZSTD_OBJ) $(SQLITE_OBJ)
