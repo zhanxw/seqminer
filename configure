@@ -624,7 +624,7 @@ ac_includes_default="\
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
 PKG_LIBS
-PKG_CXX1XFLAGS
+PKG_CPPFLAGS
 PKG_CFLAGS
 EGREP
 GREP
@@ -3130,7 +3130,7 @@ ac_config_commands="$ac_config_commands zstd compiling"
 
 PKG_CFLAGS="-D_USE_KNETFILE -I. ${CFLAGS}"
 
-PKG_CXX1XFLAGS="-D_USE_KNETFILE -I. ${CPPFLAGS} ${CXXFLAGS}"
+PKG_CPPFLAGS="-D_USE_KNETFILE -I. ${CPPFLAGS} ${CXXFLAGS}"
 
 PKG_LIBS="-lz -lm ${LIB_BZIP2} ${ZSTD_LIBS}"
 

@@ -375,7 +375,7 @@ We also list sample IDs in the sampleId part.</p>
 <h2 id="toc_3">Applying rare-variant analysis</h2>
 
 <p>SeqMiner can greatly reduce your effort to process huge sequencing files in VCF format. That indicates your valuable time can be spared on investigating causal variants.
-Here we demonstrate how to apply <a href="http://www.hsph.harvard.edu/skat/">SKAT</a> method to study CFH gene. The genotype file we used is extracted from <a href="http://www.1000genomes.org/">1000 Genomes Project</a>. It contains 85 individuals in <a href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/working/20111108_samples_pedigree/20111108_1000genomes_samples.xls">CEU population</a> and the variants are all located in the CFH gene region.  We will use simulated phenotype in this demonstration.</p>
+Here we demonstrate how to apply <a href="http://www.hsph.harvard.edu/skat/">SKAT</a> method to study CFH gene. The genotype file we used is extracted from <a href="http://www.1000genomes.org/">1000 Genomes Project</a>. It contains 85 individuals in <a href="http://www.internationalgenome.org/faq/can-i-get-phenotype-gender-and-family-relationship-information-samples/">CEU population</a> and the variants are all located in the CFH gene region.  We will use simulated phenotype in this demonstration.</p>
 
 <pre><code class="r"># Extract genotype matrix
 vcf.1000g &lt;- system.file(&quot;vcf/1000g.phase1.20110521.CFH.anno.vcf.gz&quot;, package = &quot;seqminer&quot;)

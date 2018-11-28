@@ -81,7 +81,7 @@ AC_CONFIG_COMMANDS([zstd compiling],
                    [make -C src/zstd lib CFLAGS="-fPIC ${ZSTDR_CFLAGS}"])
 
 AC_SUBST([PKG_CFLAGS], ["-D_USE_KNETFILE -I. ${CFLAGS}"])
-AC_SUBST([PKG_CXX1XFLAGS], ["-D_USE_KNETFILE -I. ${CPPFLAGS} ${CXXFLAGS}"])
+AC_SUBST([PKG_CPPFLAGS], ["-D_USE_KNETFILE -I. ${CPPFLAGS} ${CXXFLAGS}"])
 AC_SUBST([PKG_LIBS], ["-lz -lm ${LIB_BZIP2} ${ZSTD_LIBS}"])
 
 AC_CONFIG_FILES([src/Makevars])

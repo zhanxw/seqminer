@@ -5,8 +5,9 @@ r:
   - release
   - devel
 
+# Cannot set this to false, as zstd package have warnings
 # Be strict when checking our package
-warnings_are_errors: true
+#warnings_are_errors: true
 
 r_binary_packages:
  - SKAT

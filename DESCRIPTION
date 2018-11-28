@@ -21,7 +21,7 @@ BugReports: https://github.com/zhanxw/seqminer/issues
 Packaged: 2016-02-29 22:14:20 UTC; zhanxw
 Repository: CRAN
 Suggests: testthat, SKAT
-SystemRequirements: zlib headers and libraries, optionally also bzip2
+SystemRequirements: zlib headers and libraries, GNU make, optionally also bzip2
         and POSIX-compliant regex functions.
 NeedsCompilation: yes
 RoxygenNote: 6.1.1

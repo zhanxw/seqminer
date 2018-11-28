@@ -3,7 +3,7 @@
 ## CXX=@CXX@
 
 PKG_CFLAGS=@PKG_CFLAGS@
-PKG_CXX1XFLAGS=@PKG_CXX1XFLAGS@
+PKG_CPPFLAGS=@PKG_CPPFLAGS@
 PKG_LIBS=@PKG_LIBS@
 
 ## ## uncomment below to enable debugging
@@ -23,7 +23,7 @@ PKG_LIBS=@PKG_LIBS@
 ## That will crash our program. So we wont use PCRE (@LIB_PCRE@).
 
 ## use SQLITE
-PKG_CXX1XFLAGS+=-I. \
+PKG_CPPFLAGS+=-I. \
              -DRSQLITE_USE_BUNDLED_SQLITE \
              -DSQLITE_ENABLE_RTREE \
              -DSQLITE_ENABLE_FTS3 \
