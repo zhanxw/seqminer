@@ -18,8 +18,8 @@ NULL
 #' @param fileName character vector
 #' @keywords internal
 isURL <- function(fileName) {
-  if (grepl(pattern = "^http://", fileName) ||
-      grepl(pattern = "^ftp://", fileName) ) {
+  if (all(grepl(pattern = "^http://", fileName) |
+          grepl(pattern = "^ftp://", fileName) )) {
     return(TRUE)
   }
   return(FALSE)
@@ -286,7 +286,7 @@ readVCFToListByGene <- function(fileName, geneFile, geneName, annoType, vcfColum
 #' cfh <- rvmeta.readDataByGene(scoreFileName, covFileName, geneFile, "CFH")
 rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName, multiAllelic = FALSE) {
   stopifnot(local.file.exists(scoreTestFiles))
-  stopifnot(is.null(covFiles) || (local.file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
+  stopifnot(all(is.null(covFiles)) || (all(local.file.exists(covFiles)) && length(covFiles) == length(scoreTestFiles)))
   stopifnot(file.exists(geneFile), length(geneFile) == 1)
   stopifnot(!is.null(multiAllelic))
 
@@ -322,7 +322,7 @@ rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName, 
 #' cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
 rvmeta.readDataByRange <- function (scoreTestFiles, covFiles, ranges, multiAllelic = FALSE) {
   stopifnot(local.file.exists(scoreTestFiles))
-  stopifnot(is.null(covFiles) || (local.file.exists(covFiles) && length(covFiles) == length(scoreTestFiles)))
+    stopifnot(all(is.null(covFiles)) || (all(local.file.exists(covFiles)) && length(covFiles) == length(scoreTestFiles)))
   stopifnot(all(isTabixRange(ranges)))
   stopifnot(!is.null(multiAllelic))
 

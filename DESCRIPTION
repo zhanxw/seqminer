@@ -2,8 +2,8 @@ Package: seqminer
 Type: Package
 Title: Efficiently Read Sequence Data (VCF Format, BCF Format, METAL
         Format and BGEN Format) into R
-Version: 6.2
-Date: 2018-11-28
+Version: 6.6
+Date: 2018-11-29
 Authors@R: c(person("Xiaowei", "Zhan", email = "zhanxw@gmail.com", role = c("aut", "cre")),
            person("Dajiang", "Liu", email = "dajiang.liu@gmail.com", role = "aut"),
            person("Attractive Chaos", email = "attractor@live.co.uk", role = "cph", comment = "We have used the following software and made minimal necessary changes: Tabix, Heng Li <lh3@live.co.uk> (MIT license). We removed standard IO related functions, e.g. printf, fprintf ; also changed its un-safe pointer arithmetics."),	
@@ -22,7 +22,7 @@ BugReports: https://github.com/zhanxw/seqminer/issues
 Packaged: 2016-02-29 22:14:20 UTC; zhanxw
 Repository: CRAN
 Suggests: testthat, SKAT
-SystemRequirements: zlib headers and libraries, GNU make, optionally also bzip2
+SystemRequirements: C++11, zlib headers and libraries, GNU make, optionally also bzip2
         and POSIX-compliant regex functions.
 NeedsCompilation: yes
 RoxygenNote: 6.1.1

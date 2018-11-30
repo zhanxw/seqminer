@@ -1,3 +1,8 @@
+2018-11-29  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Add supports for BGEN file formats
+	* Fix CRAN reported warnings (e.g. compiler flags)
+
 2017-05-03  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Fix crashes when reading meta-analysis score and cov files together

@@ -1,6 +1,7 @@
 ## CC and CXX are set up by INSTALL, no need to use them here.
 ## CC=@CC@
 ## CXX=@CXX@
+CXX_STD = CXX11
 
 PKG_CFLAGS=@PKG_CFLAGS@
 PKG_CPPFLAGS=@PKG_CPPFLAGS@
