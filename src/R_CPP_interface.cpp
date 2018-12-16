@@ -48,13 +48,12 @@ void dump(std::vector<std::string>& s) {
   }
 }
 
-int storeResult(const std::vector<std::string>& in, SEXP ret, int idx) {
-  SEXP s;  //  = VECTOR_ELT(ret, i);
+int storeResult(const std::vector<bool>& in ,  SEXP& ret, int idx) {
+  SEXP s;  // = VECTOR_ELT(ret, i);
   int n = in.size();
-  PROTECT(s = allocVector(STRSXP, n));
+  PROTECT(s = allocVector(LGLSXP, n));
   for (int i = 0; i < n; ++i) {
-    SET_STRING_ELT(s, i, mkChar(in[i].c_str()));
-    // Rprintf("storeResult [%d] = %s\n", i, in[i].c_str());
+    LOGICAL(s)[i] = in[i];
   }
   SET_VECTOR_ELT(ret, idx, s);
   return 1;
@@ -70,16 +69,14 @@ int storeResult(const std::vector<int>& in, SEXP& ret, int idx) {
   SET_VECTOR_ELT(ret, idx, s);
   return 1;
 }
-int storeIntResult(const std::vector<std::string>& in, SEXP& ret, int idx) {
-  SEXP s;  // = VECTOR_ELT(ret, i);
+
+int storeResult(const std::vector<std::string>& in, SEXP ret, int idx) {
+  SEXP s;  //  = VECTOR_ELT(ret, i);
   int n = in.size();
-  int tmp;
-  PROTECT(s = allocVector(INTSXP, n));
+  PROTECT(s = allocVector(STRSXP, n));
   for (int i = 0; i < n; ++i) {
-    if (str2int(in[i], &tmp))
-      INTEGER(s)[i] = tmp;
-    else
-      INTEGER(s)[i] = NA_INTEGER;
+    SET_STRING_ELT(s, i, mkChar(in[i].c_str()));
+    // Rprintf("storeResult [%d] = %s\n", i, in[i].c_str());
   }
   SET_VECTOR_ELT(ret, idx, s);
   return 1;
@@ -91,6 +88,21 @@ int storeResult(const std::vector<double>& in, SEXP& ret, int idx) {
   PROTECT(s = allocVector(REALSXP, n));
   for (int i = 0; i < n; ++i) {
     REAL(s)[i] = in[i];
+  }
+  SET_VECTOR_ELT(ret, idx, s);
+  return 1;
+}
+
+int storeIntResult(const std::vector<std::string>& in, SEXP& ret, int idx) {
+  SEXP s;  // = VECTOR_ELT(ret, i);
+  int n = in.size();
+  int tmp;
+  PROTECT(s = allocVector(INTSXP, n));
+  for (int i = 0; i < n; ++i) {
+    if (str2int(in[i], &tmp))
+      INTEGER(s)[i] = tmp;
+    else
+      INTEGER(s)[i] = NA_INTEGER;
   }
   SET_VECTOR_ELT(ret, idx, s);
   return 1;
@@ -111,21 +123,9 @@ int storeDoubleResult(const std::vector<std::string>& in, SEXP& ret, int idx) {
   return 1;
 }
 
-int storeResult(const std::vector<bool>& in ,  SEXP& ret, int idx) {
-  SEXP s;  // = VECTOR_ELT(ret, i);
-  int n = in.size();
-  PROTECT(s = allocVector(LGLSXP, n));
-  for (int i = 0; i < n; ++i) {
-    LOGICAL(s)[i] = in[i];
-  }
-  SET_VECTOR_ELT(ret, idx, s);
-  return 1;
-}
-
 int storeResult(const std::vector<std::vector<double> >& in ,  SEXP& ret, int idx) {
   SEXP s;  // = VECTOR_ELT(ret, i);
   int n = in.size();
-  double tmp;
   int numAllocated = 0;
   PROTECT(s = allocVector(VECSXP, n));
   numAllocated ++;
@@ -141,7 +141,6 @@ int storeResult(const std::vector<std::vector<double> >& in ,  SEXP& ret, int id
 int storeResult(const std::vector<std::vector<std::vector<double> > >& in ,  SEXP& ret, int idx) {
   SEXP s;  // = VECTOR_ELT(ret, i);
   int n = in.size();
-  double tmp;
   int numAllocated = 0;
   PROTECT(s = allocVector(VECSXP, n));
   numAllocated ++;

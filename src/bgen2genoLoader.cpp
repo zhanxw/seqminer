@@ -23,7 +23,7 @@ SEXP readBGEN2Matrix(BGenFile* bin) {
 
   // print header
   const int N = bin->getNumSample();
-  const int M = bin->getNumMarker();
+  // const int M = bin->getNumMarker();
   std::vector<std::string> sm = bin->getSampleIdentifier();  // all sample names
   std::vector<std::string>& names = idVec;
   if (!sm.size()) {
@@ -39,7 +39,6 @@ SEXP readBGEN2Matrix(BGenFile* bin) {
     names.push_back(sm[bin->getEffectiveIndex(i)]);
   }
 
-  genoVec.assign(sampleSize, -9);
   while (bin->readRecord()) {
     // REprintf("read a record\n");
     const BGenVariant& var = bin->getVariant();
@@ -50,10 +49,9 @@ SEXP readBGEN2Matrix(BGenFile* bin) {
     posString += toString(var.pos);
     posVec.push_back(posString);
 
-    double g;
     for (size_t i = 0; i < sampleSize; i++) {
       const BGenVariant& var = bin->getVariant();
-      genoVec[i] = var.computeDosage(i);
+      genoVec.push_back(var.computeDosage(i));
       // Rprintf( "\t%d", g);
     }
     // Rprintf( "\n");
@@ -74,8 +72,7 @@ SEXP readBGEN2Matrix(BGenFile* bin) {
   int idx = 0;
   for (int i = 0; i < nx; i++) {
     for (int j = 0; j < ny; j++) {
-      // Rprintf("idx = %d, i = %d, j=%d, geno = %g\n", idx, i, j,
-      // genoVec[idx]);
+      // Rprintf("idx = %d, i = %d, j=%d, geno = %g\n", idx, i, j, genoVec[idx]);
       if (genoVec[idx] < 0) {
         rans[i + nx * j] = NA_REAL;
       } else {
@@ -238,12 +235,12 @@ SEXP readBGEN2List(BGenFile* bin) {
   std::vector<std::string> alleles;
   // std::vector<std::vector<bool> > missing;
   std::vector<bool> isPhased;
-  std::vector<std::vector<std::vector<double> > > prob; // prob[variant][each_sample][prob1, prob2, ...]
+  std::vector<std::vector<double> > prob; // prob[variant][each_sample * (prob1, prob2, ...)]
 
   // std::map<std::string, std::vector<std::string> > infoMap;
 
   // std::map<std::string, std::vector<std::string> > indvMap;
-  int nRow = 0;  // # of positions that will be outputed
+  /// int nRow = 0;  // # of positions that will be outputed
 
   // get effective sample names
   const int N = bin->getNumSample();
@@ -264,6 +261,8 @@ SEXP readBGEN2List(BGenFile* bin) {
 
   // real working part
   int nRecord = 0;
+  const int numProbValues = 3; // if multi-allelic/multi-haploid, this value can be different
+  int maxProbValues = -1;
   while (bin->readRecord()) {
     // REprintf("read a record\n");
     const BGenVariant& var = bin->getVariant();
@@ -279,19 +278,31 @@ SEXP readBGEN2List(BGenFile* bin) {
     isPhased.push_back(var.isPhased);
     prob.resize(nRecord);
 
-    std::vector<std::vector<double> >& p = prob[nRecord-1];
-    p.resize(sampleSize);
+    std::vector<double>& p = prob[nRecord-1];
+    p.reserve(sampleSize * numProbValues);
+
     for (size_t i = 0; i != sampleSize; ++i) {
       int beg = var.index[bin->getEffectiveIndex(i)];
       int end = var.index[bin->getEffectiveIndex(i) + 1];
-      p[i].insert(p[i].end(), var.prob.begin() + beg,
-                     var.prob.begin() + end);
+      if (end - beg > maxProbValues) {
+        maxProbValues = end - beg;
+      }
+      for (int j = 0; j < numProbValues; ++j) {
+        if (j < numProbValues) {
+          p.push_back(var.prob[beg + j]);
+        } else {
+          p.push_back(-9);
+        }
+      }
       // REprintf("beg = %d, end = %d, prob[%d][%d] len = %d\n", beg,end, nRecord - 1, i, p[i].size());
     }
 
     // Rprintf("Done add indv\n");
   }  // end while
-
+  if (maxProbValues > numProbValues) {
+    REprintf("some sample has more than %d > %d probabilities per variant!\n", maxProbValues, numProbValues);
+  }
+  
   // pass value back to R (see Manual Chapter 5)
   std::vector<std::string> listNames;
   int retListIdx = 0;
@@ -301,7 +312,13 @@ SEXP readBGEN2List(BGenFile* bin) {
   numAllocated += storeResult(rsId, ret, retListIdx++);
   numAllocated += storeResult(alleles, ret, retListIdx++);
   numAllocated += storeResult(isPhased, ret, retListIdx++);
-  numAllocated += storeResult(prob, ret, retListIdx++);
+  numAllocated += storeResult(prob, ret, retListIdx);
+  for (size_t i = 0; i != prob.size(); ++i) {
+    SEXP s = VECTOR_ELT(VECTOR_ELT(ret, retListIdx), i);
+    numAllocated += setDim(numProbValues, sampleSize, &s);
+  }
+  
+  retListIdx++;
   listNames.push_back("chrom");
   listNames.push_back("pos");
   listNames.push_back("varid");

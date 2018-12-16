@@ -264,8 +264,8 @@ int bcf_fix_gt(bcf1_t *b)
         memmove(b->fmt + 3, b->fmt, s - b->fmt);        // :GT
     else
         memmove(b->fmt + 3, b->fmt, s - b->fmt + 1);    // :GT:
-	b->fmt[0] = 'G'; b->fmt[1] = 'T'; b->fmt[2] = ':';
-	return 0;
+    b->fmt[0] = 'G'; b->fmt[1] = 'T'; b->fmt[2] = ':';
+    return 0;
 }
 
 int bcf_fix_pl(bcf1_t *b)

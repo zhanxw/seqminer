@@ -7,7 +7,9 @@
 #include "RangeList.h"
 #include "TypeConversion.h"
 
-BGenFile::BGenFile(const std::string& fn) : var(this->N) {
+#define UNUSED(x) ((void)(x))
+
+BGenFile::BGenFile(const std::string& fn) : var(this->N), autoMergeRange(false) {
   this->bgenFileName = fn;
   this->mode = BGEN_LINE_MODE;
 
@@ -37,6 +39,7 @@ BGenFile::BGenFile(const std::string& fn) : var(this->N) {
   std::fill(sampleMask.begin(), sampleMask.end(), false);
 
   nRead = fread(&magic, sizeof(magic[0]), 4, fp);
+  UNUSED(nRead);
 #ifdef DEBUG
   Rprintf("nRead = %d, magic = %c%c%c%c\n", nRead, magic[0], magic[1], magic[2],
           magic[3]);
@@ -163,6 +166,7 @@ bool BGenFile::parseLayout1() {
   // variant identifying data
   uint32_t NinRow;
   int nRead = fread(&NinRow, sizeof(NinRow), 1, fp);
+  UNUSED(nRead);
 #ifdef DEBUG
   Rprintf("nRead = %d, NinRow = %d\n", nRead, (int)NinRow);
 #endif
@@ -200,7 +204,9 @@ bool BGenFile::parseLayout1() {
   unsigned long decompressedByte = NinRow * 6;
   int zlibStatus =
       uncompress(buf.data(), &decompressedByte, compressedBuf.data(), C);
-  assert(zlibStatus == Z_OK);
+  if(zlibStatus != Z_OK) {
+    REprintf("decompress zlib failed!\n");
+  }
 
   // parse probility
   var.missing.resize(N);
@@ -283,6 +289,7 @@ bool BGenFile::parseLayout2() {
   }
   std::vector<uint8_t> buf(D);
   size_t nRead;
+  UNUSED(nRead);
   if (snpCompression == GZIP) {
     nRead = fread(compressedBuf.data(), sizeof(uint8_t), C - 4, fp);
     assert(nRead == C - 4);
@@ -314,9 +321,11 @@ bool BGenFile::parseLayout2() {
   const uint32_t nIndv = *(uint32_t*)buf.data();
   assert(nIndv == N);
   const uint16_t nAllele = *(uint16_t*)(buf.data() + 4);
-  assert(nAllele >= 0);
+  UNUSED(nAllele);
   const uint8_t nMinAllele = *(uint8_t*)(buf.data() + 6);
+  UNUSED(nMinAllele);  
   const uint8_t nMaxAllele = *(uint8_t*)(buf.data() + 7);
+  UNUSED(nMaxAllele);
   assert(0 <= nMinAllele && nMinAllele <= 63);
   assert(0 <= nMaxAllele && nMaxAllele <= 63);
   const uint8_t* ploidityAndMissing = (uint8_t*)(buf.data() + 8);
@@ -397,6 +406,7 @@ void BGenFile::parseString(FILE* fp, int lenByte, std::string* out) {
   if (lenByte == 2) {
     uint16_t siLen;
     int nRead = fread(&siLen, sizeof(siLen), 1, fp);
+    UNUSED(nRead);    
     assert(nRead == 1);
 
     (*out).resize(siLen);
@@ -409,6 +419,7 @@ void BGenFile::parseString(FILE* fp, int lenByte, std::string* out) {
   } else if (lenByte == 4) {
     uint32_t siLen;
     int nRead = fread(&siLen, sizeof(siLen), 1, fp);
+    UNUSED(nRead);
     assert(nRead == 1);
 
     (*out).resize(siLen);
@@ -424,10 +435,12 @@ void BGenFile::parseString(FILE* fp, int lenByte, std::string* out) {
 
 void BGenFile::parseUint32(FILE* fp, uint32_t* value) {
   int nRead = fread(value, sizeof(value[0]), 1, fp);
+  UNUSED(nRead);
   assert(nRead == 1);
 }
 void BGenFile::parseUint16(FILE* fp, uint16_t* value) {
   int nRead = fread(value, sizeof(value[0]), 1, fp);
+  UNUSED(nRead);  
   assert(nRead == 1);
 }
 // @return choose m out of n elements
