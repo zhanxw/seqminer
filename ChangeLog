@@ -1,3 +1,7 @@
+2019-01-02  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Add partial supports for binary PLINK file formats
+
 2018-11-29  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Add supports for BGEN file formats

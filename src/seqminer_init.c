@@ -27,6 +27,7 @@ extern SEXP readBGENToListByGene(SEXP, SEXP, SEXP);
 extern SEXP readBGENToListByRange(SEXP, SEXP);
 extern SEXP readBGENToMatrixByGene(SEXP, SEXP, SEXP);
 extern SEXP readBGENToMatrixByRange(SEXP, SEXP);
+extern SEXP readPlinkToMatrixByIndex(SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"anno",                   (DL_FUNC) &anno,                   3},
@@ -52,6 +53,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"readBGENToListByRange",   (DL_FUNC) &readBGENToListByRange,   2},
     {"readBGENToMatrixByGene",  (DL_FUNC) &readBGENToMatrixByGene,  3},
     {"readBGENToMatrixByRange", (DL_FUNC) &readBGENToMatrixByRange, 2},
+    {"readPlinkToMatrixByIndex", (DL_FUNC) &readPlinkToMatrixByIndex, 3},    
     {NULL, NULL, 0}
 };
 

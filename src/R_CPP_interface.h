@@ -18,6 +18,7 @@ void extractString(SEXP in, std::string* out);
  * NOTE
  */
 void extractStringArray(SEXP in, std::vector<std::string>* out);
+void extractIntArray(SEXP in, std::vector<int>* out);
 
 void extractStringSet(SEXP in, std::set<std::string>* out);
 

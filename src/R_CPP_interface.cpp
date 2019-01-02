@@ -20,6 +20,13 @@ void extractStringArray(SEXP in, std::vector<std::string>* out) {
   }
 }
 
+void extractIntArray(SEXP in, std::vector<int>* out) {
+  out->clear();
+  for (R_len_t i = 0; i < length(in); i++) {
+    out->push_back(INTEGER(in)[i]);
+  }
+}
+
 void extractStringSet(SEXP in, std::set<std::string>* out) {
   std::string s;
   for (R_len_t i = 0; i < length(in); i++) {

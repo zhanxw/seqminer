@@ -135,3 +135,17 @@ SEXP readBGENToListByRange(SEXP arg_fileName, SEXP arg_range) {
   return impl_readBGENToListByRange(arg_fileName, arg_range);
 }
 
+//////////////////////////////////////////////////
+// PLINK related
+//////////////////////////////////////////////////
+extern SEXP impl_readPlinkToMatrixByIndex(SEXP arg_fileName, SEXP arg_sampleIdx,
+                                              SEXP arg_markerIdx);
+SEXP readPlinkToMatrixByIndex(SEXP arg_fileName, SEXP arg_sampleIdx, SEXP arg_markerIdx) {
+  return impl_readPlinkToMatrixByIndex(arg_fileName, arg_sampleIdx, arg_markerIdx);
+}
+
+//////////////////////////////////////////////////
+// NOTE: need to update seqminer_init.c to register all functions
+//////////////////////////////////////////////////
+
+
