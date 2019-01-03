@@ -26,9 +26,6 @@ int filterIndex(int numElement, std::vector<int>* in) {
       droppedElement++;
       continue;
     }
-    if (inIndex == outIndex) {
-      continue;
-    }
     vec[outIndex] = vec[inIndex];
     outIndex++;
   }
