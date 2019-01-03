@@ -1185,8 +1185,8 @@ readBGENToListByGene <- function(fileName, geneFile, geneName) {
 #' Read a gene from BGEN file and return a genotype matrix
 #'
 #' @param fileName character, represents the prefix of PLINK input file
-#' @param sampleIndex integer, 0-basd, index of samples to be extracted
-#' @param markerIndex integer, 0-basd, index of markers to be extracted
+#' @param sampleIndex integer, 1-basd, index of samples to be extracted
+#' @param markerIndex integer, 1-basd, index of markers to be extracted
 #' @return genotype matrix, marker by sample
 #' @export
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
@@ -1195,15 +1195,20 @@ readBGENToListByGene <- function(fileName, geneFile, geneName) {
 #' ## refer to the readVCFToMatrixByRange()
 #' fileName = system.file("plink/all.anno.filtered.extract.bed", package = "seqminer")
 #' fileName = sub(fileName, pattern = ".bed", replacement = "")
-#' sampleIndex = seq(3) - 1
-#' markerIndex =c(14, 36) - 1
+#' sampleIndex = seq(3)
+#' markerIndex =c(14, 36)
 #' cfh <- readPlinkToMatrixByIndex(fileName, sampleIndex, markerIndex)
 readPlinkToMatrixByIndex <- function(fileName, sampleIndex, markerIndex) {
   stopifnot(local.file.exists(sprintf("%s.bed", fileName)), length(fileName) == 1)
   fileName <- path.expand(fileName)
 
+  # pass 0-index to c codes
+  sampleIndex <- as.integer(sampleIndex - 1)
+  markerIndex <- as.integer(markerIndex - 1)
+
   storage.mode(fileName) <- "character"
   storage.mode(sampleIndex) <- "integer"
   storage.mode(markerIndex) <- "integer"
-  .Call("readPlinkToMatrixByIndex", fileName, sampleIndex, markerIndex, PACKAGE="seqminer");
+
+  .Call("readPlinkToMatrixByIndex", fileName, sampleIndex , markerIndex, PACKAGE="seqminer");
 }

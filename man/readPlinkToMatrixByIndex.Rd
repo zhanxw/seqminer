@@ -9,12 +9,12 @@ readPlinkToMatrixByIndex(fileName, sampleIndex, markerIndex)
 \arguments{
 \item{fileName}{character, represents the prefix of PLINK input file}
 
-\item{sampleIndex}{integer, 0-basd, index of samples to be extracted}
+\item{sampleIndex}{integer, 1-basd, index of samples to be extracted}
 
-\item{markerIndex}{integer, 0-basd, index of markers to be extracted}
+\item{markerIndex}{integer, 1-basd, index of markers to be extracted}
 }
 \value{
-genotype matrix
+genotype matrix, marker by sample
 }
 \description{
 Read a gene from BGEN file and return a genotype matrix
@@ -24,8 +24,8 @@ Read a gene from BGEN file and return a genotype matrix
 ## refer to the readVCFToMatrixByRange()
 fileName = system.file("plink/all.anno.filtered.extract.bed", package = "seqminer")
 fileName = sub(fileName, pattern = ".bed", replacement = "")
-sampleIndex = seq(3) - 1
-markerIndex =c(14, 36) - 1
+sampleIndex = seq(3)
+markerIndex =c(14, 36)
 cfh <- readPlinkToMatrixByIndex(fileName, sampleIndex, markerIndex)
 }
 \seealso{
