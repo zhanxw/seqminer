@@ -177,7 +177,7 @@ SEXP impl_readPlinkToMatrixByIndex(SEXP arg_fileName, SEXP arg_sampleIdx,
   const static unsigned char HOM_ALT = 0x3;  // 0b11;
   const static unsigned char MISSING = 0x1;  // 0b01;
 
-  // construct look-up table
+  // construct a look-up table
   REprintf("build look-up table\n");
   double table[256][4];
   for (int i = 0; i < 256; ++i) {
@@ -200,19 +200,27 @@ SEXP impl_readPlinkToMatrixByIndex(SEXP arg_fileName, SEXP arg_sampleIdx,
     }
   }
 
-  const int sampleStride = (numSample + 3) / 4;  // every 4 samples take 1 bytes
-  int pos_;
+  // round up to multiples of 4, as every 4 samples take 1 bytes
+  const long sampleStride = (numSample + 3) / 4;
+  long pos_;
   std::vector<unsigned char> geno;
   geno.resize(sampleStride);
   std::vector<double> buffer;
-  buffer.resize(sampleStride * 4 + 4);
+  buffer.resize(sampleStride * 4);
   if (snpMajorMode) {
     double* pRet = REAL(ret);
     for (int m = 0; m < (int)FLAG_markerIndex.size(); m++) {
-      pos_ = 3 + sampleStride * FLAG_markerIndex[m];
+      pos_ = 3L + sampleStride * FLAG_markerIndex[m];
       // // extract genotype for all individuals
       // REprintf("read marker %d\n", m);
-      fseek(fpBed, pos_, SEEK_SET);
+      if (fseek(fpBed, pos_, SEEK_SET)) {
+        REprintf("fseek() failed (e.g. offset is overflowed\n");
+
+        // TODO: maybe later change platform-specific fseek()
+        // Linux/mac: fseeko
+        // Windows _fseeki64()
+        // see: https://stackoverflow.com/a/8708748/425758
+      }
       int numRead =
           fread(geno.data(), sizeof(unsigned char), sampleStride, fpBed);
       UNUSED(numRead);
