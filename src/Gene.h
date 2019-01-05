@@ -54,7 +54,7 @@ class Gene{
     this->tx.end = toInt(field[format.txEndCol]);
     int cdsStart = toInt(field[format.cdsStartCol]) + 1;
     int cdsEnd = toInt(field[format.cdsEndCol]);
-    if (this->length(cdsStart, cdsEnd) == 0) {
+    if (this->length_(cdsStart, cdsEnd) == 0) {
       this->isNonCodingGene = true;
     } else {
       this->isNonCodingGene = false;
@@ -429,7 +429,7 @@ class Gene{
   /**
    * @return the total length from @param beg to @param end, inclusive on the boundaries
    */
-  int length(int beg, int end) const{
+  int length_(int beg, int end) const{
     if (beg > end+1) {
       REprintf( "In length beg(%d) > end(%d) + 1; please check gene file format.\n", beg, end);
     }

@@ -1,6 +1,7 @@
 #ifndef _FREQTABLE_H_
 #define _FREQTABLE_H_
 
+#include <iostream>
 
 template <class T>
 class FreqTable{

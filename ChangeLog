@@ -1,3 +1,7 @@
+2019-01-05  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Revise R/CPP interface codes
+
 2019-01-02  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Add partial supports for binary PLINK file formats

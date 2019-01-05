@@ -1,5 +1,9 @@
-#include <iostream> // have to include this to avoid R screw up "length" in iostream/sstream...
+// #include <iostream> // have to include this to avoid R screw up "length" in iostream/sstream...
+#if 0
+// 
 #define R_NO_REMAP
+#endif
+
 #include <R.h>
 #include <Rinternals.h>
 

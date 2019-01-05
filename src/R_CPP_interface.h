@@ -66,6 +66,7 @@ int setDimNames(const std::vector<std::string>& ni,
  */
 int setDim(int nrow, int ncol, SEXP ret, int idx);
 
+#if 0
 int createList(int n, SEXP* s); 
 
 int createStringArray(int n, SEXP* s);
@@ -73,6 +74,7 @@ int createStringArray(int n, SEXP* s);
 int createDoubleArray(int n, SEXP* s);
 
 int createIntArray(int n, SEXP* s);
+#endif
 
 int setListNames(std::vector<std::string>& names, SEXP* s);
 

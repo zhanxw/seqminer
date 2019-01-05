@@ -18,6 +18,11 @@
 
 #include "TypeConversion.h"
 
+#define createList(L, ret)  1;PROTECT((*(ret)) = allocVector(VECSXP, (L)));
+#define createIntArray(L, ret)  1;PROTECT((*(ret)) = allocVector(INTSXP, (L)));
+#define createDoubleArray(L, ret)  1;PROTECT((*(ret)) = allocVector(REALSXP, (L)));
+#define createStringArray(L, ret)  1;PROTECT((*(ret)) = allocVector(STRSXP, (L)));
+
 /**
  * @param out will be a concatenated @param in separated by @param sep
  */

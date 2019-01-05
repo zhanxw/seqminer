@@ -133,9 +133,8 @@ SEXP impl_readPlinkToMatrixByIndex(SEXP arg_fileName, SEXP arg_sampleIdx,
   // to optimze for a sequential I/O, read 1 snp from PLINK and store 1 column
   // in an R matrix
   // therefore, R matrix is better sample (row) by marker (column)
-  allocated +=
-      createDoubleArray(FLAG_indvIndex.size() * FLAG_markerIndex.size(), &ret);
-
+  PROTECT(ret = allocVector(REALSXP, FLAG_indvIndex.size() * FLAG_markerIndex.size()));
+  allocated ++;  
   printTime("read bed");
   // check BED to make sure it is snp-major
   FILE* fpBed = fopen((FLAG_fileName + ".bed").c_str(), "rb");

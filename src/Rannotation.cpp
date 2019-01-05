@@ -1,8 +1,10 @@
 #include "Rannotation.h"
 
+#include <R.h>
+#include <Rdefines.h> // define SEXP
+
 #include "AnnotationController.h"
 #include "R_CPP_interface.h"
-#include "Rinternals.h"
 #include "BedReader.h"
 #include "GenomeScore.h"
 #include "TabixReader.h"
@@ -146,7 +148,8 @@ SEXP impl_annotateGene(SEXP s_param,
   // store results
   REprintf("store results\n");
   int numAllocated = 0;
-  numAllocated += createList(2, &ret);
+  PROTECT(ret = allocVector(VECSXP, 2));
+  numAllocated ++;
   numAllocated += storeResult(anno, ret, 0);
   numAllocated += storeResult(annoFull, ret, 1);
 
@@ -334,7 +337,8 @@ SEXP impl_getRefBase(SEXP reference,
     seq[i] = gs.getBase(_chrom, _pos, _pos + _len);
   }
   int numAllocated = 0;
-  numAllocated += createStringArray(n, &ret);
+  PROTECT((ret) = allocVector(STRSXP, n));
+  numAllocated ++;
   initStringArray(ret);
   numAllocated += storeResult(seq, &ret);
   UNPROTECT(numAllocated);

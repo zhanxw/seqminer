@@ -136,7 +136,8 @@ SEXP impl_readBGENToMatrixByRange(SEXP arg_fileName, SEXP arg_range) {
   int numAllocated = 0;
 
   // allocate return value
-  numAllocated += createList(nGene, &ans);
+  PROTECT(ans = allocVector(VECSXP, nGene));
+  numAllocated ++;
   numAllocated += setListNames(FLAG_range, &ans);
 
   for (int i = 0; i < nGene; ++i) {
@@ -178,7 +179,8 @@ SEXP impl_readBGENToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile,
   int numAllocated = 0;
 
   // allocate return value
-  numAllocated += createList(nGene, &ans);
+  PROTECT(ans = allocVector(VECSXP, nGene));
+  numAllocated ++;
   numAllocated += setListNames(FLAG_geneName, &ans);
 
   OrderedMap<std::string, std::string> geneRange;
