@@ -39,7 +39,6 @@ SEXP impl_readTabixByRange(SEXP arg_tabixFile, SEXP arg_range) {
   }
 
   storeResult(res, &ret);
-  UNPROTECT(1);
   return ret;
 }
 
@@ -59,7 +58,6 @@ SEXP impl_readTabixSkippedLine(SEXP arg_tabixFile) {
   stringTokenize(stringStrip(tr.getSkippedLine()), "\n", &headers);
   
   storeResult(headers, &ret);
-  UNPROTECT(1);
   return ret;
 }
 
@@ -78,7 +76,6 @@ SEXP impl_readTabixHeader(SEXP arg_tabixFile) {
   stringTokenize(stringStrip(tr.getHeader()), "\n", &headers);
   
   storeResult(headers, &ret);
-  UNPROTECT(1);
   return ret;
 }
 

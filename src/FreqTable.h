@@ -1,7 +1,7 @@
 #ifndef _FREQTABLE_H_
 #define _FREQTABLE_H_
 
-#include <iostream>
+// #include <iostream>
 
 template <class T>
 class FreqTable{
@@ -13,7 +13,7 @@ public:
             this->data[t] ++; 
         }
         this->isSorted = false;
-    };
+    }
     void remove(const T& t) {
         if (this->data.find(t) == this->data.end()) {
             return; // false;
@@ -21,7 +21,7 @@ public:
         this->data[t] -- ;
         this->isSorted = false;
         return;
-    };
+    }
     size_t size() const{ return this->data.size();}; 
     // return the frequency in ascending order
     void at(const unsigned int idx, T* t, int* v) {
@@ -29,12 +29,13 @@ public:
             this->sortByFrequency();
         *v = this->orderedData[idx].first;
         *t = *(this->orderedData[idx].second);
-    };
+    }
     void clear() {
         this->data.clear();
         this->orderedData.clear();
         this->isSorted = false;
-    };
+    }
+  #if 0
     void dump() {
       for (size_t i = 0; i < this->orderedData.size(); ++i) {
         std::cout << i << "\t"
@@ -42,6 +43,7 @@ public:
                   << *(orderedData[i].second) << "\n";
       }
     };
+  #endif
       
 private:
     void sortByFrequency() {

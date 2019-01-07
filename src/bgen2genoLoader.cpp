@@ -72,7 +72,8 @@ SEXP readBGEN2Matrix(BGenFile* bin) {
   int idx = 0;
   for (int i = 0; i < nx; i++) {
     for (int j = 0; j < ny; j++) {
-      // Rprintf("idx = %d, i = %d, j=%d, geno = %g\n", idx, i, j, genoVec[idx]);
+      // Rprintf("idx = %d, i = %d, j=%d, geno = %g\n", idx, i, j,
+      // genoVec[idx]);
       if (genoVec[idx] < 0) {
         rans[i + nx * j] = NA_REAL;
       } else {
@@ -137,8 +138,8 @@ SEXP impl_readBGENToMatrixByRange(SEXP arg_fileName, SEXP arg_range) {
 
   // allocate return value
   PROTECT(ans = allocVector(VECSXP, nGene));
-  numAllocated ++;
-  numAllocated += setListNames(FLAG_range, &ans);
+  numAllocated++;
+  setListNames(FLAG_range, &ans);
 
   for (int i = 0; i < nGene; ++i) {
     // REprintf("range = %s\n", FLAG_range[i].c_str());
@@ -180,8 +181,8 @@ SEXP impl_readBGENToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile,
 
   // allocate return value
   PROTECT(ans = allocVector(VECSXP, nGene));
-  numAllocated ++;
-  numAllocated += setListNames(FLAG_geneName, &ans);
+  numAllocated++;
+  setListNames(FLAG_geneName, &ans);
 
   OrderedMap<std::string, std::string> geneRange;
   loadGeneFile(FLAG_geneFile, FLAG_geneName, &geneRange);
@@ -237,7 +238,8 @@ SEXP readBGEN2List(BGenFile* bin) {
   std::vector<std::string> alleles;
   // std::vector<std::vector<bool> > missing;
   std::vector<bool> isPhased;
-  std::vector<std::vector<double> > prob; // prob[variant][each_sample * (prob1, prob2, ...)]
+  std::vector<std::vector<double> >
+      prob;  // prob[variant][each_sample * (prob1, prob2, ...)]
 
   // std::map<std::string, std::vector<std::string> > infoMap;
 
@@ -263,7 +265,8 @@ SEXP readBGEN2List(BGenFile* bin) {
 
   // real working part
   int nRecord = 0;
-  const int numProbValues = 3; // if multi-allelic/multi-haploid, this value can be different
+  const int numProbValues =
+      3;  // if multi-allelic/multi-haploid, this value can be different
   int maxProbValues = -1;
   while (bin->readRecord()) {
     // REprintf("read a record\n");
@@ -280,7 +283,7 @@ SEXP readBGEN2List(BGenFile* bin) {
     isPhased.push_back(var.isPhased);
     prob.resize(nRecord);
 
-    std::vector<double>& p = prob[nRecord-1];
+    std::vector<double>& p = prob[nRecord - 1];
     p.reserve(sampleSize * numProbValues);
 
     for (size_t i = 0; i != sampleSize; ++i) {
@@ -296,30 +299,32 @@ SEXP readBGEN2List(BGenFile* bin) {
           p.push_back(-9);
         }
       }
-      // REprintf("beg = %d, end = %d, prob[%d][%d] len = %d\n", beg,end, nRecord - 1, i, p[i].size());
+      // REprintf("beg = %d, end = %d, prob[%d][%d] len = %d\n", beg,end,
+      // nRecord - 1, i, p[i].size());
     }
 
     // Rprintf("Done add indv\n");
   }  // end while
   if (maxProbValues > numProbValues) {
-    REprintf("some sample has more than %d > %d probabilities per variant!\n", maxProbValues, numProbValues);
+    REprintf("some sample has more than %d > %d probabilities per variant!\n",
+             maxProbValues, numProbValues);
   }
-  
+
   // pass value back to R (see Manual Chapter 5)
   std::vector<std::string> listNames;
   int retListIdx = 0;
-  numAllocated += storeResult(chrom, ret, retListIdx++);
-  numAllocated += storeResult(pos, ret, retListIdx++);
-  numAllocated += storeResult(varId, ret, retListIdx++);
-  numAllocated += storeResult(rsId, ret, retListIdx++);
-  numAllocated += storeResult(alleles, ret, retListIdx++);
-  numAllocated += storeResult(isPhased, ret, retListIdx++);
-  numAllocated += storeResult(prob, ret, retListIdx);
+  storeResult(chrom, ret, retListIdx++);
+  storeResult(pos, ret, retListIdx++);
+  storeResult(varId, ret, retListIdx++);
+  storeResult(rsId, ret, retListIdx++);
+  storeResult(alleles, ret, retListIdx++);
+  storeResult(isPhased, ret, retListIdx++);
+  storeResult(prob, ret, retListIdx);
   for (size_t i = 0; i != prob.size(); ++i) {
     SEXP s = VECTOR_ELT(VECTOR_ELT(ret, retListIdx), i);
-    numAllocated += setDim(numProbValues, sampleSize, &s);
+    setDim(numProbValues, sampleSize, s);
   }
-  
+
   retListIdx++;
   listNames.push_back("chrom");
   listNames.push_back("pos");
@@ -332,7 +337,7 @@ SEXP readBGEN2List(BGenFile* bin) {
   // store sample ids
   // Rprintf("set sample id");
   listNames.push_back("sampleId");
-  numAllocated += storeResult(idVec, ret, retListIdx++);
+  storeResult(idVec, ret, retListIdx++);
 
   // Rprintf("set list names\n");
   SEXP sListNames;

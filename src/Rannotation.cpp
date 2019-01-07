@@ -150,13 +150,13 @@ SEXP impl_annotateGene(SEXP s_param,
   int numAllocated = 0;
   PROTECT(ret = allocVector(VECSXP, 2));
   numAllocated ++;
-  numAllocated += storeResult(anno, ret, 0);
-  numAllocated += storeResult(annoFull, ret, 1);
+  storeResult(anno, ret, 0);
+  storeResult(annoFull, ret, 1);
 
   std::vector<std::string> dimNames;
   dimNames.push_back("ANNO");
   dimNames.push_back("ANNOFULL");
-  numAllocated += setListNames(dimNames, &ret);
+  setListNames(dimNames, &ret);
 
   UNPROTECT(numAllocated);
   return ret;
@@ -340,7 +340,7 @@ SEXP impl_getRefBase(SEXP reference,
   PROTECT((ret) = allocVector(STRSXP, n));
   numAllocated ++;
   initStringArray(ret);
-  numAllocated += storeResult(seq, &ret);
+  storeResult(seq, &ret);
   UNPROTECT(numAllocated);
 
   return ret;

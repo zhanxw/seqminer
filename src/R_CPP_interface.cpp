@@ -55,7 +55,7 @@ void dump(std::vector<std::string>& s) {
   }
 }
 
-int storeResult(const std::vector<bool>& in, SEXP& ret, int idx) {
+void storeResult(const std::vector<bool>& in, SEXP& ret, int idx) {
   SEXP s;  // = VECTOR_ELT(ret, i);
   int n = in.size();
   PROTECT(s = allocVector(LGLSXP, n));
@@ -64,10 +64,9 @@ int storeResult(const std::vector<bool>& in, SEXP& ret, int idx) {
   }
   SET_VECTOR_ELT(ret, idx, s);
   UNPROTECT(1);
-  return 0;
 }
 
-int storeResult(const std::vector<int>& in, SEXP& ret, int idx) {
+void storeResult(const std::vector<int>& in, SEXP& ret, int idx) {
   SEXP s;  // = VECTOR_ELT(ret, i);
   int n = in.size();
   PROTECT(s = allocVector(INTSXP, n));
@@ -76,10 +75,9 @@ int storeResult(const std::vector<int>& in, SEXP& ret, int idx) {
   }
   SET_VECTOR_ELT(ret, idx, s);
   UNPROTECT(1);
-  return 0;
 }
 
-int storeResult(const std::vector<std::string>& in, SEXP ret, int idx) {
+void storeResult(const std::vector<std::string>& in, SEXP ret, int idx) {
   SEXP s;  //  = VECTOR_ELT(ret, i);
   int n = in.size();
   PROTECT(s = allocVector(STRSXP, n));
@@ -89,10 +87,9 @@ int storeResult(const std::vector<std::string>& in, SEXP ret, int idx) {
   }
   SET_VECTOR_ELT(ret, idx, s);
   UNPROTECT(1);
-  return 0;
 }
 
-int storeResult(const std::vector<double>& in, SEXP& ret, int idx) {
+void storeResult(const std::vector<double>& in, SEXP& ret, int idx) {
   SEXP s;  // = VECTOR_ELT(ret, i);
   int n = in.size();
   PROTECT(s = allocVector(REALSXP, n));
@@ -101,10 +98,9 @@ int storeResult(const std::vector<double>& in, SEXP& ret, int idx) {
   }
   SET_VECTOR_ELT(ret, idx, s);
   UNPROTECT(1);
-  return 0;
 }
 
-int storeIntResult(const std::vector<std::string>& in, SEXP& ret, int idx) {
+void storeIntResult(const std::vector<std::string>& in, SEXP& ret, int idx) {
   SEXP s;  // = VECTOR_ELT(ret, i);
   int n = in.size();
   int tmp;
@@ -117,10 +113,9 @@ int storeIntResult(const std::vector<std::string>& in, SEXP& ret, int idx) {
   }
   SET_VECTOR_ELT(ret, idx, s);
   UNPROTECT(1);
-  return 0;
 }
 
-int storeDoubleResult(const std::vector<std::string>& in, SEXP& ret, int idx) {
+void storeDoubleResult(const std::vector<std::string>& in, SEXP& ret, int idx) {
   SEXP s;  // = VECTOR_ELT(ret, i);
   int n = in.size();
   double tmp;
@@ -133,11 +128,10 @@ int storeDoubleResult(const std::vector<std::string>& in, SEXP& ret, int idx) {
   }
   SET_VECTOR_ELT(ret, idx, s);
   UNPROTECT(1);
-  return 0;
 }
 
-int storeResult(const std::vector<std::vector<double> >& in, SEXP& ret,
-                int idx) {
+void storeResult(const std::vector<std::vector<double> >& in, SEXP& ret,
+                 int idx) {
   SEXP s;  // = VECTOR_ELT(ret, i);
   int n = in.size();
   int numAllocated = 0;
@@ -145,16 +139,15 @@ int storeResult(const std::vector<std::vector<double> >& in, SEXP& ret,
   numAllocated++;
   for (int i = 0; i < n; ++i) {
     SEXP si;
-    numAllocated += storeResult(in[i], &si);
+    storeResult(in[i], &si);
     SET_VECTOR_ELT(s, i, si);
   }
   SET_VECTOR_ELT(ret, idx, s);
   UNPROTECT(numAllocated);
-  return 0;
 }
 
-int storeResult(const std::vector<std::vector<std::vector<double> > >& in,
-                SEXP& ret, int idx) {
+void storeResult(const std::vector<std::vector<std::vector<double> > >& in,
+                 SEXP& ret, int idx) {
   SEXP s;  // = VECTOR_ELT(ret, i);
   int n = in.size();
   int numAllocated = 0;
@@ -162,16 +155,15 @@ int storeResult(const std::vector<std::vector<std::vector<double> > >& in,
   numAllocated++;
   for (int i = 0; i < n; ++i) {
     SEXP si;
-    numAllocated += storeResult(in[i], &si);
+    storeResult(in[i], &si);
     SET_VECTOR_ELT(s, i, si);
   }
   SET_VECTOR_ELT(ret, idx, s);
   UNPROTECT(numAllocated);
-  return 0;
 }
 
-int storeResult(const std::string& key, const std::vector<std::string>& val,
-                SEXP ret, int idx) {
+void storeResult(const std::string& key, const std::vector<std::string>& val,
+                 SEXP ret, int idx) {
   SEXP s;  // = VECTOR_ELT(ret, i);
   int n = val.size();
   PROTECT(s = allocVector(STRSXP, n));
@@ -180,11 +172,10 @@ int storeResult(const std::string& key, const std::vector<std::string>& val,
   }
   SET_VECTOR_ELT(ret, idx, s);
   UNPROTECT(1);
-  return 0;
 }
 
-int storeResult(const std::string& key, const std::vector<int>& val, SEXP& ret,
-                int idx) {
+void storeResult(const std::string& key, const std::vector<int>& val, SEXP& ret,
+                 int idx) {
   SEXP s;  // = VECTOR_ELT(ret, i);
   int n = val.size();
   PROTECT(s = allocVector(INTSXP, n));
@@ -193,69 +184,63 @@ int storeResult(const std::string& key, const std::vector<int>& val, SEXP& ret,
   }
   SET_VECTOR_ELT(ret, idx, s);
   UNPROTECT(1);
-  return 0;
 }
 
-int setDim(int nrow, int ncol, SEXP* s) {
+void setDim(int nrow, int ncol, SEXP s) {
   SEXP dim;
   PROTECT(dim = allocVector(INTSXP, 2));
   INTEGER(dim)[0] = nrow;
   INTEGER(dim)[1] = ncol;
-  setAttrib((*s), R_DimSymbol, dim);
+  setAttrib(s, R_DimSymbol, dim);
   UNPROTECT(1);
-  return 0;
 }
 
-int setDim(int i, int j, int k, SEXP* s) {
+void setDim(int i, int j, int k, SEXP s) {
   SEXP dim;
   PROTECT(dim = allocVector(INTSXP, 3));
   INTEGER(dim)[0] = i;
   INTEGER(dim)[1] = j;
   INTEGER(dim)[2] = k;
-  setAttrib((*s), R_DimSymbol, dim);
+  setAttrib(s, R_DimSymbol, dim);
   UNPROTECT(1);
-  return 0;
-}
-
-int setDimNames(const std::vector<std::string>& nrow,
-                const std::vector<std::string>& ncol, SEXP* s) {
-  int numAllocated = 0;
-  SEXP dimnames;
-  PROTECT(dimnames = allocVector(VECSXP, 2));
-  ++numAllocated;
-
-  numAllocated += storeResult(nrow, dimnames, 0);
-  numAllocated += storeResult(ncol, dimnames, 1);
-  setAttrib((*s), R_DimNamesSymbol, dimnames);
-  UNPROTECT(numAllocated);
-  return 0;
-}
-
-int setDimNames(const std::vector<std::string>& ni,
-                const std::vector<std::string>& nj,
-                const std::vector<std::string>& nk, SEXP* s) {
-  int numAllocated = 0;
-  SEXP dimnames;
-  PROTECT(dimnames = allocVector(VECSXP, 3));
-  ++numAllocated;
-
-  numAllocated += storeResult(ni, dimnames, 0);
-  numAllocated += storeResult(nj, dimnames, 1);
-  numAllocated += storeResult(nk, dimnames, 2);
-  setAttrib((*s), R_DimNamesSymbol, dimnames);
-
-  UNPROTECT(numAllocated);
-  return 0;
 }
 
 /**
  * Set dim attributes for ret[idx]
  */
-int setDim(int nrow, int ncol, SEXP ret, int idx) {
+void setDim(int nrow, int ncol, SEXP ret, int idx) {
   SEXP s = VECTOR_ELT(ret, idx);
-  setDim(nrow, ncol, &s);
+  setDim(nrow, ncol, s);
   SET_VECTOR_ELT(ret, idx, s);
-  return 0;
+}
+
+void setDimNames(const std::vector<std::string>& nrow,
+                 const std::vector<std::string>& ncol, SEXP s) {
+  int numAllocated = 0;
+  SEXP dimnames;
+  PROTECT(dimnames = allocVector(VECSXP, 2));
+  ++numAllocated;
+
+  storeResult(nrow, dimnames, 0);
+  storeResult(ncol, dimnames, 1);
+  setAttrib(s, R_DimNamesSymbol, dimnames);
+  UNPROTECT(numAllocated);
+}
+
+void setDimNames(const std::vector<std::string>& ni,
+                 const std::vector<std::string>& nj,
+                 const std::vector<std::string>& nk, SEXP s) {
+  int numAllocated = 0;
+  SEXP dimnames;
+  PROTECT(dimnames = allocVector(VECSXP, 3));
+  ++numAllocated;
+
+  storeResult(ni, dimnames, 0);
+  storeResult(nj, dimnames, 1);
+  storeResult(nk, dimnames, 2);
+  setAttrib(s, R_DimNamesSymbol, dimnames);
+
+  UNPROTECT(numAllocated);
 }
 
 #if 0
@@ -280,7 +265,7 @@ int createIntArray(int n, SEXP* s) {
 }
 #endif
 
-int setListNames(std::vector<std::string>& names, SEXP* s) {
+void setListNames(std::vector<std::string>& names, SEXP* s) {
   SEXP sListNames;
   PROTECT(sListNames = allocVector(STRSXP, names.size()));
   for (unsigned int i = 0; i != names.size(); ++i) {
@@ -288,7 +273,6 @@ int setListNames(std::vector<std::string>& names, SEXP* s) {
   }
   setAttrib((*s), R_NamesSymbol, sListNames);
   UNPROTECT(1);
-  return 0;
 }
 
 void initDoubleArray(SEXP s) {
@@ -311,7 +295,7 @@ void initStringArray(SEXP s) {
   }
 }
 
-int storeResult(const std::vector<std::string>& in, SEXP* ret) {
+void storeResult(const std::vector<std::string>& in, SEXP* ret) {
   int alloc = 0;
   PROTECT((*ret) = allocVector(STRSXP, in.size()));
   alloc++;
@@ -319,10 +303,9 @@ int storeResult(const std::vector<std::string>& in, SEXP* ret) {
     SET_STRING_ELT((*ret), i, mkChar(in[i].c_str()));
   }
   UNPROTECT(alloc);
-  return 0;
 }
 
-int storeResult(const std::vector<double>& in, SEXP* ret) {
+void storeResult(const std::vector<double>& in, SEXP* ret) {
   int alloc = 0;
   PROTECT((*ret) = allocVector(REALSXP, in.size()));
   alloc++;
@@ -330,20 +313,18 @@ int storeResult(const std::vector<double>& in, SEXP* ret) {
     REAL(*ret)[i] = in[i];
   }
   UNPROTECT(alloc);
-  return 0;
 }
 
-int storeResult(const std::vector<std::vector<double> >& in, SEXP* ret) {
+void storeResult(const std::vector<std::vector<double> >& in, SEXP* ret) {
   int alloc = 0;
   PROTECT((*ret) = allocVector(VECSXP, in.size()));
   alloc++;
   for (size_t i = 0; i < in.size(); ++i) {
     SEXP si;
-    alloc += storeResult(in[i], &si);
+    storeResult(in[i], &si);
     SET_VECTOR_ELT((*ret), i, si);
   }
   UNPROTECT(alloc);
-  return 0;
 }
 
 /**

@@ -414,7 +414,7 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
     // ref, alt, n, maf, stat,
     // direction, p, cov, pos,
     // anno, ...
-    numAllocated += setListNames(names, &s);
+    setListNames(names, &s);
 
     SEXP ref, alt, n, af, ac, callRate, hwe, nref, nhet, nalt, ustat, vstat,
         effect, p, cov, pos, anno, covXZ, covZZ, hweCase, hweCtrl, afCase,
@@ -523,10 +523,10 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
       if (FLAG_covFile.empty()) {
         /// if skip covFile, just set cov to be 1 by 1 matrix of NA
         numAllocated += createDoubleArray(1, &t);
-        numAllocated += setDim(1, 1, &t);
+        setDim(1, 1, t);
       } else {
         numAllocated += createDoubleArray(npos * npos, &t);
-        numAllocated += setDim(npos, npos, &t);
+        setDim(npos, npos, t);
       }
       initDoubleArray(t);
       SET_VECTOR_ELT(cov, j, t);
@@ -546,10 +546,10 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
         if (FLAG_covFile.empty()) {
           /// if skip covFile, then just set cov to be 1 by 1 matrix of NA
           numAllocated += createDoubleArray(1, &t);
-          numAllocated += setDim(1, 1, &t);
+          setDim(1, 1, t);
         } else {
           numAllocated += createDoubleArray(npos * zDim, &t);
-          numAllocated += setDim(npos, zDim, &t);
+          setDim(npos, zDim, t);
         }
         initDoubleArray(t);
         SET_VECTOR_ELT(covXZ, j, t);
@@ -558,10 +558,10 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
         if (FLAG_covFile.empty()) {
           /// if skip covFile, then just set cov to be 1 by 1 matrix of NA
           numAllocated += createDoubleArray(1, &t);
-          numAllocated += setDim(1, 1, &t);
+          setDim(1, 1, t);
         } else {
           numAllocated += createDoubleArray(zDim * zDim, &t);
-          numAllocated += setDim(zDim, zDim, &t);
+          setDim(zDim, zDim, t);
         }
         initDoubleArray(t);
         SET_VECTOR_ELT(covZZ, j, t);
@@ -1546,7 +1546,7 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
   ti_close(t);
 
   // set dim info
-  numAllocated += setDim(retDim, retDim, &ret);
+  setDim(retDim, retDim, ret);
   // set matrix label
   SEXP rowName;
   PROTECT(rowName = allocVector(STRSXP, retDim));
@@ -1763,22 +1763,22 @@ SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range) {
 
   std::vector<std::string> listNames;
   int retListIdx = 0;
-  numAllocated += storeResult(position, ret, retListIdx++);
-  numAllocated += storeResult(ref, ret, retListIdx++);
-  numAllocated += storeResult(alt, ret, retListIdx++);
-  numAllocated += storeIntResult(nsample, ret, retListIdx++);
-  numAllocated += storeDoubleResult(af, ret, retListIdx++);
-  numAllocated += storeIntResult(ac, ret, retListIdx++);
-  numAllocated += storeDoubleResult(callRate, ret, retListIdx++);
-  numAllocated += storeResult(
+  storeResult(position, ret, retListIdx++);
+  storeResult(ref, ret, retListIdx++);
+  storeResult(alt, ret, retListIdx++);
+  storeIntResult(nsample, ret, retListIdx++);
+  storeDoubleResult(af, ret, retListIdx++);
+  storeIntResult(ac, ret, retListIdx++);
+  storeDoubleResult(callRate, ret, retListIdx++);
+  storeResult(
       hwe, ret, retListIdx++);  // hwe may have three number (all:case:ctrl)
-  numAllocated += storeIntResult(nref, ret, retListIdx++);
-  numAllocated += storeIntResult(nhet, ret, retListIdx++);
-  numAllocated += storeIntResult(nalt, ret, retListIdx++);
-  numAllocated += storeDoubleResult(ustat, ret, retListIdx++);
-  numAllocated += storeDoubleResult(vstat, ret, retListIdx++);
-  numAllocated += storeDoubleResult(effect, ret, retListIdx++);
-  numAllocated += storeDoubleResult(pval, ret, retListIdx++);
+  storeIntResult(nref, ret, retListIdx++);
+  storeIntResult(nhet, ret, retListIdx++);
+  storeIntResult(nalt, ret, retListIdx++);
+  storeDoubleResult(ustat, ret, retListIdx++);
+  storeDoubleResult(vstat, ret, retListIdx++);
+  storeDoubleResult(effect, ret, retListIdx++);
+  storeDoubleResult(pval, ret, retListIdx++);
 
   listNames.push_back("pos");
   listNames.push_back("ref");
@@ -1797,8 +1797,8 @@ SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range) {
   listNames.push_back("pVal");
 
   if (anno.size()) {
-    numAllocated += storeResult(anno, ret, retListIdx++);
-    numAllocated += storeResult(annoFull, ret, retListIdx++);
+    storeResult(anno, ret, retListIdx++);
+    storeResult(annoFull, ret, retListIdx++);
     listNames.push_back("anno");
     listNames.push_back("annoFull");
   }
@@ -1916,7 +1916,7 @@ SEXP impl_readSkewByRange(SEXP arg_skewFile, SEXP arg_range) {
   lineRead = 0;
   const int n = markerIndex.size();
   numAllocated += createDoubleArray(n * n * n, &ret);
-  numAllocated += setDim(n, n, n, &ret);
+  setDim(n, n, n, ret);
 
   // assign return values
   int index1;
@@ -1969,21 +1969,21 @@ SEXP impl_readSkewByRange(SEXP arg_skewFile, SEXP arg_range) {
 #if 0
   std::vector<std::string> listNames;
   int retListIdx = 0;
-  numAllocated += storeResult(position, ret, retListIdx++);
-  numAllocated += storeResult(ref, ret, retListIdx++);
-  numAllocated += storeResult(alt, ret, retListIdx++);
-  numAllocated += storeIntResult(nsample, ret, retListIdx++);
-  numAllocated += storeDoubleResult(af, ret, retListIdx++);
-  numAllocated += storeIntResult(ac, ret, retListIdx++);
-  numAllocated += storeDoubleResult(callRate, ret, retListIdx++);
-  numAllocated += storeResult(hwe, ret, retListIdx++); // hwe may have three number (all:case:ctrl)
-  numAllocated += storeIntResult(nref, ret, retListIdx++);
-  numAllocated += storeIntResult(nhet, ret, retListIdx++);
-  numAllocated += storeIntResult(nalt, ret, retListIdx++);
-  numAllocated += storeDoubleResult(ustat, ret, retListIdx++);
-  numAllocated += storeDoubleResult(vstat, ret, retListIdx++);
-  numAllocated += storeDoubleResult(effect, ret, retListIdx++);
-  numAllocated += storeDoubleResult(skew, ret, retListIdx++);
+  storeResult(position, ret, retListIdx++);
+  storeResult(ref, ret, retListIdx++);
+  storeResult(alt, ret, retListIdx++);
+  storeIntResult(nsample, ret, retListIdx++);
+  storeDoubleResult(af, ret, retListIdx++);
+  storeIntResult(ac, ret, retListIdx++);
+  storeDoubleResult(callRate, ret, retListIdx++);
+  storeResult(hwe, ret, retListIdx++); // hwe may have three number (all:case:ctrl)
+  storeIntResult(nref, ret, retListIdx++);
+  storeIntResult(nhet, ret, retListIdx++);
+  storeIntResult(nalt, ret, retListIdx++);
+  storeDoubleResult(ustat, ret, retListIdx++);
+  storeDoubleResult(vstat, ret, retListIdx++);
+  storeDoubleResult(effect, ret, retListIdx++);
+  storeDoubleResult(skew, ret, retListIdx++);
 
   listNames.push_back("pos");
   listNames.push_back("ref");
@@ -2002,8 +2002,8 @@ SEXP impl_readSkewByRange(SEXP arg_skewFile, SEXP arg_range) {
   listNames.push_back("skew");
 
   if (anno.size() ) {
-    numAllocated += storeResult(anno, ret, retListIdx++);
-    numAllocated += storeResult(annoFull, ret, retListIdx++);
+    storeResult(anno, ret, retListIdx++);
+    storeResult(annoFull, ret, retListIdx++);
     listNames.push_back("anno");
     listNames.push_back("annoFull");
   }

@@ -250,7 +250,7 @@ int vcf_read(bcf_t *bp, bcf_hdr_t *h, bcf1_t *b)
 					}
 				}
 			}
-		endblock: i = i;
+		endblock: ;
 		}
 	}
 	h->l_nm = rn.l; h->name = rn.s;

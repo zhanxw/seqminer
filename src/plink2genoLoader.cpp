@@ -133,8 +133,9 @@ SEXP impl_readPlinkToMatrixByIndex(SEXP arg_fileName, SEXP arg_sampleIdx,
   // to optimze for a sequential I/O, read 1 snp from PLINK and store 1 column
   // in an R matrix
   // therefore, R matrix is better sample (row) by marker (column)
-  PROTECT(ret = allocVector(REALSXP, FLAG_indvIndex.size() * FLAG_markerIndex.size()));
-  allocated ++;  
+  PROTECT(ret = allocVector(REALSXP,
+                            FLAG_indvIndex.size() * FLAG_markerIndex.size()));
+  allocated++;
   printTime("read bed");
   // check BED to make sure it is snp-major
   FILE* fpBed = fopen((FLAG_fileName + ".bed").c_str(), "rb");
@@ -242,13 +243,13 @@ SEXP impl_readPlinkToMatrixByIndex(SEXP arg_fileName, SEXP arg_sampleIdx,
   fclose(fpBed);
 
   REprintf("allocate dim and dimnames\n");
-  allocated +=
-      setDim((int)FLAG_indvIndex.size(), (int)FLAG_markerIndex.size(), &ret);
+
+  setDim((int)FLAG_indvIndex.size(), (int)FLAG_markerIndex.size(), ret);
   std::vector<std::string> v1 = keepByIndex(sampleNames, FLAG_indvIndex);
   std::vector<std::string> v2 = keepByIndex(markerNames, FLAG_markerIndex);
-  allocated += setDimNames(v1, v2, &ret);
-  allocated += setDimNames(keepByIndex(sampleNames, FLAG_indvIndex),
-                           keepByIndex(markerNames, FLAG_markerIndex), &ret);
+  setDimNames(v1, v2, ret);
+  setDimNames(keepByIndex(sampleNames, FLAG_indvIndex),
+              keepByIndex(markerNames, FLAG_markerIndex), ret);
 
   printTime("end");
   UNPROTECT(allocated);

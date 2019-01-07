@@ -1,8 +1,8 @@
 #ifndef _TABIXREADER_H_
 #define _TABIXREADER_H_
 
-#include "tabix.h"
 #include "RangeList.h"
+#include "tabix.h"
 
 // #include "Profiler.h"
 
