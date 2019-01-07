@@ -1184,7 +1184,7 @@ readBGENToListByGene <- function(fileName, geneFile, geneName) {
 ##################################################
 #' Read a gene from BGEN file and return a genotype matrix
 #'
-#' @param fileName character, represents the prefix of PLINK input file
+#' @param plinkFileObject a PlinkFileObject obtained by openPlink()
 #' @param sampleIndex integer, 1-basd, index of samples to be extracted
 #' @param markerIndex integer, 1-basd, index of markers to be extracted
 #' @return genotype matrix, marker by sample
@@ -1198,7 +1198,7 @@ readBGENToListByGene <- function(fileName, geneFile, geneName) {
 #' sampleIndex = seq(3)
 #' markerIndex =c(14, 36)
 #' cfh <- readPlinkToMatrixByIndex(fileName, sampleIndex, markerIndex)
-readPlinkToMatrixByIndex <- function(fileName, sampleIndex, markerIndex) {
+readPlinkToMatrixByIndex <- function(plinkFileObject, sampleIndex, markerIndex) {
   stopifnot(local.file.exists(sprintf("%s.bed", fileName)), length(fileName) == 1)
   fileName <- path.expand(fileName)
 
@@ -1212,3 +1212,117 @@ readPlinkToMatrixByIndex <- function(fileName, sampleIndex, markerIndex) {
 
   .Call("readPlinkToMatrixByIndex", fileName, sampleIndex , markerIndex, PACKAGE="seqminer");
 }
+
+#' Open binary PLINK files
+#'
+#' @param fileName character, represents the prefix of PLINK input file
+#' @return an PLINK file object with class name ("PlinkFile")
+#' @export
+#' @examples
+#' fileName = system.file("plink/all.anno.filtered.extract.bed", package = "seqminer")
+#' fileName = sub(fileName, pattern = ".bed", replacement = "")
+#' plinkObj <- openPlink(fileName)
+#' str(plinkObj)
+openPlink <- function(fileName) {
+  ## check .bed, .fam, .bim exists
+  stopifnot(length(fileName) == 1)
+  stopifnot(local.file.exists(sprintf("%s.bed", fileName)))
+  stopifnot(local.file.exists(sprintf("%s.fam", fileName)))
+  stopifnot(local.file.exists(sprintf("%s.bim", fileName)))
+
+  ## clean file names
+  fileName <- path.expand(fileName)
+  famFile <- sprintf("%s.fam", fileName)
+  bimFile <- sprintf("%s.bim", fileName)
+  bedFile <- sprintf("%s.bed", fileName)
+
+  ## read and store fam, bim files
+  has.data.table <- nchar(system.file(".", package = "data.table")) > 0
+  if (has.data.table) {
+    fam <- eval(parse(text = sprintf('as.data.frame(data.table::fread("%s", header = FALSE))', famFile)))
+  } else {
+    fam <- utils::read.table(famFile, stringsAsFactors = FALSE, header = FALSE)
+  }
+  if (has.data.table) {
+    bim <- eval(parse(text = sprintf('as.data.frame(data.table::fread("%s", header = FALSE))', bimFile)))
+  } else {
+    bim <- utils::read.table(bimFile, stringsAsFactors = FALSE, header = FALSE)
+  }
+
+  ret <- list(prefix = fileName, fam = fam, bim = bim)
+
+  ## check file size
+  bedFile <- sprintf("%s.bed", fileName)
+  magic1 = 0x6c;
+  magic2 = 0x1b;
+  snpMajor = 1
+  indvMajor = 0
+  bedFileHandle = file(bedFile, "rb")
+  header = readBin(bedFileHandle, raw(),  n = 3)
+  close(bedFileHandle)
+  stopifnot(file.size(bedFile) == ceiling(nrow(fam) / 4) * nrow(bim) + 3)
+  stopifnot(header[1] == magic1)
+  stopifnot(header[2] == magic2)
+  if (header[3] == indvMajor) {
+    warning("PLINK file individual major is not supported yet")
+  }
+  stopifnot(header[3] == snpMajor)
+
+  # return results
+  class(ret) <- "PlinkFile"
+  return(ret)
+}
+
+#' Read a gene from BGEN file and return a genotype matrix
+#'
+#' @param plinkFileObject a PlinkFileObject obtained by openPlink()
+#' @param sampleIndex integer, 1-basd, index of samples to be extracted
+#' @param markerIndex integer, 1-basd, index of markers to be extracted
+#' @return genotype matrix, marker by sample
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' ## these indice are nonsynonymous markers for 1:196621007-196716634",
+#' ## refer to the readVCFToMatrixByRange()
+#' fileName = system.file("plink/all.anno.filtered.extract.bed", package = "seqminer")
+#' filePrefix = sub(fileName, pattern = ".bed", replacement = "")
+#' plinkObj = openPlink(filePrefix)
+#' sampleIndex = seq(3)
+#' markerIndex =c(14, 36)
+#' cfh <- plinkObj[sampleIndex, markerIndex]
+`[.PlinkFile` <- function(plinkFileObject, sampleIndex, markerIndex) {
+  stopifnot(class(plinkFileObject) == "PlinkFile")
+  stopifnot(!is.null(plinkFileObject$fam))
+  stopifnot(!is.null(plinkFileObject$bim))
+  stopifnot(!is.null(plinkFileObject$prefix))
+
+  numSample <- nrow(plinkFileObject$fam)
+  numMarker <- nrow(plinkFileObject$bim)
+  stopifnot( all(sampleIndex >= 1 & sampleIndex <= numSample))
+  stopifnot( all(markerIndex >= 1 & markerIndex <= numMarker))
+
+  rname <- plinkFileObject$fam[,2][sampleIndex]
+  cname <- plinkFileObject$bim[,2][markerIndex]
+
+  # pass 0-index to c codes
+  sampleIndex <- as.integer(sampleIndex - 1)
+  markerIndex <- as.integer(markerIndex - 1)
+
+  fileName <- sprintf("%s.bed", path.expand(plinkFileObject$prefix))
+  storage.mode(fileName) <- "character"
+  storage.mode(numSample)  <- "integer"
+  storage.mode(numMarker) <- "integer"
+  storage.mode(sampleIndex) <- "integer"
+  storage.mode(markerIndex) <- "integer"
+
+  ret <- .Call("readBedToMatrixByIndex",
+        fileName,
+        numSample, numMarker,
+        sampleIndex , markerIndex,
+        PACKAGE="seqminer");
+  rownames(ret) <- rname
+  colnames(ret) <- cname
+  ret
+}
+
+
