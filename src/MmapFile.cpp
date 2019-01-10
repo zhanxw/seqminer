@@ -1,6 +1,12 @@
 #include "MmapFile.h"
 
-#include <cstdint>
+#include <cstdint>  // SIZE_MAX
+
+MmapFile::MmapFile() : data(0) {}
+
+MmapFile::MmapFile(const char* fileName) : data(0) { open(fileName); }
+
+MmapFile::~MmapFile() { close(); }
 
 size_t getFileSize(const char* fileName) {
   struct stat fileStat;
@@ -21,7 +27,7 @@ size_t getFileSize(const char* fileName) {
 }
 
 int MmapFile::open(const char* fileName) {
-  this->filedes = ::open(fileName, O_RDONLY);
+  int filedes = ::open(fileName, O_RDONLY);
   if (filedes < 0) {
     REprintf("Cannot open file");
     // exit(1);
@@ -31,16 +37,57 @@ int MmapFile::open(const char* fileName) {
   if (data) {
     this->close();
   }
-  this->data = mmap(0, this->fileSize, PROT_READ, MAP_SHARED, this->filedes, 0);
+#ifndef _WIN32
+  this->data = mmap(0, this->fileSize, PROT_READ, MAP_SHARED, filedes, 0);
   if (this->data == MAP_FAILED) {
     REprintf("mmap() failed!");
     // exit(1);
     return -1;
   }
+#else
+  // see:
+  // https://docs.microsoft.com/en-us/windows/desktop/api/winbase/nf-winbase-createfilemappinga
+  this->handle = CreateFileMapping(
+      (HANDLE)_get_osfhandle(filedes),
+      NULL,  //  the file mapping object gets a default security descriptor
+      PAGE_READONLY,  // can also be PAGE_WRITECOPY,
+      0,  // dwMaximumSizeHigh are 0 (zero), the maximum size of the file
+          // mapping object is equal to the current size of the file that hFile
+          // identifies
+      0,  // dwMaximumSizeLow (see above)
+      NULL);  // lpName = NULL, the file mapping object is created without a
+              // name.
+  if (handle == NULL) {
+    return -1;
+  }
+  this->data = MapViewOfFileEx(handle, FILE_MAP_READ,
+                               0,  // dwFileOffsetHigh: The high-order DWORD of
+                                   // the file offset where the view is to begin
+                               0,  // dwFileOffsetLow: see above
+                               this->fileSize,  // dwNumberOfBytesToMap
+                               NULL);  // lpBaseAddress: A pointer to the memory
+                                       // address in the calling process address
+                                       // space where mapping begins.
+
+#endif
   return 0;
 }
 
-void MmapFile::close() {
-  munmap(this->data, this->fileSize);
+int MmapFile::close() {
+#ifndef _WIN32
+  // @return -1: means error
+  if (munmap(this->data, this->fileSize)) {
+    return -1;
+  }
+#else
+  if (!UnmapViewOfFile(this->data)) {
+    return -1;
+
+    if (!CloseHandle(this->handle)) {
+      REprintf("unable to close file mapping handle\n");
+      return -1;
+    }
+  }
+#endif
   this->data = 0;
 }
