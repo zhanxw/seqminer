@@ -103,7 +103,8 @@ int SingleChromosomeVCFIndex::createIndex() {
   // bgzf_close(fp);
   fclose(fIndex);
 
-  REprintf("Indexing finished with %d samples and %d markers\n", numSample, numMarker);
+  REprintf("Indexing finished with %d samples and %d markers\n", numSample,
+           numMarker);
   return 0;
 }
 
@@ -161,7 +162,7 @@ int SingleChromosomeVCFIndex::query(int chromPosBeg, int chromPosEnd,
     return -1;
   } else {
     REprintf("found %d position, e.g. %ld %ld\n", (int)(ub - lb), (*lb).pos,
-           (*lb).offset);
+             (*lb).offset);
     return ub - lb;
   }
 }
