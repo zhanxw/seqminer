@@ -1,5 +1,8 @@
 #include "SingleChromosomeVCFIndex.h"
 
+#define STRICT_R_HEADERS
+#include <R.h>
+
 // #include <stdlib.h>
 #include <algorithm>
 #include <string>

@@ -1,10 +1,6 @@
 #ifndef _SINGLECHROMOSOMEVCFINDEX_H_
 #define _SINGLECHROMOSOMEVCFINDEX_H_
 
-#include <R.h>
-#include <Rinternals.h>
-#include <iostream>  // have to include this to avoid R screw up "length" in iostream/sstream...
-
 #include <string>
 #include "bgzf.h"
 
