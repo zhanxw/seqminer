@@ -4,6 +4,8 @@
 #include "RangeList.h"
 #include "tabix.h"
 
+#include "TimeUtil.h"
+
 // #include "Profiler.h"
 
 class TabixReader {
@@ -86,8 +88,11 @@ class TabixReader {
       }
       ti_iter_destroy(iter);
       iter = 0;
+      // REprintf( "%s:%d:%s %s\n", __FILE__, __LINE__, currentTime().c_str(), "query() start");      
       this->iter = ti_queryi(this->tabixHandle, tid, beg, end);
+      // REprintf( "%s:%d:%s %s\n", __FILE__, __LINE__, currentTime().c_str(), "query() end");
       this->ti_line = ti_read(this->tabixHandle, this->iter, &ti_line_len);
+      // REprintf( "%s:%d:%s %s\n", __FILE__, __LINE__, currentTime().c_str(), "read() end");                  
       if (ti_line) {
         ++rangeIterator;
         (*line) = ti_line;

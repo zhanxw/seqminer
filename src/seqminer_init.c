@@ -29,6 +29,8 @@ extern SEXP readBGENToMatrixByGene(SEXP, SEXP, SEXP);
 extern SEXP readBGENToMatrixByRange(SEXP, SEXP);
 extern SEXP readPlinkToMatrixByIndex(SEXP, SEXP, SEXP);
 extern SEXP readBedToMatrixByIndex(SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP readSingleChromosomeVCFToMatrixByRange(SEXP, SEXP, SEXP);
+extern SEXP createSingleChromosomeVCFIndex(SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"anno", (DL_FUNC)&anno, 3},
@@ -56,6 +58,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"readBGENToMatrixByRange", (DL_FUNC)&readBGENToMatrixByRange, 2},
     {"readPlinkToMatrixByIndex", (DL_FUNC)&readPlinkToMatrixByIndex, 3},
     {"readBedToMatrixByIndex", (DL_FUNC)&readBedToMatrixByIndex, 5},
+    {"readSingleChromosomeVCFToMatrixByRange", (DL_FUNC)&readSingleChromosomeVCFToMatrixByRange, 3},
+    {"createSingleChromosomeVCFIndex", (DL_FUNC)&createSingleChromosomeVCFIndex, 2},
     {NULL, NULL, 0}};
 
 void R_init_seqminer(DllInfo *dll) {

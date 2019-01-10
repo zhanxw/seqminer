@@ -5,6 +5,8 @@
 #include "TabixReader.h"
 #include "BCFReader.h"
 
+#include "TimeUtil.h"
+
 // use current subset of included people
 // to reconstruct a new VCF header line
 void VCFInputFile::rewriteVCFHeader() {
@@ -42,31 +44,7 @@ void VCFInputFile::setRangeMode() {
       this->bcfReader->mergeRange();
     }
   }
-
-  // if (this->autoMergeRange) {
-  //   this->range.sort();
-  // }
-
-  // this->rangeBegin = this->range.begin();
-  // this->rangeEnd = this->range.end();
-  // this->rangeIterator = this->range.begin();
-
 }
-
-// void VCFInputFile::clearRange() {
-// #ifndef NDEBUG
-//   if (this->range.size()) {
-//     REprintf( "Clear existing %zu range.\n", this->range.size());
-//   }
-// #endif
-//   if (mode == BCF_MODE) {
-//     this->bcfReader->clearRange();
-//   } else if (mode == VCF_RANGE_MODE) {
-//     this->VCFRecord->clearRange();
-//   }
-//   // this->range.clear();
-//   // this->ti_line = 0;
-// };
 
 /**
  * @param fn: the file contains two column: old_id new_id
@@ -158,7 +136,7 @@ void VCFInputFile::init(const char* fn) {
 }
 
 bool VCFInputFile::readRecord(){
-  // REprintf( "test\n");
+  // REprintf( "%s:%d:%s %s\n", __FILE__, __LINE__, currentTime().c_str(), "readRecord() start");
   int nRead = 0;
   while (true) {
     if (this->mode == VCF_LINE_MODE) {
@@ -170,13 +148,15 @@ bool VCFInputFile::readRecord(){
     }
     if (!nRead) return false;
 
-    bool ret = this->record.parse(this->line);
+    // REprintf( "%s:%d:%s %s\n", __FILE__, __LINE__, currentTime().c_str(), "parse() start");
+  bool ret = this->record.parse(this->line);
+  // REprintf( "%s:%d:%s %s\n", __FILE__, __LINE__, currentTime().c_str(), "parse() end");  
     if (ret) {
       reportReadError(this->line);
     }
     if (!this->passFilter())
       continue;
-
+    // REprintf( "%s:%d:%s %s\n", __FILE__, __LINE__, currentTime().c_str(), "readRecord() end");
     // break;
     return true;
   }

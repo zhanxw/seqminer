@@ -15,6 +15,15 @@
 #endif
 #include "tabix.h"
 
+#include <time.h>
+static char* currentTime() {
+  time_t t = time(NULL);
+  char* s = ctime(&t);
+  s[strlen(s) - 1] = '\0';
+  return s;
+}
+
+
 #define TAD_MIN_CHUNK_GAP 32768
 // 1<<14 is the size of minimum bin.
 #define TAD_LIDX_SHIFT    14
@@ -88,6 +97,8 @@ ti_conf_t ti_conf_vcf = { TI_PRESET_VCF, 1, 2, 0, '#', 0 };
  * commented out above. */
 int ti_readline(BGZF *fp, kstring_t *str)
 {
+  /* REprintf("%s:%d:%s %s\n", __FILE__, __LINE__, currentTime(), "ti_readline() called"); */
+  /* REprintf("%s\n", str->s); */
   return bgzf_getline(fp, '\n', str);
 }
 
@@ -858,6 +869,7 @@ ti_iter_t ti_iter_query(const ti_index_t *idx, int tid, int beg, int end)
 
 const char *ti_iter_read(BGZF *fp, ti_iter_t iter, int *len)
 {
+  // REprintf( "%s:%d:%s %s\n", __FILE__, __LINE__, currentTime(), "ti_iter_read() start");
   if (iter->finished) return 0;
   if (iter->from_first) {
     int ret;
@@ -869,6 +881,7 @@ const char *ti_iter_read(BGZF *fp, ti_iter_t iter, int *len)
       return iter->str.s;
     }
   }
+  // REprintf( "%s:%d:%s %s\n", __FILE__, __LINE__, currentTime(), "ti_iter_read() in the while loop");    
   if (iter->n_off == 0) return 0;
   while (1) {
     int ret;
@@ -894,6 +907,7 @@ const char *ti_iter_read(BGZF *fp, ti_iter_t iter, int *len)
     } else break; // end of file
   }
   iter->finished = 1;
+  // REprintf( "%s:%d:%s %s\n", __FILE__, __LINE__, currentTime(), "ti_iter_read() end");  
   return 0;
 }
 
