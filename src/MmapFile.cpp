@@ -1,6 +1,27 @@
 #include "MmapFile.h"
 
-#include <cstdint>  // SIZE_MAX
+#define STRICT_R_HEADERS
+#include <R.h>
+
+// #include <R_ext/Print.h>
+
+#include <fcntl.h>   // O_RDONLY
+#include <stdint.h>  // SIZE_MAX
+
+#ifdef _WIN32
+#include <io.h>
+#include <stdio.h>
+#include <sys/stat.h>
+#include <windows.h>
+#else
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
+#endif
 
 MmapFile::MmapFile() : data(0) {}
 
@@ -83,12 +104,12 @@ int MmapFile::close() {
 #else
   if (!UnmapViewOfFile(this->data)) {
     return -1;
-
-    if (!CloseHandle(this->handle)) {
-      REprintf("unable to close file mapping handle\n");
-      return -1;
-    }
   }
+  if (!CloseHandle(this->handle)) {
+    REprintf("unable to close file mapping handle\n");
+    return -1;
+  }
+
 #endif
   this->data = 0;
 }

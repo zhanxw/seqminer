@@ -1,22 +1,26 @@
 #ifndef _MMAPFILE_H_
 #define _MMAPFILE_H_
 
-#include <R.h>
-#include <Rinternals.h>
-#include <iostream>  // have to include this to avoid R screw up "length" in iostream/sstream...
+// #include <iostream>  // have to include this to avoid R screw up "length" in
+// iostream/sstream...
+// #include <R.h>
+// #include <Rinternals.h>
 
+#ifdef _WIN32
+#include <io.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <sys/stat.h>
+#include <windows.h>
+#else
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
-
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <sys/mman.h>
 #endif
 
 extern size_t getFileSize(const char* fileName);
@@ -26,7 +30,7 @@ class MmapFile {
   MmapFile();
   MmapFile(const char* fileName);
   virtual ~MmapFile();
-  
+
   int open(const char* fileName);
   int close();
   void* data;  // mmap() data goes here
