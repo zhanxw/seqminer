@@ -46,6 +46,7 @@ int MmapFile::open(const char* fileName) {
   }
 #else
   // see:
+  // http://courses.washington.edu/hypertxt/cwb/cl/windows-mmap.c
   // https://docs.microsoft.com/en-us/windows/desktop/api/winbase/nf-winbase-createfilemappinga
   this->handle = CreateFileMapping(
       (HANDLE)_get_osfhandle(filedes),
