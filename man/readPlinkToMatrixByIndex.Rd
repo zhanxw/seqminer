@@ -7,11 +7,11 @@
 readPlinkToMatrixByIndex(plinkFilePrefix, sampleIndex, markerIndex)
 }
 \arguments{
+\item{plinkFilePrefix}{a PlinkFileObject obtained by openPlink()}
+
 \item{sampleIndex}{integer, 1-basd, index of samples to be extracted}
 
 \item{markerIndex}{integer, 1-basd, index of markers to be extracted}
-
-\item{plinkFileObject}{a PlinkFileObject obtained by openPlink()}
 }
 \value{
 genotype matrix, marker by sample

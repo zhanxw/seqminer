@@ -1184,7 +1184,7 @@ readBGENToListByGene <- function(fileName, geneFile, geneName) {
 ##################################################
 #' Read from binary PLINK file and return a genotype matrix
 #'
-#' @param plinkFileObject a PlinkFileObject obtained by openPlink()
+#' @param plinkFilePrefix a PlinkFileObject obtained by openPlink()
 #' @param sampleIndex integer, 1-basd, index of samples to be extracted
 #' @param markerIndex integer, 1-basd, index of markers to be extracted
 #' @return genotype matrix, marker by sample
