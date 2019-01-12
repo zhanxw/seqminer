@@ -1182,7 +1182,7 @@ readBGENToListByGene <- function(fileName, geneFile, geneName) {
 ##################################################
 ## PLINK file formats
 ##################################################
-#' Read a gene from BGEN file and return a genotype matrix
+#' Read from binary PLINK file and return a genotype matrix
 #'
 #' @param plinkFileObject a PlinkFileObject obtained by openPlink()
 #' @param sampleIndex integer, 1-basd, index of samples to be extracted
@@ -1198,19 +1198,19 @@ readBGENToListByGene <- function(fileName, geneFile, geneName) {
 #' sampleIndex = seq(3)
 #' markerIndex =c(14, 36)
 #' cfh <- readPlinkToMatrixByIndex(fileName, sampleIndex, markerIndex)
-readPlinkToMatrixByIndex <- function(plinkFileObject, sampleIndex, markerIndex) {
-  stopifnot(local.file.exists(sprintf("%s.bed", fileName)), length(fileName) == 1)
-  fileName <- path.expand(fileName)
+readPlinkToMatrixByIndex <- function(plinkFilePrefix, sampleIndex, markerIndex) {
+  stopifnot(local.file.exists(sprintf("%s.bed", plinkFilePrefix)), length(plinkFilePrefix) == 1)
+  plinkFilePrefix <- path.expand(plinkFilePrefix)
 
   # pass 0-index to c codes
   sampleIndex <- as.integer(sampleIndex - 1)
   markerIndex <- as.integer(markerIndex - 1)
 
-  storage.mode(fileName) <- "character"
+  storage.mode(plinkFilePrefix) <- "character"
   storage.mode(sampleIndex) <- "integer"
   storage.mode(markerIndex) <- "integer"
 
-  .Call("readPlinkToMatrixByIndex", fileName, sampleIndex , markerIndex, PACKAGE="seqminer");
+  .Call("readPlinkToMatrixByIndex", plinkFilePrefix, sampleIndex , markerIndex, PACKAGE="seqminer");
 }
 
 #' Open binary PLINK files
@@ -1273,7 +1273,7 @@ openPlink <- function(fileName) {
   return(ret)
 }
 
-#' Read a gene from BGEN file and return a genotype matrix
+#' Read from binary PLINK file and return a genotype matrix
 #'
 #' @param plinkFileObject a PlinkFileObject obtained by openPlink()
 #' @param sampleIndex integer, 1-basd, index of samples to be extracted
@@ -1338,7 +1338,6 @@ openPlink <- function(fileName) {
 #' fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
 #' cfh <- readSingleChromosomeVCFToMatrixByRange(fileName, "1:196621007-196716634")
 readSingleChromosomeVCFToMatrixByRange <- function(fileName, range, indexFileName = NULL) {
-
   stopifnot(file.exists(fileName), length(fileName) == 1)
   stopifnot(all(isTabixRange(range)))
   fileName <- path.expand(fileName)

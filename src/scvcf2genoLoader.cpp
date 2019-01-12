@@ -29,53 +29,68 @@ SEXP impl_readSingleChromosomeVCFToMatrixByRange(SEXP arg_fileName,
   std::vector<std::string> sampleNames(fd.begin() + 9, fd.end());
   const int numSample = sampleNames.size();
   REprintf("Inferred %d samples from header\n", numSample);
-  
+
   int nGene = FLAG_range.size();
   Rprintf("%d region to be extracted.\n", nGene);
   PROTECT(ans = allocVector(VECSXP, nGene));
   setListNames(FLAG_range, &ans);
 
+  std::string chromName;
+  unsigned int chromPosBeg;
+  unsigned int chromPosEnd;
+  std::vector<std::string> ranges;
   for (int i = 0; i < nGene; ++i) {
-    RangeList rl;
-    rl.addRangeList(FLAG_range[i]);
-    int chromPosBeg = rl.begin().getBegin();
-    int chromPosEnd = rl.begin().getEnd();
+    stringTokenize(FLAG_range[i], ',', &ranges);
+
+    // RangeList rl;
+    // rl.addRangeList(FLAG_range[i]);
+    // int chromPosBeg = rl.begin().getBegin();
+    // int chromPosEnd = rl.begin().getEnd();
     // REprintf("query position %d-%d\n", chromPosBeg, chromPosEnd);
-
-    int nVariant = sc.query(chromPosBeg, chromPosEnd , &offset);
-    if (nVariant <= 0) {
-      REprintf("Cannot find the variant!\n");
-      continue;
-    }
-
-    // create double array
+    std::vector<double> buf;
+    int cumNumVariant = 0;
     std::vector<std::string> markerNames;
-    SEXP val;
-    PROTECT(val = allocVector(REALSXP, numSample * nVariant));
-    double* pVal = REAL(val);
-    
-    if (sc.readLine(offset, &line) < 0) {
-      REprintf("Cannot readline()!\n");
-    }
-    stringTokenize(line, '\t', &fd);
-    markerNames.push_back(fd[1]);
-    for (size_t j = 9; j != fd.size(); ++j) {
-      *pVal++ = (fd[j][0] - '0') + (fd[j][2] - '0');
-    }
-    for (int remainVariant = nVariant - 1; remainVariant > 0; --remainVariant) {
-      if (sc.nextLine(&line) < 0) {
+
+    for (size_t j = 0; j != ranges.size(); ++j) {
+      parseRangeFormat(ranges[j], &chromName, &chromPosBeg, &chromPosEnd);
+      int nVariant = sc.query(chromPosBeg, chromPosEnd, &offset);
+      if (nVariant <= 0) {
+        REprintf("Cannot find the variant!\n");
+        continue;
+      }
+
+      // create double array
+      // SEXP val;
+      // PROTECT(val = allocVector(REALSXP, numSample * nVariant));
+      // double* pVal = REAL(val);
+
+      if (sc.readLine(offset, &line) < 0) {
         REprintf("Cannot readline()!\n");
       }
       stringTokenize(line, '\t', &fd);
       markerNames.push_back(fd[1]);
       for (size_t j = 9; j != fd.size(); ++j) {
-        *pVal++ = (fd[j][0] - '0') + (fd[j][2] - '0');
+        // TODO: marker rigorous check on genotype format is needed
+        buf.push_back((fd[j][0] - '0') + (fd[j][2] - '0'));
       }
+      for (int remainVariant = nVariant - 1; remainVariant > 0;
+           --remainVariant) {
+        if (sc.nextLine(&line) < 0) {
+          REprintf("Cannot readline()!\n");
+        }
+        stringTokenize(line, '\t', &fd);
+        markerNames.push_back(fd[1]);
+        for (size_t j = 9; j != fd.size(); ++j) {
+          // TODO: marker rigorous check on genotype format is needed
+          buf.push_back((fd[j][0] - '0') + (fd[j][2] - '0'));
+        }
+      }
+      cumNumVariant += nVariant;
     }
-    if ((pVal - REAL(val)) != numSample * nVariant) {
-      REprintf("store value dimension does not match!\n");
-    }
-    setDim(numSample, nVariant, val);
+    SEXP val;
+    PROTECT(val = allocVector(REALSXP, numSample * cumNumVariant));
+    memcpy(REAL(val), buf.data(), sizeof(double) * numSample * cumNumVariant);
+    setDim(numSample, cumNumVariant, val);
     setDimNames(sampleNames, markerNames, val);
     UNPROTECT(1);
     SET_VECTOR_ELT(ans, i, val);

@@ -2,22 +2,22 @@
 % Please edit documentation in R/seqminer.R
 \name{readPlinkToMatrixByIndex}
 \alias{readPlinkToMatrixByIndex}
-\title{Read a gene from BGEN file and return a genotype matrix}
+\title{Read from binary PLINK file and return a genotype matrix}
 \usage{
-readPlinkToMatrixByIndex(plinkFileObject, sampleIndex, markerIndex)
+readPlinkToMatrixByIndex(plinkFilePrefix, sampleIndex, markerIndex)
 }
 \arguments{
-\item{plinkFileObject}{a PlinkFileObject obtained by openPlink()}
-
 \item{sampleIndex}{integer, 1-basd, index of samples to be extracted}
 
 \item{markerIndex}{integer, 1-basd, index of markers to be extracted}
+
+\item{plinkFileObject}{a PlinkFileObject obtained by openPlink()}
 }
 \value{
 genotype matrix, marker by sample
 }
 \description{
-Read a gene from BGEN file and return a genotype matrix
+Read from binary PLINK file and return a genotype matrix
 }
 \examples{
 ## these indice are nonsynonymous markers for 1:196621007-196716634",

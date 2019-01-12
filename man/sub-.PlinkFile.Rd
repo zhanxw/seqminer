@@ -2,7 +2,7 @@
 % Please edit documentation in R/seqminer.R
 \name{[.PlinkFile}
 \alias{[.PlinkFile}
-\title{Read a gene from BGEN file and return a genotype matrix}
+\title{Read from binary PLINK file and return a genotype matrix}
 \usage{
 \method{[}{PlinkFile}(plinkFileObject, sampleIndex, markerIndex)
 }
@@ -17,7 +17,7 @@
 genotype matrix, marker by sample
 }
 \description{
-Read a gene from BGEN file and return a genotype matrix
+Read from binary PLINK file and return a genotype matrix
 }
 \examples{
 ## these indice are nonsynonymous markers for 1:196621007-196716634",
