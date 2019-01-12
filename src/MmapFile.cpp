@@ -6,6 +6,8 @@
 // #include <R_ext/Print.h>
 
 #include <fcntl.h>   // O_RDONLY
+#define __STDC_LIMIT_MACROS
+#define __STDC_CONSTANT_MACROS
 #include <stdint.h>  // SIZE_MAX
 
 #ifdef _WIN32
