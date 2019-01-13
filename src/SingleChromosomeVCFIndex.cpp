@@ -12,11 +12,21 @@
 #include "StringUtil.h"
 #include "bgzf.h"
 
+struct Record {
+  int64_t pos;
+  int64_t offset;
+  bool operator<(Record& o) { return (pos < o.pos); }
+};
+
+bool comparator(const Record& a, const Record& b) { return a.pos < b.pos; }
+
 SingleChromosomeVCFIndex::SingleChromosomeVCFIndex(
     const std::string& vcfFile, const std::string& indexFile) {
   vcfFile_ = vcfFile;
   indexFile_ = indexFile;
   fVcfFile_ = bgzf_open(vcfFile_.c_str(), "rb");
+  data_ = NULL;
+  mmapFile_ = NULL;
   str = (kstring_t*)calloc(1, sizeof(kstring_t));
 }
 
@@ -30,6 +40,18 @@ void SingleChromosomeVCFIndex::close() {
   if (fVcfFile_) {
     bgzf_close(fVcfFile_);
     fVcfFile_ = NULL;
+  }
+  closeIndex();
+}
+
+void SingleChromosomeVCFIndex::closeIndex() {
+  if (mmapFile_) {
+    delete mmapFile_;
+    data_ = NULL;
+  }
+  if (data_) {
+    delete[](uint8_t*) data_;
+    data_ = NULL;
   }
 }
 
@@ -111,13 +133,48 @@ int SingleChromosomeVCFIndex::createIndex() {
   return 0;
 }
 
-struct Record {
-  int64_t pos;
-  int64_t offset;
-  bool operator<(Record& o) { return (pos < o.pos); }
-};
+int SingleChromosomeVCFIndex::openIndex() {
+  closeIndex();
+  // read everything
+  size_t fsize = getFileSize(indexFile_.c_str());
+  REprintf("fsize = %ld\n", (long int)fsize);
+  data_ = new uint8_t[fsize];
+  FILE* fp = fopen(indexFile_.c_str(), "rb");
+  if (fread(data_, sizeof(uint8_t), fsize, fp) != fsize) {
+    REprintf("Read incomplete index\n");
+    return -1;
+  }
 
-bool comparator(const Record& a, const Record& b) { return a.pos < b.pos; }
+  // verify file integrity
+  int64_t* d = (int64_t*) data_;
+  if (fsize != sizeof(Record)  * (1L + d[1])) {
+    REprintf("Check file integrity!\n");
+    return -1;
+  }
+  return 0;
+}
+
+int SingleChromosomeVCFIndex::mapIndex() {
+  closeIndex();
+  // read everything
+  mmapFile_ = new MmapFile;
+  MmapFile& mmapFile = *mmapFile_;
+  if (mmapFile.open(indexFile_.c_str())) {
+    return -1;
+  }
+  size_t Nrecord = mmapFile.getFileSize() / 16 -
+                   1;  // -1: skip first block, 16: two bytes for uint64_t
+  data_ = mmapFile.data;
+
+  // verify file integrity
+  int64_t* d = (int64_t*)data_;
+  if (Nrecord != d[1]) {
+    REprintf("Check file integrity!\n");
+    return -1;
+  }
+  return 0;
+}
+
 
 int SingleChromosomeVCFIndex::query(int chromPos, int64_t* pVirtualOffset) {
   return this->query(chromPos, chromPos, pVirtualOffset);
@@ -125,20 +182,19 @@ int SingleChromosomeVCFIndex::query(int chromPos, int64_t* pVirtualOffset) {
 
 int SingleChromosomeVCFIndex::query(int chromPosBeg, int chromPosEnd,
                                     int64_t* voffset) {
+  if (!data_) {
+    REprintf("open index first!\n");
+    return -1;
+  }
+
   if (!voffset) {
     return -1;
   }
   REprintf("query [%d, %d]\n", chromPosBeg, chromPosEnd);
 
-  const char* fIndex = indexFile_.c_str();
-  // int64_t pos = chromPos;
-
-  // read everything
-  MmapFile mmapFile;
-  mmapFile.open(fIndex);
-  size_t Nrecord = mmapFile.getFileSize() / 16 -
-                   1;  // -1: skip first block, 16: two bytes for uint64_t
-  Record* r = (Record*)mmapFile.data;
+  Record* r = (Record*)data_;
+  const int64_t Nrecord = r[0].offset;
+  
   ++r;  // skip the first block, as first block is (#sample, #marker)
 
   // binary search for file position

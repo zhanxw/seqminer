@@ -4,6 +4,8 @@
 #include <string>
 #include "bgzf.h"
 
+class MmapFile;
+
 class SingleChromosomeVCFIndex {
  public:
   SingleChromosomeVCFIndex(const std::string& vcfFile,
@@ -11,9 +13,18 @@ class SingleChromosomeVCFIndex {
   virtual ~SingleChromosomeVCFIndex();
 
   void close();
+  void closeIndex();
+  
   // @return 0 for success
   int createIndex();
+  
+  
+  // open index
+  int openIndex();
 
+  // open index via mmap
+  int mapIndex();
+  
   // @return 1 if found, 0 not found, -1 if error
   int query(int chromPos, int64_t* voffset);
 
@@ -28,6 +39,8 @@ class SingleChromosomeVCFIndex {
  private:
   std::string vcfFile_;  // must be bgzFile
   std::string indexFile_;
+  void* data_; // store indices
+  MmapFile* mmapFile_; 
   kstring_t* str;
   BGZF* fVcfFile_;
 };

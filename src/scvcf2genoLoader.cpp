@@ -12,6 +12,9 @@ SEXP impl_readSingleChromosomeVCFToMatrixByRange(SEXP arg_fileName,
   std::vector<std::string> FLAG_range;
   extractStringArray(arg_range, &FLAG_range);
   SingleChromosomeVCFIndex sc(FLAG_fileName, FLAG_indexFileName);
+  if (sc.openIndex()) {
+    REprintf("failed to open index!\n");
+  }
   SEXP ans;
   // read header to get sample names
   int64_t offset;
