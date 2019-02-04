@@ -235,11 +235,11 @@ int SingleChromosomeVCFIndex::readLine(int64_t offset, std::string* line) {
   if (ret <= 0) {
     REprintf("getline error, ret = %d!\n", ret);
   }
-  for (size_t i = 0; i < s.l; ++i) {
-    if (i >= 50) break;
-    REprintf("%c", s.s[i]);
-  }
-  REprintf("\n");
+  // for (size_t i = 0; i < s.l; ++i) {
+  //   if (i >= 50) break;
+  //   REprintf("%c", s.s[i]);
+  // }
+  // REprintf("\n");
 
   *line = s.s;
 
@@ -252,11 +252,11 @@ int SingleChromosomeVCFIndex::nextLine(std::string* line) {
   if (ret <= 0) {
     REprintf("getline error, ret = %d!\n", ret);
   }
-  for (size_t i = 0; i < s.l; ++i) {
-    if (i >= 50) break;
-    REprintf("%c", s.s[i]);
-  }
-  REprintf("\n");
+  // for (size_t i = 0; i < s.l; ++i) {
+  //   if (i >= 50) break;
+  //   REprintf("%c", s.s[i]);
+  // }
+  // REprintf("\n");
 
   *line = s.s;
   return s.l;
