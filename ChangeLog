@@ -1,3 +1,7 @@
+2019-02-23  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Fix a bug related to query BGenIndex file (use int64) 
+
 2019-01-09  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Support single chromosome index

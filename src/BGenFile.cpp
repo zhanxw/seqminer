@@ -140,7 +140,7 @@ BGenFile::BGenFile(const std::string& fn) : var(this->N), autoMergeRange(false) 
 
 bool BGenFile::readRecord() {
   if (mode == BGEN_RANGE_MODE) {
-    int file_pos, bytes;
+    long int file_pos, bytes;
     if (index.next(&file_pos, &bytes)) {
       fseek(fp, file_pos, SEEK_SET);
     } else {
