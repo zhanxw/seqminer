@@ -2,7 +2,7 @@
 % Please edit documentation in R/seqminer.R
 \name{readSingleChromosomeVCFToMatrixByRange}
 \alias{readSingleChromosomeVCFToMatrixByRange}
-\title{Read a gene from VCF file and return a genotype matrix}
+\title{Read a range from VCF file and return a genotype matrix}
 \usage{
 readSingleChromosomeVCFToMatrixByRange(fileName, range,
   indexFileName = NULL)
@@ -18,7 +18,7 @@ readSingleChromosomeVCFToMatrixByRange(fileName, range,
 genotype matrix
 }
 \description{
-Read a gene from VCF file and return a genotype matrix
+Read a range from VCF file and return a genotype matrix
 }
 \examples{
 fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")

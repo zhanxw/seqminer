@@ -18,7 +18,6 @@ class SingleChromosomeVCFIndex {
   // @return 0 for success
   int createIndex();
   
-  
   // open index
   int openIndex();
 

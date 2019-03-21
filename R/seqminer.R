@@ -1326,7 +1326,7 @@ openPlink <- function(fileName) {
 }
 
 
-#' Read a gene from VCF file and return a genotype matrix
+#' Read a range from VCF file and return a genotype matrix
 #'
 #' @param fileName character, represents an input VCF file (Bgzipped, with Tabix index)
 #' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200
@@ -1378,3 +1378,59 @@ createSingleChromosomeVCFIndex <- function(fileName, indexFileName = NULL) {
   storage.mode(indexFileName) <- "character"
   .Call("createSingleChromosomeVCFIndex", fileName, indexFileName, PACKAGE="seqminer");
 }
+
+
+#' Read a range from BCF file and return a genotype matrix
+#'
+#' @param fileName character, represents an input BCF file (Bgzipped, with Tabix index)
+#' @param range character, a text indicating which range in the BCF file to extract. e.g. 1:100-200
+#' @param indexFileName character, index file, by default, it s `fileName`.scIdx
+#' @return genotype matrix
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' fileName = system.file("vcf/all.anno.filtered.extract.headerFixed.bcf.gz", package = "seqminer")
+#' cfh <- readSingleChromosomeBCFToMatrixByRange(fileName, "1:196621007-196716634")
+readSingleChromosomeBCFToMatrixByRange <- function(fileName, range, indexFileName = NULL) {
+  stopifnot(file.exists(fileName), length(fileName) == 1)
+  stopifnot(all(isTabixRange(range)))
+  fileName <- path.expand(fileName)
+
+  if (is.null(indexFileName)) {
+    indexFileName = sprintf("%s.scIdx", fileName)
+  }
+  stopifnot(file.exists(indexFileName))
+
+  storage.mode(fileName) <- "character"
+  storage.mode(indexFileName) <- "character"
+  storage.mode(range)    <- "character"
+  .Call("readSingleChromosomeBCFToMatrixByRange", fileName, indexFileName, range, PACKAGE="seqminer");
+}
+
+#' Create a single chromosome index
+#'
+#' @param fileName character, represents an input BCF file (Bgzipped, with Tabix index)
+#' @param indexFileName character, by default, create `fileName`.scIdx
+#' @return indexFileName if success, or NULL is failed
+#' @export
+#' @seealso http://zhanxw.com/seqminer/ for online manual and examples
+#' @examples
+#' fileName = system.file("vcf/all.anno.filtered.extract.headerFixed.bcf.gz", package = "seqminer")
+#' cfh <- createSingleChromosomeBCFIndex(fileName)
+createSingleChromosomeBCFIndex <- function(fileName, indexFileName = NULL) {
+  stopifnot(local.file.exists(fileName), length(fileName) == 1)
+
+  if (is.null(indexFileName)) {
+    indexFileName = sprintf("%s.scIdx", fileName)
+  }
+  if (file.exists(indexFileName)) {
+    warning("index file exists, please remove it before re-creating one")
+    return(NULL)
+  }
+
+  storage.mode(fileName) <- "character"
+  storage.mode(indexFileName) <- "character"
+  .Call("createSingleChromosomeBCFIndex", fileName, indexFileName, PACKAGE="seqminer");
+}
+
+

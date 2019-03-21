@@ -18,7 +18,7 @@ struct Record {
   bool operator<(Record& o) { return (pos < o.pos); }
 };
 
-bool comparator(const Record& a, const Record& b) { return a.pos < b.pos; }
+static bool comparator(const Record& a, const Record& b) { return a.pos < b.pos; }
 
 SingleChromosomeVCFIndex::SingleChromosomeVCFIndex(
     const std::string& vcfFile, const std::string& indexFile) {
@@ -55,6 +55,14 @@ void SingleChromosomeVCFIndex::closeIndex() {
   }
 }
 
+/**
+ * Create single chromosome index file
+ * the file content is a 2-column matrix of int64_t type
+ * line1:  num_sample  num_marker
+ * line2:  0           bgzf_offset_for_#CHROM_line
+ * line3:  var_1_pos   bgzf_offset_for_var_1
+ * ...
+ */
 int SingleChromosomeVCFIndex::createIndex() {
   const char* fn = vcfFile_.c_str();
   BGZF* fp = fVcfFile_;  // bgzf_open(fn, "rb");
@@ -147,8 +155,9 @@ int SingleChromosomeVCFIndex::openIndex() {
 
   // verify file integrity
   int64_t* d = (int64_t*) data_;
-  if (fsize != sizeof(Record)  * (1L + d[1])) {
+  if (fsize != sizeof(Record)  * (2L + d[1])) {
     REprintf("Check file integrity!\n");
+    REprintf("d = %ld %ld fsize = %ld\n", d[0], d[1], (int)fsize);
     return -1;
   }
   return 0;
