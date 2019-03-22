@@ -28,7 +28,7 @@ class BCFHeader {
       size_t end = s.rfind(">");
       if (begin == std::string::npos ||
           end == std::string::npos) {
-        fprintf(stderr, "Wrong intput string during parsing!\n");
+        REprintf( "Wrong intput string during parsing!\n");
       }
       std::string ss = s.substr(begin + 1, end - begin - 1);
       // printf("ss = %s\n", ss.c_str());
@@ -36,7 +36,7 @@ class BCFHeader {
       ss = ss.substr(begin, ss.size() - begin);
       if (ss.substr(0, key.size()) != key ||
           ss[key.size()] != '=')  {
-        fprintf(stderr, "Cannot find the key\n");
+        REprintf( "Cannot find the key\n");
       }
       ss = ss.substr(key.size() + 1, ss.size() - key.size() - 1);
       // printf("ss = %s\n", ss.c_str());
@@ -99,7 +99,7 @@ class BCFHeader {
     BCFHeaderParser parser;
     for (size_t i = 0; i != lines.size(); ++i) {
       if (parser.parse(lines[i]) < 0) {
-        fprintf(stderr, "Parser encountered error!\n");
+        REprintf( "Parser encountered error!\n");
         return -1;
       }
       if (parser.key == "contig") {
