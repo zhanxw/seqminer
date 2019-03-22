@@ -212,11 +212,11 @@ int SingleChromosomeVCFIndex::query(int chromPosBeg, int chromPosEnd,
   query.pos = chromPosBeg;
   // Comparator comparator;
   Record* lb =
-      std::lower_bound(r, r + Nrecord, query,
+      std::lower_bound(r, r + Nrecord + 1, query,
                        comparator);  // r[lb].pos >= query.pos = chromPosBeg
   query.pos = chromPosEnd;
   Record* ub =
-      std::upper_bound(lb, r + Nrecord, query,
+      std::upper_bound(lb, r + Nrecord + 1, query,
                        comparator);  // r[ub].pos > query.pos = chromPosEnd
   REprintf("Found %d results\n", (int)(ub - lb));
   for (Record* pi = lb; pi != ub; ++pi) {

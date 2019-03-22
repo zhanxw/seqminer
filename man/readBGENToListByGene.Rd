@@ -14,7 +14,7 @@ readBGENToListByGene(fileName, geneFile, geneName)
 \item{geneName}{character vector, which gene(s) to be extracted}
 }
 \value{
-a list of genes, and each elements has specified vcfColumn, vcfinfo, vcfIndv
+a list of chrom, pos, varid, rsid, alleles, isPhased, probability, sampleId
 }
 \description{
 Read information from BGEN file in a given range and return a list

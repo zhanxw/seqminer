@@ -1138,7 +1138,7 @@ readBGENToMatrixByGene <- function(fileName, geneFile, geneName) {
 #'
 #' @param fileName character, represents an input BGEN file (Bgzipped, with Tabix index)
 #' @param range character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200
-#' @return a list of genes, and each elements has specified vcfColumn, vcfinfo, vcfIndv
+#' @return a list of chrom, pos, varid, rsid, alleles, isPhased, probability, sampleId
 #' @export
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
 #' @examples
@@ -1160,7 +1160,7 @@ readBGENToListByRange <- function(fileName, range) {
 #' @param fileName character, represents an input BGEN file (Bgzipped, with Tabix index)
 #' @param geneFile character, a text file listing all genes in refFlat format
 #' @param geneName character vector, which gene(s) to be extracted
-#' @return a list of genes, and each elements has specified vcfColumn, vcfinfo, vcfIndv
+#' @return a list of chrom, pos, varid, rsid, alleles, isPhased, probability, sampleId
 #' @export
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
 #' @examples

@@ -12,7 +12,7 @@ readBGENToListByRange(fileName, range)
 \item{range}{character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200}
 }
 \value{
-a list of genes, and each elements has specified vcfColumn, vcfinfo, vcfIndv
+a list of chrom, pos, varid, rsid, alleles, isPhased, probability, sampleId
 }
 \description{
 Read information from BGEN file in a given range and return a list

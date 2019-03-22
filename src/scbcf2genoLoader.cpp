@@ -71,10 +71,10 @@ SEXP impl_readSingleChromosomeBCFToMatrixByRange(SEXP arg_fileName,
     REprintf("Encounted fatal error!\n"); return ans; // exit(1);
   }
   s = s.substr(ptr_chrom_line, s.size() - ptr_chrom_line);
-  if (s.back() == '\n') {
+  // load sample names
+  while (s.back() == '\n' || s.back() == '\0') {
     s.resize(s.size() - 1);
   } 
-  // load sample names
   stringTokenize(s, "\t", &bcfHeader.sample_names);
   bcfHeader.sample_names.erase(bcfHeader.sample_names.begin(), bcfHeader.sample_names.begin() + 9);
   
@@ -298,9 +298,9 @@ int parseBCFVariant(const BCFHeader& bcfHeader,
     }
   }
   
-  int32_t pos;
+  int32_t pos; // 0-based position
   memcpy(&pos, p+4, 4);
-  markerNames->push_back(toString(pos));
+  markerNames->push_back(toString(pos + 1)); // report 1-based position
 
   return 0;
 }

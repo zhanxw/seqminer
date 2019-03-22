@@ -109,6 +109,9 @@ int SingleChromosomeBCFIndex::createIndex() {
   s.resize(l_text - before_chrom_size);
   int64_t after_chrom_size = bgzf_read(fp, (void*) s.data(), l_text - before_chrom_size);
   // load sample names
+  while (s.back() == '\n' || s.back() == '\0') {
+    s.resize(s.size() - 1);
+  }
   stringTokenize(s, "\t", &bcfHeader.sample_names);
   const int64_t num_sample = (int)bcfHeader.sample_names.size() - 9; // vcf header has 9 columns CHROM...FORMAT before actual sample names
   Rprintf("sample size = %ld\n", num_sample);
@@ -176,7 +179,7 @@ int SingleChromosomeBCFIndex::openIndex() {
     REprintf("Read incomplete index\n");
     return -1;
   }
-
+  
   // verify file integrity
   int64_t* d = (int64_t*) data_;
   if (fsize != sizeof(Record)  * (2L + d[1])) { // d[0, 1]: number of sample; number of marker
@@ -214,15 +217,16 @@ int SingleChromosomeBCFIndex::query(int chromPosBeg, int chromPosEnd,
   query.pos = chromPosBeg;
   // Comparator comparator;
   Record* lb =
-      std::lower_bound(r, r + Nrecord, query,
+      std::lower_bound(r, r + Nrecord + 1, query,
                        comparator);  // r[lb].pos >= query.pos = chromPosBeg
   query.pos = chromPosEnd;
   Record* ub =
-      std::upper_bound(lb, r + Nrecord, query,
+      std::upper_bound(lb, r + Nrecord + 1, query,
                        comparator);  // r[ub].pos > query.pos = chromPosEnd
   REprintf("Found %d results\n", (int)(ub - lb));
   for (Record* pi = lb; pi != ub; ++pi) {
-    // REprintf("%ld %ld\n", pi->pos, pi->offset);
+    REprintf("%ld %ld\n", pi->pos, pi->offset);
+    REprintf("%ld %ld\n", ub->pos, ub->offset);
     *voffset = lb->offset;
     break;
   }

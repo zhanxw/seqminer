@@ -1,6 +1,5 @@
 ## follow http://adv-r.had.co.nz/Testing.html
 print(sprintf("Test seqminer [version %s]", packageVersion("seqminer")))
-
 print("Platform")
 print(str(.Platform))
 
