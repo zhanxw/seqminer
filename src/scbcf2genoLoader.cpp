@@ -129,9 +129,9 @@ SEXP impl_readSingleChromosomeBCFToMatrixByRange(SEXP arg_fileName,
     memcpy(REAL(val), buf.data(), sizeof(double) * numSample * cumNumVariant);
     setDim(numSample, cumNumVariant, val);
     Rprintf("sampleNames.size() = %d, markerNames.size() = %d\n", (int) sampleNames.size(), (int) markerNames.size());
-    for(int i = 0; i < sampleNames.size(); ++i) {
-      printf("%d = %s\n", i, sampleNames[i].c_str());
-    }
+    // for(int i = 0; i < sampleNames.size(); ++i) {
+    //   Rprintf("%d = %s\n", i, sampleNames[i].c_str());
+    // }
     setDimNames(sampleNames, markerNames, val);
     UNPROTECT(1);
     SET_VECTOR_ELT(ans, i, val);
