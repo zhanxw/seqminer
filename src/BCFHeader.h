@@ -122,19 +122,19 @@ class BCFHeader {
           header_type->push_back(parser.type);
           header_desc->push_back(parser.desc);
         } else if (parser.idx < (int) header_id->size()) {
-          printf("BCF index (IDX=) is reused for [%s] with IDX=%d\n", parser.id.c_str(), parser.idx);
+          Rprintf("BCF index (IDX=) is reused for [%s] with IDX=%d\n", parser.id.c_str(), parser.idx);
           (*header_id)[parser.idx] = parser.id;
           (*header_number)[parser.idx] = parser.number;
           (*header_type)[parser.idx]= parser.type;
           (*header_desc)[parser.idx]= parser.desc;
         } else {
-          printf("BCF index is invalid for [%s] with IDX=%d, skipped!\n", parser.id.c_str(), parser.idx);
+          Rprintf("BCF index is invalid for [%s] with IDX=%d, skipped!\n", parser.id.c_str(), parser.idx);
         }
       } else {
         // do nothing
       }
     }
-    printf("Total contig parse = %d, total header index used = %d\n",
+    Rprintf("Total contig parse = %d, total header index used = %d\n",
            (int) header_contig_id->size(),
            (int) header_id->size());
     return 0;
