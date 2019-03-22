@@ -62,17 +62,17 @@ int SingleChromosomeBCFIndex::createIndex() {
   // check magic number
   char magic[5];
   if (5 != bgzf_read(fp, magic, 5)) {
-    exit(1);
+    return -1; // exit(1);
   }
   if (!(magic[0] == 'B' && magic[1] == 'C' && magic[2] == 'F' &&
         magic[3] == 2 && (magic[4] == 1 || magic[4] == 2))) {
-    exit(1);
+    return -1; // exit(1);
   }
 
   // read header
   uint32_t l_text;
   if (4 != bgzf_read(fp, &l_text, 4)) {
-    exit(1);
+    return -1; // exit(1);
   }
   Rprintf("l_text = %d\n", l_text);
 
@@ -89,7 +89,8 @@ int SingleChromosomeBCFIndex::createIndex() {
                   &bcfHeader.header_number,
                   &bcfHeader.header_type,
                   &bcfHeader.header_description)) {
-    REprintf( "Parse header failed!\n"); exit(1);
+    REprintf( "Parse header failed!\n");
+    return -1; // exit(1);
   }
 
   // locate #CHROM line
@@ -97,7 +98,7 @@ int SingleChromosomeBCFIndex::createIndex() {
   size_t ptr_chrom_line = s.find("#CHROM"); // the index of "#CHROM", also the size between beginning of header to '#CHROM'
   if (ptr_chrom_line == std::string::npos) {
     REprintf( "Cannot find the \"#CHROM\" line!\n");
-    exit(1);
+    return -1; // exit(1);
   }
   Rprintf("offset_header = %d\n", (int) ptr_chrom_line);
 
@@ -115,7 +116,7 @@ int SingleChromosomeBCFIndex::createIndex() {
   // quality check
   if (bgzf_offset_after_header != bgzf_tell(fp)) {
     REprintf( "Messed up bgzf header\n");
-    exit(1);
+    return -1; // exit(1);
   }
 
   // create index file

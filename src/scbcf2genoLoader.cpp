@@ -34,17 +34,17 @@ SEXP impl_readSingleChromosomeBCFToMatrixByRange(SEXP arg_fileName,
   // check magic number
   char magic[5];
   if (5 != bgzf_read(fp, magic, 5)) {
-    exit(1);
+    REprintf("Encounted fatal error!\n"); return ans; // exit(1);
   }
   if (!(magic[0] == 'B' && magic[1] == 'C' && magic[2] == 'F' &&
         magic[3] == 2 && (magic[4] == 1 || magic[4] == 2))) {
-    exit(1);
+    REprintf("Encounted fatal error!\n"); return ans; // exit(1);
   }
 
   // read header to get sample names
   uint32_t l_text;
   if (4 != bgzf_read(fp, &l_text, 4)) {
-    exit(1);
+    REprintf("Encounted fatal error!\n"); return ans; // exit(1);
   }
   Rprintf("l_text = %d\n", l_text);
 
@@ -61,14 +61,14 @@ SEXP impl_readSingleChromosomeBCFToMatrixByRange(SEXP arg_fileName,
                   &bcfHeader.header_number,
                   &bcfHeader.header_type,
                   &bcfHeader.header_description)) {
-    REprintf( "Parse header failed!\n"); exit(1);
+    REprintf( "Parse header failed!\n"); REprintf("Encounted fatal error!\n"); return ans; // exit(1);
   }
 
   // locate #CHROM line
   size_t ptr_chrom_line = s.find("#CHROM"); // the index of "#CHROM", also the size between beginning of header to '#CHROM'
   if (ptr_chrom_line == std::string::npos) {
     REprintf( "Cannot find the \"#CHROM\" line!\n");
-    exit(1);
+    REprintf("Encounted fatal error!\n"); return ans; // exit(1);
   }
   s = s.substr(ptr_chrom_line, s.size() - ptr_chrom_line);
   if (s.back() == '\n') {
@@ -164,7 +164,7 @@ int readOneInteger(const char* fp, int* len) {
   fp += nRead;
   // read the next integer
   // if (1 != bgzf_read(fp, &val_type, 1)) {
-  //   fprintf(stderr, "Wrong read!\n"); exit(1);
+  //   fprintf(stderr, "Wrong read!\n"); REprintf("Encounted fatal error!\n"); return ans; // exit(1);
   // }
   switch (val_type & 0x0F) {
     case 1:  // 8 bit int
@@ -195,12 +195,12 @@ int readOneInteger(const char* fp, int* len) {
       // }
       break;
     default:
-      REprintf("Wrong type!\n"); exit(1);
+      REprintf("Wrong type!\n"); REprintf("Encounted fatal error!\n"); return retVal; // exit(1);
   }
   retVal += nRead;
   fp += nRead;
   if (val_type >> 4  != 1) {
-    REprintf("Wrong array dimension!\n"); exit(1);
+    REprintf("Wrong array dimension!\n"); REprintf("Encounted fatal error!\n"); return retVal; // exit(1);
   }
   return retVal;
 }
@@ -215,10 +215,10 @@ int readArray(const char* fp, const int type, int* len) {
   retVal += nRead;
   fp += nRead;
   // if (1 != bgzf_read(fp, &val_type, 1)) {
-  //   fprintf(stderr, "Wrong read!\n"); exit(1);
+  //   fprintf(stderr, "Wrong read!\n"); REprintf("Encounted fatal error!\n"); return ans; // exit(1);
   // }
   if ( (val_type & 0x0F) != type) {
-    REprintf("Wrong type %d != %d!\n", val_type & 0x0F, type); exit(1);
+    REprintf("Wrong type %d != %d!\n", val_type & 0x0F, type); REprintf("Encounted fatal error!\n"); return retVal; // exit(1);
   }
   uint8_t val_len = (val_type >> 4);
   if (val_len == 0) { // missing
@@ -240,7 +240,7 @@ int readInt(const char* fp, std::vector<int8_t>* ret) {
   int len;
   nRead = readArray(fp, 1, &len); // 1 means 8bit integer
   if (nRead < 0) { 
-    REprintf("Wrong read array!\n"); exit(1);
+    REprintf("Wrong read array!\n"); REprintf("Encounted fatal error!\n"); return retVal; // exit(1);
   }
   retVal += nRead;
   fp += nRead;
@@ -251,7 +251,7 @@ int readInt(const char* fp, std::vector<int8_t>* ret) {
   fp += nRead;
   retVal += nRead;
   // if ((ssize_t)(len*sizeof(int8_t)) != bgzf_read(fp, ) ) {
-  //   fprintf(stderr, "Wrong read string!\n"); exit(1);
+  //   fprintf(stderr, "Wrong read string!\n"); REprintf("Encounted fatal error!\n"); return ans; // exit(1);
   // }
   return retVal;
 }
@@ -269,6 +269,10 @@ int parseBCFVariant(const BCFHeader& bcfHeader,
   // 1. check GT tag
   std::vector<int8_t> format_key;
   pIndv += readInt(pIndv, &format_key);
+  if (bcfHeader.header_id[format_key[0]] != "GT") {
+    REprintf("The first element in FORMAT is not GT!\n");
+    return -1;
+  }
   // Rprintf("format key = %d [%s], number = [%s], type = [%s], description = [%s] \n",
   //        format_key[0],
   //        bcfHeader.header_id[format_key[0]].c_str(),
