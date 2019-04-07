@@ -104,6 +104,9 @@ SEXP impl_readSingleChromosomeBCFToMatrixByRange(SEXP arg_fileName,
 
     for (size_t j = 0; j != ranges.size(); ++j) {
       parseRangeFormat(ranges[j], &chromName, &chromPosBeg, &chromPosEnd);
+      // note, bcf index is 0-based, but query is 1-based
+      --chromPosBeg;
+      --chromPosEnd;
       int nVariant = sc.query(chromPosBeg, chromPosEnd, &offset);
       if (nVariant <= 0) {
         REprintf("Cannot find the variant!\n");

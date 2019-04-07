@@ -9,9 +9,9 @@ getCovPair(covData, rangeList1, rangeList2)
 \arguments{
 \item{covData}{a covariance matrix with positions as dimnames}
 
-\item{rangeList1}{character specify a range}
+\item{rangeList1}{character specify a range, 1-based index}
 
-\item{rangeList2}{character specify a range}
+\item{rangeList2}{character specify a range, 1-based index}
 }
 \value{
 a covariance matrix

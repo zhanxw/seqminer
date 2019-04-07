@@ -9,7 +9,7 @@ readBGENToMatrixByRange(fileName, range)
 \arguments{
 \item{fileName}{character, represents an input BGEN file (Bgzipped, with Tabix index)}
 
-\item{range}{character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200}
+\item{range}{character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200, 1-based index}
 }
 \value{
 genotype matrix

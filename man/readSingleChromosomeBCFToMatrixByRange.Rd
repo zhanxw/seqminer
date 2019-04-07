@@ -10,7 +10,7 @@ readSingleChromosomeBCFToMatrixByRange(fileName, range,
 \arguments{
 \item{fileName}{character, represents an input BCF file (Bgzipped, with Tabix index)}
 
-\item{range}{character, a text indicating which range in the BCF file to extract. e.g. 1:100-200}
+\item{range}{character, a text indicating which range in the BCF file to extract. e.g. 1:100-200, 1-based index}
 
 \item{indexFileName}{character, index file, by default, it s `fileName`.scIdx}
 }

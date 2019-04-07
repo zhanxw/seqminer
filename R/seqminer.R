@@ -156,7 +156,7 @@ hasIndex <- function(fileName) {
 #' Read a gene from VCF file and return a genotype matrix
 #'
 #' @param fileName character, represents an input VCF file (Bgzipped, with Tabix index)
-#' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200
+#' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200, 1-based index
 #' @param annoType character, annotated types you would like to extract, such as "Nonsynonymous", "Synonymous". This can be left empty.
 #' @return genotype matrix
 #' @export
@@ -205,7 +205,7 @@ readVCFToMatrixByGene <- function(fileName, geneFile, geneName, annoType) {
 #' Read information from VCF file in a given range and return a list
 #'
 #' @param fileName character, represents an input VCF file (Bgzipped, with Tabix index)
-#' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200
+#' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200, 1-based index
 #' @param annoType character, annotated types you would like to extract, such as "Nonsynonymous", "Synonymous". This can be left empty.
 #' @param vcfColumn character vector, which vcf columns to extract. It can be chosen from CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT and etc.
 #' @param vcfInfo character vector, which should be tags in the INFO columns to extarct. Common choices include: DP, AC, AF, NS
@@ -310,7 +310,7 @@ rvmeta.readDataByGene <- function(scoreTestFiles, covFiles, geneFile, geneName, 
 #'
 #' @param scoreTestFiles character vector, score test output files (rvtests outputs using --meta score)
 #' @param covFiles character vector, covaraite files (rvtests outputs using --meta cov)
-#' @param ranges character, a text indicating which range in the VCF file to extract. e.g. 1:100-200
+#' @param ranges character, a text indicating which range in the VCF file to extract. e.g. 1:100-200, 1-based index
 #' @param multiAllelic boolean, whether to read multi-allelic sites as multiple variants or not
 #' @return a list of statistics including chromosome, position, allele frequency, score statistics, covariance and annotation(if input files are annotated).
 #' @export
@@ -987,7 +987,7 @@ annotatePlain <- function(inFile, outFile, params) {
 
 #' Test whether a vector of positions are inside given ranges
 #' @param positions characters, positions. e.g. c("1:2-3", "1:4")
-#' @param rangeList character, ranges, e.g. "1:1-3,1:2-4"
+#' @param rangeList character, ranges, e.g. "1:1-3,1:2-4", 1-based index
 #' @return logical vector, TRUE/FALSE/NA
 #' @export
 #' @examples
@@ -1002,8 +1002,8 @@ isInRange <- function(positions, rangeList) {
 
 #' Extract pair of positions by ranges
 #' @param covData a covariance matrix with positions as dimnames
-#' @param rangeList1 character specify a range
-#' @param rangeList2 character specify a range
+#' @param rangeList1 character specify a range, 1-based index
+#' @param rangeList2 character specify a range, 1-based index
 #' @return a covariance matrix
 #' covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
 #' cfh <- rvmeta.readCovByRange(covFileName, "1:196621007-196716634")
@@ -1092,7 +1092,7 @@ download.annotation.resource <- function(outputDirectory) {
 #' Read a gene from BGEN file and return a genotype matrix
 #'
 #' @param fileName character, represents an input BGEN file (Bgzipped, with Tabix index)
-#' @param range character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200
+#' @param range character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200, 1-based index
 #' @return genotype matrix
 #' @export
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
@@ -1137,7 +1137,7 @@ readBGENToMatrixByGene <- function(fileName, geneFile, geneName) {
 #' Read information from BGEN file in a given range and return a list
 #'
 #' @param fileName character, represents an input BGEN file (Bgzipped, with Tabix index)
-#' @param range character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200
+#' @param range character, a text indicating which range in the BGEN file to extract. e.g. 1:100-200, 1-based index
 #' @return a list of chrom, pos, varid, rsid, alleles, isPhased, probability, sampleId
 #' @export
 #' @seealso http://zhanxw.com/seqminer/ for online manual and examples
@@ -1329,7 +1329,7 @@ openPlink <- function(fileName) {
 #' Read a range from VCF file and return a genotype matrix
 #'
 #' @param fileName character, represents an input VCF file (Bgzipped, with Tabix index)
-#' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200
+#' @param range character, a text indicating which range in the VCF file to extract. e.g. 1:100-200, 1-based index
 #' @param indexFileName character, index file, by default, it s `fileName`.scIdx
 #' @return genotype matrix
 #' @export
@@ -1383,7 +1383,7 @@ createSingleChromosomeVCFIndex <- function(fileName, indexFileName = NULL) {
 #' Read a range from BCF file and return a genotype matrix
 #'
 #' @param fileName character, represents an input BCF file (Bgzipped, with Tabix index)
-#' @param range character, a text indicating which range in the BCF file to extract. e.g. 1:100-200
+#' @param range character, a text indicating which range in the BCF file to extract. e.g. 1:100-200, 1-based index
 #' @param indexFileName character, index file, by default, it s `fileName`.scIdx
 #' @return genotype matrix
 #' @export

@@ -12,7 +12,7 @@ rvmeta.readDataByRange(scoreTestFiles, covFiles, ranges,
 
 \item{covFiles}{character vector, covaraite files (rvtests outputs using --meta cov)}
 
-\item{ranges}{character, a text indicating which range in the VCF file to extract. e.g. 1:100-200}
+\item{ranges}{character, a text indicating which range in the VCF file to extract. e.g. 1:100-200, 1-based index}
 
 \item{multiAllelic}{boolean, whether to read multi-allelic sites as multiple variants or not}
 }

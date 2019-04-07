@@ -9,7 +9,7 @@ isInRange(positions, rangeList)
 \arguments{
 \item{positions}{characters, positions. e.g. c("1:2-3", "1:4")}
 
-\item{rangeList}{character, ranges, e.g. "1:1-3,1:2-4"}
+\item{rangeList}{character, ranges, e.g. "1:1-3,1:2-4", 1-based index}
 }
 \value{
 logical vector, TRUE/FALSE/NA

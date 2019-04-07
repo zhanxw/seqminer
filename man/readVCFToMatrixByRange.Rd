@@ -9,7 +9,7 @@ readVCFToMatrixByRange(fileName, range, annoType)
 \arguments{
 \item{fileName}{character, represents an input VCF file (Bgzipped, with Tabix index)}
 
-\item{range}{character, a text indicating which range in the VCF file to extract. e.g. 1:100-200}
+\item{range}{character, a text indicating which range in the VCF file to extract. e.g. 1:100-200, 1-based index}
 
 \item{annoType}{character, annotated types you would like to extract, such as "Nonsynonymous", "Synonymous". This can be left empty.}
 }
