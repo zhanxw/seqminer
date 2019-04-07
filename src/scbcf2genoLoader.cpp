@@ -286,12 +286,12 @@ int parseBCFVariant(const BCFHeader& bcfHeader,
   int8_t format_type = *pIndv;
   pIndv ++;
   // Rprintf("format type = 0x%0x ", format_type);
-  int format_len_per_indv = (format_type >> 4) * // (num of types per indv)
-      ( format_type & ( (1<<4) - 1) );                // (bytes per type, e.g. 1 for int8_t, which is 1 byte
-  // Rprintf("format len per indv = %d\n", format_len_per_indv);
+  // int format_len_per_indv = (format_type >> 4) * // (num of types per indv)
+  //     ( format_type & ( (1<<4) - 1) );                // (bytes per type, e.g. 1 for int8_t, which is 1 byte
+  // // Rprintf("format len per indv = %d\n", format_len_per_indv);
 
   // 3. read genotypes
-  for (int i = 0; i < sampleSize; ++i) {
+  for (size_t i = 0; i != sampleSize; ++i) {
     buf->push_back( ((*pIndv) >> 1) - 1);
     pIndv++;
     buf->back() += ( ((*pIndv) >> 1) - 1);
