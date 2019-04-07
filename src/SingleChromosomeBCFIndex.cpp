@@ -55,7 +55,7 @@ void SingleChromosomeBCFIndex::closeIndex() {
  * ...
  */
 int SingleChromosomeBCFIndex::createIndex() {
-  const char* fn = bcfFile_.c_str();
+  // const char* fn = bcfFile_.c_str();
   BGZF* fp = fBcfFile_;  // bgzf_open(fn, "rb");
   bgzf_seek(fp, 0, SEEK_SET);
 
@@ -230,7 +230,6 @@ int SingleChromosomeBCFIndex::query(int chromPosBeg, int chromPosEnd,
     *voffset = lb->offset;
     break;
   }
-
   if (*voffset < 0) {
     REprintf("Cannot find position!\n");
     return -1;

@@ -13,7 +13,7 @@ if (file.exists(outFile) && systemTestable) {
   load(outFile, verbose = TRUE)
 
   test_that("readVCFToMatrixByRange", {
-    ## cat("--------------- test readVCFToMatrixByRange ---------------\n")
+    cat("--------------- test readVCFToMatrixByRange ---------------\n")
     fileName <- system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
 
     test.cfh <- readVCFToMatrixByRange(fileName, "1:196621007-196716634", "Nonsynonymous")
@@ -135,6 +135,7 @@ if (file.exists(outFile) && systemTestable) {
   })
 
   test_that("openPlink", {
+    cat("--------------- test openPlink ---------------\n")
     fileName = system.file("plink/all.anno.filtered.extract.bed", package = "seqminer")
     fileName = sub(fileName, pattern = ".bed", replacement = "")
     plinkObj <- openPlink(fileName)
@@ -142,6 +143,7 @@ if (file.exists(outFile) && systemTestable) {
   })
 
   test_that("readPlinkBySubscript", {
+    cat("--------------- test readPlinkBySubscript ---------------\n")
     fileName = system.file("plink/all.anno.filtered.extract.bed", package = "seqminer")
     filePrefix = sub(fileName, pattern = ".bed", replacement = "")
     plinkObj = openPlink(filePrefix)
@@ -152,24 +154,28 @@ if (file.exists(outFile) && systemTestable) {
   })
 
   test_that("readSingleChromosomeVCFToMatrixByRange", {
+    cat("--------------- test readSingleChromosomeVCFToMatrixByRange ---------------\n")
     fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
     cfh <- readSingleChromosomeVCFToMatrixByRange(fileName, "1:196621007-196716634")
     expect_equivalent(cfh[[1]], t(cfh.all[[1]]))
   })
 
   test_that("createSingleChromosomeVCFIndex", {
+    cat("--------------- test createSingleChromosomeVCFIndex ---------------\n")
     fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
     cfh <- createSingleChromosomeVCFIndex(fileName, indexFileName = tempfile())
     expect(nchar(cfh) > 0)
   })
 
   test_that("readSingleChromosomeBCFToMatrixByRange", {
+    cat("--------------- test readSingleChromosomeBCFToMatrixByRange ---------------\n")
     fileName = system.file("vcf/all.anno.filtered.extract.headerFixed.bcf.gz", package = "seqminer")
     cfh <- readSingleChromosomeBCFToMatrixByRange(fileName, "1:196621007-196716634")
     expect_equivalent(cfh[[1]], t(cfh.all[[1]]))
   })
 
   test_that("createSingleChromosomeBCFIndex", {
+    cat("--------------- test createSingleChromosomeBCFIndex ---------------\n")
     fileName = system.file("vcf/all.anno.filtered.extract.headerFixed.bcf.gz", package = "seqminer")
     cfh <- createSingleChromosomeBCFIndex(fileName, indexFileName = tempfile())
     expect(nchar(cfh) > 0)
