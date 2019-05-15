@@ -70,7 +70,7 @@ isTabixRange <- function(range) {
     }
     return(TRUE)
   }
-  ranges <- strsplit(x = range, split = ",")[[1]]
+  ranges <- unlist(strsplit(x = range, split = ","))
   sapply(ranges, isValid)
 }
 
