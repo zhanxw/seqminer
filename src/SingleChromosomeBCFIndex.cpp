@@ -226,7 +226,7 @@ int SingleChromosomeBCFIndex::query(int chromPosBeg, int chromPosEnd,
   REprintf("Found %d results\n", (int)(ub - lb));
   for (Record* pi = lb; pi != ub; ++pi) {
     REprintf("%ld %ld\n", pi->pos, pi->offset);
-    REprintf("%ld %ld\n", ub->pos, ub->offset);
+    // REprintf("%ld %ld\n", ub->pos, ub->offset);
     *voffset = lb->offset;
     break;
   }

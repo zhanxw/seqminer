@@ -114,4 +114,5 @@ int MmapFile::close() {
 
 #endif
   this->data = 0;
+  return 0;
 }

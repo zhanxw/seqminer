@@ -1,3 +1,7 @@
+2019-08-21  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
+
+	* Improve column names when using single chrom indices
+
 2019-03-21  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Support single chromosome index for bcf
