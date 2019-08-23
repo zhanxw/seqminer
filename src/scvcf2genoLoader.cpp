@@ -88,7 +88,13 @@ SEXP impl_readSingleChromosomeVCFToMatrixByRange(SEXP arg_fileName,
           REprintf("Cannot readline()!\n");
         }
         stringTokenize(line, '\t', &fd);
-        markerNames.push_back(fd[1]);
+        markerNames.push_back(fd[0]);
+        markerNames.back() += ':';
+        markerNames.back() += fd[1];
+        markerNames.back() += '_';
+        markerNames.back() += fd[3];
+        markerNames.back() += '/';
+        markerNames.back() += fd[4];      
         for (size_t j = 9; j != fd.size(); ++j) {
           // TODO: marker rigorous check on genotype format is needed
           buf.push_back((fd[j][0] - '0') + (fd[j][2] - '0'));
