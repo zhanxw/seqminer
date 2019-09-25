@@ -12,10 +12,10 @@ SEQMINER
 - [Introduction](#introduction)
 - [Download](#download)
 - [Showcase](#showcase)
-  - [Index VCF/BCF files](#index VCF/BCF files)
-  - [Query VCF/BCF files](#query VCF/BCF files)
-  - [Query BGEN/PLINK files](#query BGEN/PLINK files)
-  - [Command line linterface](#command line linterface)
+  - [Index VCF/BCF files](#Index-VCF/BCF-files)
+  - [Query VCF/BCF files](#Query-VCF/BCF-files)
+  - [Query BGEN/PLINK files](#query-BGEN/PLINK-files)
+  - [Command line linterface](#command-line-linterface)
 
 # Introduction
 Seqminer is a highly efficient R-package for retrieving sequence variants from biobank scale datasets of millions of individuals and billions of genetic variants. It supports all variant types, including multi-allelic variants and imputation dosages. It takes VCF/BCF/BGEN/PLINK format as input file, indexes, queries them based upon variant-based index and loads them as R data types such as list or matrix.
