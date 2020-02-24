@@ -80,10 +80,10 @@ int readBedToMatrixByIndex(const std::string& bedFileName,
   // assert(numRead == 1);
   if (c == SNP_MAJOR_MODE) {
     snpMajorMode = true;
-    REprintf("binary PLINK BED file is ready to read\n");
+    REprintf("Binary PLINK BED file is ready to read\n");
   } else if (c == INDV_MAJOR_MODE) {
     snpMajorMode = false;
-    REprintf("individual-major mode PLINK is not supported yet!\n");
+    REprintf("Individual-major mode PLINK is not supported yet!\n");
   } else {
     REprintf("Unrecognized data mode in PLINK!\n");
   }
@@ -94,7 +94,7 @@ int readBedToMatrixByIndex(const std::string& bedFileName,
   const static unsigned char MISSING = 0x1;  // 0b01;
 
   // construct a look-up table
-  REprintf("build look-up table\n");
+  REprintf("build a look-up table\n");
   double table[256][4];
   for (int i = 0; i < 256; ++i) {
     for (int j = 0; j < 4; ++j) {

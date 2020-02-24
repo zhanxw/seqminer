@@ -5,7 +5,7 @@
 
 /* .Call calls */
 extern SEXP anno(SEXP, SEXP, SEXP);
-extern SEXP annotateGene(SEXP, SEXP, SEXP, SEXP);
+extern SEXP annotateGene(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP createTabixIndex(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP getRefBase(SEXP, SEXP, SEXP, SEXP);
 extern SEXP isInRange(SEXP, SEXP);
@@ -36,7 +36,7 @@ extern SEXP createSingleChromosomeBCFIndex(SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"anno", (DL_FUNC)&anno, 3},
-    {"annotateGene", (DL_FUNC)&annotateGene, 4},
+    {"annotateGene", (DL_FUNC)&annotateGene, 5},
     {"createTabixIndex", (DL_FUNC)&createTabixIndex, 6},
     {"getRefBase", (DL_FUNC)&getRefBase, 4},
     {"isInRange", (DL_FUNC)&isInRange, 2},
