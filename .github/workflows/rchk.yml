@@ -1,4 +1,4 @@
-name: CI
+name: run-rchk
 
 on: 
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - uses r-lib/actions/run-rchk@master
+    - uses: r-lib/actions/run-rchk@master
       with:
-        # apt: <any apt dependencies, optional>
+        apt: zlib, zlib1g-dev
         package: SKAT, testthat
