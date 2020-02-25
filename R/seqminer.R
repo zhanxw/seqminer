@@ -597,7 +597,10 @@ rvmeta.readNullModel <- function(scoreTestFiles) {
 #' covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
 #' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
 #' cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
-#' rvmeta.writeScoreData(cfh, "cfh.MetaScore.assoc")
+#'
+#' outFile <- file.path(tempdir(), "cfh.MetaScore.assoc")
+#' rvmeta.writeScoreData(cfh, outFile)
+#' cat('Outputted MetaScore file are in the temp directory:', outFile, '\n')
 rvmeta.writeScoreData <- function (rvmetaData, outName, createIndex = FALSE) {
   outName <- path.expand(outName)
   storage.mode(outName) <- "character"
@@ -620,7 +623,10 @@ rvmeta.writeScoreData <- function (rvmetaData, outName, createIndex = FALSE) {
 #' covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
 #' geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
 #' cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
-#' rvmeta.writeCovData(cfh, "cfh.MetaCov.assoc.gz")
+#'
+#' outFile <- file.path(tempdir(), "cfh.MetaCov.assoc.gz")
+#' rvmeta.writeCovData(cfh, outFile)
+#' cat('Outputted MetaCov file are in the temp directory:', outFile, '\n')
 rvmeta.writeCovData <- function (rvmetaData, outName) {
   outName <- path.expand(outName)
   storage.mode(outName) <- "character"
@@ -934,8 +940,9 @@ getRefBase <- function(reference, chrom, position, len = NULL) {
 #'               geneFile = system.file("tabanno/test.gene.txt", package = "seqminer"))
 #' param <- makeAnnotationParameter(param)
 #' inVcf <- system.file("tabanno/input.test.vcf", package = "seqminer")
-#' outVcf <- paste0(getwd(), "/", "out.vcf")
+#' outVcf <- file.path(tempdir(), "/", "out.vcf")
 #' annotateVcf (inVcf, outVcf, param)
+#' cat('Annotated VCF files are in the temp directory:', outVcf, '\n')
 annotateVcf <- function(inVcf, outVcf, params) {
   params$inputFormat = "vcf"
   params <- makeAnnotationParameter(params)
@@ -965,8 +972,9 @@ annotateVcf <- function(inVcf, outVcf, params) {
 #'               inputFormat = "plain")
 #' param <- makeAnnotationParameter(param)
 #' inFile <- system.file("tabanno/input.test.plain.txt", package = "seqminer")
-#' outFile <- paste0(getwd(), "/", "out.annotated.txt")
+#' outFile <- file.path(tempdir(), "out.annotated.txt")
 #' annotatePlain(inFile, outFile, param)
+#' cat('Outputted annotation results are in the temp directory:', outFile, '\n')
 annotatePlain <- function(inFile, outFile, params) {
   params$inputFormat = "plain"
   params <- makeAnnotationParameter(params)

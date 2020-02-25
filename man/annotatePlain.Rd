@@ -25,6 +25,7 @@ param <- list(reference = system.file("tabanno/test.fa", package = "seqminer"),
               inputFormat = "plain")
 param <- makeAnnotationParameter(param)
 inFile <- system.file("tabanno/input.test.plain.txt", package = "seqminer")
-outFile <- paste0(getwd(), "/", "out.annotated.txt")
+outFile <- file.path(tempdir(), "out.annotated.txt")
 annotatePlain(inFile, outFile, param)
+cat('Outputted annotation results are in the temp directory:', outFile, '\\n')
 }

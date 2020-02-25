@@ -24,7 +24,10 @@ scoreFileName = system.file("rvtests/rvtest.MetaScore.assoc.anno.gz", package = 
 covFileName = system.file("rvtests/rvtest.MetaCov.assoc.gz", package = "seqminer")
 geneFile = system.file("vcf/refFlat_hg19_6col.txt.gz", package = "seqminer")
 cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634")
-rvmeta.writeScoreData(cfh, "cfh.MetaScore.assoc")
+
+outFile <- file.path(tempdir(), "cfh.MetaScore.assoc")
+rvmeta.writeScoreData(cfh, outFile)
+cat('Outputted MetaScore file are in the temp directory:', outFile, '\\n')
 }
 \seealso{
 http://zhanxw.com/seqminer/ for online manual and examples

@@ -24,6 +24,7 @@ param <- list(reference = system.file("tabanno/test.fa", package = "seqminer"),
               geneFile = system.file("tabanno/test.gene.txt", package = "seqminer"))
 param <- makeAnnotationParameter(param)
 inVcf <- system.file("tabanno/input.test.vcf", package = "seqminer")
-outVcf <- paste0(getwd(), "/", "out.vcf")
+outVcf <- file.path(tempdir(), "/", "out.vcf")
 annotateVcf (inVcf, outVcf, param)
+cat('Annotated VCF files are in the temp directory:', outVcf, '\\n')
 }

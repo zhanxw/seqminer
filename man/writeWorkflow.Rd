@@ -20,5 +20,8 @@ j2 <- newJob('id2', 'cmd out2', 'out2', depend = 'out1')
 w <- newWorkflow("wf")
 w <- addJob(w, j1)
 w <- addJob(w, j2)
-writeWorkflow(w, "Makefile")
+
+outFile <-  file.path(tempdir(), "Makefile")
+writeWorkflow(w, outFile)
+cat('Outputted Makefile file are in the temp directory:', outFile, '\\n')
 }

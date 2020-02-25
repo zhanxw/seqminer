@@ -42,7 +42,10 @@ newWorkflow <- function(name) {
 #' w <- newWorkflow("wf")
 #' w <- addJob(w, j1)
 #' w <- addJob(w, j2)
-#' writeWorkflow(w, "Makefile")
+#'
+#' outFile <- file.path(tempdir(), "Makefile")
+#' writeWorkflow(w, outFile)
+#' cat('Outputted Makefile file are in the temp directory:', outFile, '\n')
 addJob <- function(wf, job) {
   if (!inherits(job, "job")) {
     stop("Only job class can be added")
@@ -66,7 +69,10 @@ addJob <- function(wf, job) {
 #' w <- newWorkflow("wf")
 #' w <- addJob(w, j1)
 #' w <- addJob(w, j2)
-#' writeWorkflow(w, "Makefile")
+#'
+#' outFile <-  file.path(tempdir(), "Makefile")
+#' writeWorkflow(w, outFile)
+#' cat('Outputted Makefile file are in the temp directory:', outFile, '\n')
 writeWorkflow <- function(wf, outFile) {
   if (!inherits(wf, "workflow")) {
     stop("Wrong input")
