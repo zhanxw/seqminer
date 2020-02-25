@@ -9,6 +9,6 @@ r:
 # Be strict when checking our package
 #warnings_are_errors: true
 
-r_binary_packages:
+r_packages:
  - SKAT
  - testthat
