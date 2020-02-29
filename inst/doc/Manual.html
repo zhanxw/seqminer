@@ -205,7 +205,7 @@ hljs.initHighlightingOnLoad();
 
 <h1 id="toc_0">SeqMiner Quick Guide</h1>
 
-<p>SeqMiner(former name, vcf2geno) is a R package that helps you efficiently processing sequencing data in the <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41">VCF format</a>.</p>
+<p>SeqMiner(former name, vcf2geno) is a R package that helps you efficiently processing sequencing data in the <a href="https://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41">VCF format</a>.</p>
 
 <p>SeqMiner requires VCF files indexed by Tabix. To use its gene based extraction, VCF need to be annotated by <a href="https://github.com/zhanxw/anno">SeqAnno</a>
 We have provided an examplar VCF file in this package. You can use the following command to find its location on your computer:</p>
@@ -375,7 +375,7 @@ We also list sample IDs in the sampleId part.</p>
 <h2 id="toc_3">Applying rare-variant analysis</h2>
 
 <p>SeqMiner can greatly reduce your effort to process huge sequencing files in VCF format. That indicates your valuable time can be spared on investigating causal variants.
-Here we demonstrate how to apply <a href="http://www.hsph.harvard.edu/skat/">SKAT</a> method to study CFH gene. The genotype file we used is extracted from <a href="http://www.1000genomes.org/">1000 Genomes Project</a>. It contains 85 individuals in <a href="http://www.internationalgenome.org/faq/can-i-get-phenotype-gender-and-family-relationship-information-samples/">CEU population</a> and the variants are all located in the CFH gene region.  We will use simulated phenotype in this demonstration.</p>
+Here we demonstrate how to apply <a href="https://www.hsph.harvard.edu/skat/">SKAT</a> method to study CFH gene. The genotype file we used is extracted from <a href="https://www.1000genomes.org/">1000 Genomes Project</a>. It contains 85 individuals in <a href="https://www.internationalgenome.org/faq/can-i-get-phenotype-gender-and-family-relationship-information-samples/">CEU population</a> and the variants are all located in the CFH gene region.  We will use simulated phenotype in this demonstration.</p>
 
 <pre><code class="r"># Extract genotype matrix
 vcf.1000g &lt;- system.file(&quot;vcf/1000g.phase1.20110521.CFH.anno.vcf.gz&quot;, package = &quot;seqminer&quot;)

@@ -41,11 +41,16 @@ PKG_CPPFLAGS+=-I. \
 ## for zstd
 PKG_CPPFLAGS+=-Izstd/lib -Izstd/lib/common -DXXH_NAMESPACE=ZSTD_ -Izstd/lib/legacy -DZSTD_LEGACY_SUPPORT=5
 
-# R_HOME=$(shell R RHOME)
-# ZSTDR_CFLAGS=$("${R_HOME}/bin/R" CMD config CFLAGS)
-# zstd/lib/libzstd.a:
-# 	cd src/zstd && make lib CFLAGS="${ZSTDR_CFLAGS} -fPIC"
+ifeq (@HAVE_BZIP2@,1)
+$(info have bzip2)
+else
+$(info do not have bzip2)
+endif
 
+ifeq (@HAVE_ZSTD@,1)
+ZSTD_OBJ =
+PKG_LIBS+=-lzstd
+else
 ZSTD_OBJ = zstd/lib/common/debug.o \
            zstd/lib/common/entropy_common.o \
            zstd/lib/common/error_private.o \
@@ -76,8 +81,14 @@ ZSTD_OBJ = zstd/lib/common/debug.o \
            zstd/lib/legacy/zstd_v05.o \
            zstd/lib/legacy/zstd_v06.o \
            zstd/lib/legacy/zstd_v07.o
+endif
 
+ifeq (@HAVE_SQLITE@,1)
+SQLITE_OBJ=
+PKG_LIBS+=-lsqlite
+else
 SQLITE_OBJ = sqlite/sqlite3.o
+endif
 
 PKG_LIBS += $(ZSTD_OBJ) $(SQLITE_OBJ)
 

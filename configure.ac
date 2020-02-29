@@ -28,14 +28,40 @@ dnl AC_PROG_CC
 AC_LANG(C++)
 AC_PROG_CXX
 
+dnl check libraries
+dnl refer:
+dnl   https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/Libraries.html
+dnl   AC_CHECK_LIB (library, function, [action-if-found], [action-if-not-found], [other-libraries])
 LIB_BZIP2=""
 AC_CHECK_LIB([bz2], [BZ2_bzDecompressInit], [
   AC_CHECK_HEADER([bzlib.h], [
     HAVE_BZIP2=1
     AC_DEFINE([HAVE_BZIP2], [1], [Define to 1 if you have bzip2 library])
     LIB_BZIP2="-lbz2"
+    AC_MSG_NOTICE([Will use system-wide bzip2 library])    
   ]) 
 ])
+
+LIB_ZSTD=""
+AC_CHECK_LIB([zstd], [ZSTD_compress], [
+  AC_CHECK_HEADERS([zstd.h], [
+    HAVE_ZSTD=1
+    AC_DEFINE([HAVE_ZSTD], [1], [Define to 1 if you have zstd library])
+    LIB_ZSTD="-lzstd"
+    AC_MSG_NOTICE([Will use system-wide zstd library])    
+  ])                     
+], [AC_MSG_NOTICE([Will build zstd library from the package])])
+             
+
+LIB_SQLITE=""
+AC_CHECK_LIB([sqlite], [sqlite3_open], [
+  AC_CHECK_HEADERS([sqlite3.h], [
+    HAVE_SQLITE=1
+    AC_DEFINE([HAVE_SQLITE], [1], [Define to 1 if you have sqlite library])
+    LIB_SQLITE="-lsqlite"
+    AC_MSG_NOTICE([Will use system-wide sqlite library])
+  ])                     
+], [AC_MSG_NOTICE([Will build sqlite library from the package])])
 
 AC_CHECK_LIB([c], [regcomp], [
   AC_CHECK_HEADER([regex.h], [
@@ -76,7 +102,10 @@ dnl                    [make -C src/zstd/lib lib CFLAGS="-fPIC ${ZSTD_CFLAGS}"])
 
 AC_SUBST([PKG_CFLAGS], ["-D_USE_KNETFILE -I. ${CFLAGS}"])
 AC_SUBST([PKG_CPPFLAGS], ["-D_USE_KNETFILE -I. ${CXX11FLAGS}"])
-AC_SUBST([PKG_LIBS], ["-lz -lm ${LIB_BZIP2}"])
+AC_SUBST([PKG_LIBS], ["-lz -lm ${LIB_BZIP2} ${LIB_ZSTD} ${LIB_SQLITE}"])
+AC_SUBST([HAVE_BZIP2])
+AC_SUBST([HAVE_ZSTD])
+AC_SUBST([HAVE_SQLITE])
 
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT
