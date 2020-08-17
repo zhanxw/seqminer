@@ -1,4 +1,4 @@
-SEQMINER
+SEQMINER2
 ========
 
 [![Build Status](https://travis-ci.org/zhanxw/seqminer.svg?branch=master)](https://travis-ci.org/zhanxw/seqminer)
@@ -82,5 +82,7 @@ We also developed a seqminer command line interface:
     ./queryVCFIndex.intel input.vcf.gz input.vcf.gz.scIdx 1:123-1234
 
 Citation: 
+
+[Yang, L., Jiang, S., Jiang, B., Liu, D. J., & Zhan, X. (2020). Seqminer2: An Efficient Tool to Query and Retrieve Genotypes for Statistical Genetics Analyses from Biobank Scale Sequence Dataset. Bioinformatics](https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/btaa628/5881355?redirectedFrom=fulltext)
 
 [Zhan, X. and Liu, D. J. (2015), SEQMINER: An R-Package to Facilitate the Functional Interpretation of Sequence-Based Associations. Genet. Epidemiol., 39: 619–623. doi:10.1002/gepi.21918](http://onlinelibrary.wiley.com/doi/10.1002/gepi.21918/abstract)
