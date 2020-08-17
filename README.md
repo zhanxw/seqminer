@@ -70,6 +70,7 @@ Query BGEN file:
     bg.range <- "1:123-1234"
     geno.mat <- seqminer::readBGENToMatrixByRange(bg.ref.file, bg.range)
     geno.list <- seqminer::readBGENToListByRange(bg.ref.file, bg.range)
+Make sure that bgen file has an index file `*.bgi` in the same folder.
 
 Query PLINK file:
 
