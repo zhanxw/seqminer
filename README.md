@@ -60,7 +60,7 @@ Query BCF file:
     geno <- seqminer::readSingleChromosomeBCFToMatrixByRange(bcf.ref.file, tabix.range, bcf.idx.file)
 
 Querying multiple regions is also doable, simply specify multiple regions and separte them by a comma, e.g. `"1:123-124,1:1234-1235"`.
-
+![img](https://github.com/yang-lina/seqminer/blob/master/vcf_output.png)
 
 ## Query BGEN/PLINK files
 
