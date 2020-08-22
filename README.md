@@ -61,7 +61,7 @@ Query BCF file:
 
 Querying multiple regions is also doable, simply specify multiple regions and separte them by a comma, e.g. `"1:123-124,1:1234-1235"`.
 
-Output example:
+Output example (column represents variants, row represents individuals):
 
 <img src="https://github.com/yang-lina/seqminer/blob/master/vcf_output.png" width="60%">
 
