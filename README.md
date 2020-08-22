@@ -63,7 +63,7 @@ Querying multiple regions is also doable, simply specify multiple regions and se
 
 Output example (column represents variants, row represents individuals):
 
-<img src="https://github.com/yang-lina/seqminer/blob/master/vcf_output.png" width="60%">
+<img src="https://github.com/yang-lina/seqminer/blob/master/output.png" width="60%">
 
 ## Query BGEN/PLINK files
 
