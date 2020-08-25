@@ -1,0 +1,185 @@
+###################################################
+################# Query VCF file ##################
+###################################################
+#Create vbi index:
+vcf.ref.file <- "input.vcf"
+vcf.idx.file <- "input.vcf.scIdx"
+cfh2 <- seqminer::createSingleChromosomeVCFIndex(vcf.ref.file, vcf.idx.file)
+
+library(seqminer)
+library(VariantAnnotation)
+library(PopGenome)
+library(data.table)
+
+vcf.ref.file <-  "input.vcf"            #ukb
+vcf.idx.file <-  "input.vcf.scIdx"
+timeMat.cont <- rep(NA,3)
+vcf.range <- "1:123-1234"                                #one single range example
+#vcf.range <- "1:123-124,1:1234-1235,,1:12345-12346"     #randomly selected ranges example
+
+#seqminer2
+a <- Sys.time()
+geno.list <- seqminer::readSingleChromosomeVCFToMatrixByRange(vcf.ref.file, vcf.range, vcf.idx.file)
+b <- Sys.time()
+timeMat[1] <- as.numeric(b-a, units="secs")
+   
+#VariantAnnotation
+rng <- GRanges(seqnames="1", ranges=IRanges(start=123,end=1234))        #one single range example    
+#rng <- GRanges(seqnames="1", ranges=IRanges(start=c(123,1234,12345),end=c(123,1234,12345)))        #randomly selected ranges example    
+param <- ScanVcfParam(which=rng, geno="GT")
+a <- Sys.time()
+geno.list<-readGT(vcf.ref.file, nucleotides=TRUE, row.names=TRUE, param=param)
+b <- Sys.time()
+timeMat[2] <- as.numeric(b-a, units="secs")
+    
+#PopGenome
+a <- Sys.time()
+geno.list <- readVCF(vcf.ref.file, frompos=123, topos=1234, tid="1", approx=FALSE, numcols = 1000)     #one single range example 
+#for(j in c(123,1234,12345)){
+#    geno.list <- readVCF(vcf.ref.file, numcols = 1000, tid = "1", approx=FALSE, frompos=j-1, topos = j)
+#}            #randomly selected ranges example
+b <- Sys.time()
+timeMat[3] <- as.numeric(b-a, units="secs")
+      
+
+###################################################
+################# Query VCF file ##################
+############ Using command line tool ##############
+###################################################
+
+#Need to create giggle index in terminal using following command:
+#./giggle/bin/giggle index -s -f -i "../input.vcf" -o ../input.vcf.gg
+
+library(seqminer)
+library(data.table)
+
+vcf.ref.file <-  "input.vcf"            #ukb
+vcf.idx.file <-  "input.vcf.scIdx"
+
+timeMat.cont <- rep(NA,3)
+vcf.range <- "1:123-1234"                                #one single range example
+#vcf.range <- "1:123-124,1:1234-1235,,1:12345-12346"     #randomly selected ranges example
+
+#seqminer2
+a <- Sys.time()
+command.seq <- paste("./queryVCFIndex.intel", vcf.ref.file, vcf.idx.file, vcf.range)
+geno.list <- system(command.seq, intern=TRUE)
+b <- Sys.time()
+timeMat[1] <- as.numeric(b-a, units="secs")
+     
+#giggle
+a <- Sys.time()
+command.gg <- paste0("./giggle search -i input.vcf.gg -r ", vcf.range, " -v -o")
+geno.list <- system(command.gg, intern=TRUE)
+b <- Sys.time()
+timeMat[2] <- as.numeric(b-a, units="secs")
+
+#bcftool
+a <- Sys.time()
+command.bcftool <- paste0("bcftools query -f '%CHROM\t%POS\t%ID\t%REF\t%ALT\t%QUAL\t%FILTER\t%INFO\t%FORMAT\n' -r '", vcf.range, "' ./", vcf.ref.file)
+geno.list <- system(command.bcftool, intern=TRUE)
+b <- Sys.time()
+timeMat[3] <- as.numeric(b-a, units="secs")
+
+
+###################################################
+################# Query BCF file ##################
+###################################################
+library(seqminer)
+library(data.table)
+
+bcf.ref.file <- "input.bcf"
+bcf.idx.file <- "input.bcf.scIdx"
+
+timeMat.cont <- rep(NA,2)
+
+#seqminer2  
+bcf.range <- "1:123-1234"                                #one single range example
+#bcf.range <- "1:123-124,1:1234-1235,,1:12345-12346"     #randomly selected ranges example
+a <- Sys.time()
+geno.list <- seqminer::readSingleChromosomeBCFToMatrixByRange(bcf.ref.file, bcf.range, bcf.idx.file)
+b <- Sys.time()
+timeMat[1] <- as.numeric(b-a, units="secs")
+
+#bcftool
+#bcf.range <- "bcf.rand.range.input"          #randomly selected ranges example
+command.bcftool <- paste0("bcftools query -f '%CHROM\t%POS\t%ID\t%REF\t%ALT\t%QUAL\t%FILTER\t%INFO\t%FORMAT\n' -r '", bcf.range, "' ./", bcf.ref.file)
+a <- Sys.time()
+geno.list <- system(command.bcftool, intern=TRUE)
+b <- Sys.time()
+timeMat[2] <- as.numeric(b-a, units="secs")
+
+
+###################################################
+################# Query PLINK file #################
+###################################################
+library(seqminer)
+library(snpStats)
+library(BEDMatrix)
+library(data.table)
+
+file.name <- "input.plink"
+bed.file <- paste0(file.name,".bed")
+bim.file<- paste0(file.name,".bim")
+fam.file <- paste0(file.name,".fam")
+allsample <- as.data.frame(fread(fam.file), header=F)
+allvar <- as.data.frame(fread(bim.file,header=F))
+len <- 100
+timeMat <- rep(NA, 3) 
+set.seed(123)
+ix <- sample(1:nrow(allvar),len)
+
+#seqminer2
+a <- Sys.time()
+geno.list <- seqminer::readPlinkToMatrixByIndex(file.name, sampleIndex=1:nrow(allsample), markerIndex=1:len)  #one single range example
+#geno.list <- seqminer::readPlinkToMatrixByIndex(file.name, sampleIndex=1:nrow(allsample), markerIndex=ix)    #randomly selected ranges example
+b <- Sys.time()
+timeMat[1] <- as.numeric(b-a, units="secs")
+  
+#BEDMatrix
+a <- Sys.time()
+geno.list <- BEDMatrix(bed.file)
+geno.list.out <- geno.list[,1:len]                 #one single range example
+#geno.list.out <- geno.list[1:nrow(allsample),ix]     #randomly selected ranges example
+b <- Sys.time()
+timeMat[2] <- as.numeric(b-a, units="secs")
+
+#snpStat
+a <- Sys.time()
+geno.list <- read.plink(bed=bed.file, bim=bim.file, fam=fam.file, select.snps=1:len)   #one single range example
+#geno.list <- read.plink(bed=bed.file, bim=bim.file, fam=fam.file, select.snps=ix)     #randomly selected ranges example
+b <- Sys.time()
+timeMat[3] <- as.numeric(b-a, units="secs")
+
+
+###################################################
+################# Query BGEN file #################
+###################################################
+library(seqminer)
+library(rbgen)
+library(data.table)
+
+bg.ref.file <- "input.bgen"
+timeMat.cont <- rep(NA,2)
+
+#seqminer2  
+bg.range <- "1:123-1234"                                #one single range example
+#bg.range <- "1:123-124,1:1234-1235,,1:12345-12346"     #randomly selected ranges example
+a <- Sys.time()
+geno.list <- seqminer::readBGENToMatrixByRange(bg.ref.file, bg.range)
+b <- Sys.time()
+timeMat[1] <- as.numeric(b-a, units="secs")
+  
+#rbgen
+bg.range.rb = data.frame(chromosome = "1",start = 123,end = 1234)                               #one single range example
+#bg.range.rb = data.frame(chromosome = "1",start = c(123,1234,12345),end = c(123,1234,12345))   #randomly selected ranges example
+
+a <- Sys.time()
+geno.list <- bgen.load(bg.ref.file, bg.range.rb)
+b <- Sys.time()
+timeMat[2] <- as.numeric(b-a, units="secs")
+
+
+
+
+
