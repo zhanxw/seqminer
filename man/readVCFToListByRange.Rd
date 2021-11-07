@@ -4,8 +4,7 @@
 \alias{readVCFToListByRange}
 \title{Read information from VCF file in a given range and return a list}
 \usage{
-readVCFToListByRange(fileName, range, annoType, vcfColumn, vcfInfo,
-  vcfIndv)
+readVCFToListByRange(fileName, range, annoType, vcfColumn, vcfInfo, vcfIndv)
 }
 \arguments{
 \item{fileName}{character, represents an input VCF file (Bgzipped, with Tabix index)}

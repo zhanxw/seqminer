@@ -4,8 +4,7 @@
 \alias{rvmeta.readDataByRange}
 \title{Read association statistics by range from METAL-format files. Both score statistics and covariance statistics will be extracted.}
 \usage{
-rvmeta.readDataByRange(scoreTestFiles, covFiles, ranges,
-  multiAllelic = FALSE)
+rvmeta.readDataByRange(scoreTestFiles, covFiles, ranges, multiAllelic = FALSE)
 }
 \arguments{
 \item{scoreTestFiles}{character vector, score test output files (rvtests outputs using --meta score)}

@@ -27,5 +27,5 @@ Suggests: testthat, SKAT
 SystemRequirements: C++11, zlib headers and libraries, GNU make, optionally also bzip2
         and POSIX-compliant regex functions.
 NeedsCompilation: yes
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8

@@ -4,8 +4,7 @@
 \alias{readSingleChromosomeBCFToMatrixByRange}
 \title{Read a range from BCF file and return a genotype matrix}
 \usage{
-readSingleChromosomeBCFToMatrixByRange(fileName, range,
-  indexFileName = NULL)
+readSingleChromosomeBCFToMatrixByRange(fileName, range, indexFileName = NULL)
 }
 \arguments{
 \item{fileName}{character, represents an input BCF file (Bgzipped, with Tabix index)}

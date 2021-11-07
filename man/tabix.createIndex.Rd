@@ -4,8 +4,14 @@
 \alias{tabix.createIndex}
 \title{Create tabix index file, similar to running tabix in command line.}
 \usage{
-tabix.createIndex(bgzipFile, sequenceColumn = 1, startColumn = 4,
-  endColumn = 5, metaChar = "#", skipLines = 0)
+tabix.createIndex(
+  bgzipFile,
+  sequenceColumn = 1,
+  startColumn = 4,
+  endColumn = 5,
+  metaChar = "#",
+  skipLines = 0
+)
 }
 \arguments{
 \item{bgzipFile}{character, an tabix indexed file}

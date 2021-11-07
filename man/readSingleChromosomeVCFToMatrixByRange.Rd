@@ -4,8 +4,7 @@
 \alias{readSingleChromosomeVCFToMatrixByRange}
 \title{Read a range from VCF file and return a genotype matrix}
 \usage{
-readSingleChromosomeVCFToMatrixByRange(fileName, range,
-  indexFileName = NULL)
+readSingleChromosomeVCFToMatrixByRange(fileName, range, indexFileName = NULL)
 }
 \arguments{
 \item{fileName}{character, represents an input VCF file (Bgzipped, with Tabix index)}

@@ -1,5 +1,5 @@
 define([pkgversion], esyscmd([sh -c "grep Version: DESCRIPTION | cut -d' ' -f2 | tr -d '\n'"]))dnl
-AC_INIT(seqminer, [pkgversion], zhanxw@gmail.com)
+AC_INIT([seqminer],[pkgversion],[zhanxw@gmail.com])
 AC_CONFIG_HEADERS(src/config.h)
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -72,7 +72,7 @@ AC_CHECK_LIB([c], [regcomp], [
 
 dnl copy from http://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc/textproc/nbsed/files/configure.ac
 AC_MSG_CHECKING([for working REG_STARTEND])
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #undef NDEBUG
 #include <assert.h>
 #include <regex.h>
@@ -85,8 +85,8 @@ int main(void) {
         assert(regexec(&re, "hel\0lo\n", 1, &rm, REG_STARTEND) == 0);
         assert(rm.rm_so == 4 && rm.rm_eo == 6);
         return 0;
-}], [AC_DEFINE([HAVE_REG_STARTEND], [1], [Do you have a working REG_STARTEND?])
-AC_MSG_RESULT([yes])], [AC_MSG_RESULT([no])])
+}]])],[AC_DEFINE([HAVE_REG_STARTEND], [1], [Do you have a working REG_STARTEND?])
+AC_MSG_RESULT([yes])],[AC_MSG_RESULT([no])],[])
 
 dnl compile sqlite-amalgamation-3250300
 dnl specify sqlite.o in Makevars.in

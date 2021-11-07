@@ -4,8 +4,15 @@
 \alias{readVCFToListByGene}
 \title{Read information from VCF file in a given range and return a list}
 \usage{
-readVCFToListByGene(fileName, geneFile, geneName, annoType, vcfColumn,
-  vcfInfo, vcfIndv)
+readVCFToListByGene(
+  fileName,
+  geneFile,
+  geneName,
+  annoType,
+  vcfColumn,
+  vcfInfo,
+  vcfIndv
+)
 }
 \arguments{
 \item{fileName}{character, represents an input VCF file (Bgzipped, with Tabix index)}

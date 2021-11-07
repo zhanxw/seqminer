@@ -27,7 +27,7 @@ cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634
 
 outFile <- file.path(tempdir(), "cfh.MetaScore.assoc")
 rvmeta.writeScoreData(cfh, outFile)
-cat('Outputted MetaScore file are in the temp directory:', outFile, '\\n')
+cat('Outputted MetaScore file are in the temp directory:', outFile, '\n')
 }
 \seealso{
 http://zhanxw.com/seqminer/ for online manual and examples

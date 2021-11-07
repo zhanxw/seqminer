@@ -3,7 +3,6 @@
 \docType{package}
 \name{SeqMiner}
 \alias{SeqMiner}
-\alias{SeqMiner-package}
 \title{Efficiently Read Sequencing Data (VCF format, METAL format) into R}
 \description{
 SeqMiner provides functions to easily load Variant Call Format (VCF) or METAL format into R

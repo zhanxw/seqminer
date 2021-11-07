@@ -26,5 +26,5 @@ param <- makeAnnotationParameter(param)
 inVcf <- system.file("tabanno/input.test.vcf", package = "seqminer")
 outVcf <- file.path(tempdir(), "/", "out.vcf")
 annotateVcf (inVcf, outVcf, param)
-cat('Annotated VCF files are in the temp directory:', outVcf, '\\n')
+cat('Annotated VCF files are in the temp directory:', outVcf, '\n')
 }

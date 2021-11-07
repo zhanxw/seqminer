@@ -27,5 +27,5 @@ param <- makeAnnotationParameter(param)
 inFile <- system.file("tabanno/input.test.plain.txt", package = "seqminer")
 outFile <- file.path(tempdir(), "out.annotated.txt")
 annotatePlain(inFile, outFile, param)
-cat('Outputted annotation results are in the temp directory:', outFile, '\\n')
+cat('Outputted annotation results are in the temp directory:', outFile, '\n')
 }

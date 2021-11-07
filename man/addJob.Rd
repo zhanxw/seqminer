@@ -23,5 +23,5 @@ w <- addJob(w, j2)
 
 outFile <- file.path(tempdir(), "Makefile")
 writeWorkflow(w, outFile)
-cat('Outputted Makefile file are in the temp directory:', outFile, '\\n')
+cat('Outputted Makefile file are in the temp directory:', outFile, '\n')
 }

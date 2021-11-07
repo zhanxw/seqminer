@@ -4,8 +4,12 @@
 \alias{tabix.read.table}
 \title{Read tabix file, similar to running tabix in command line.}
 \usage{
-tabix.read.table(tabixFile, tabixRange, col.names = TRUE,
-  stringsAsFactors = FALSE)
+tabix.read.table(
+  tabixFile,
+  tabixRange,
+  col.names = TRUE,
+  stringsAsFactors = FALSE
+)
 }
 \arguments{
 \item{tabixFile}{character, an tabix indexed file}

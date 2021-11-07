@@ -4,8 +4,13 @@
 \alias{rvmeta.readDataByGene}
 \title{Read association statistics by gene from METAL-format files. Both score statistics and covariance statistics will be extracted.}
 \usage{
-rvmeta.readDataByGene(scoreTestFiles, covFiles, geneFile, geneName,
-  multiAllelic = FALSE)
+rvmeta.readDataByGene(
+  scoreTestFiles,
+  covFiles,
+  geneFile,
+  geneName,
+  multiAllelic = FALSE
+)
 }
 \arguments{
 \item{scoreTestFiles}{character vector, score test output files (rvtests outputs using --meta score)}

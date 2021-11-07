@@ -25,7 +25,7 @@ cfh <- rvmeta.readDataByRange(scoreFileName, covFileName, "1:196621007-196716634
 
 outFile <- file.path(tempdir(), "cfh.MetaCov.assoc.gz")
 rvmeta.writeCovData(cfh, outFile)
-cat('Outputted MetaCov file are in the temp directory:', outFile, '\\n')
+cat('Outputted MetaCov file are in the temp directory:', outFile, '\n')
 }
 \seealso{
 http://zhanxw.com/seqminer/ for online manual and examples
