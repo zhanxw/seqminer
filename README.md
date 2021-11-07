@@ -21,7 +21,7 @@ SEQMINER2
 Seqminer is a highly efficient R-package for retrieving sequence variants from biobank scale datasets of millions of individuals and billions of genetic variants. It supports all variant types, including multi-allelic variants and imputation dosages. It takes VCF/BCF/BGEN/PLINK format as input file, indexes, queries them based upon variant-based index and loads them as R data types such as list or matrix.
 
 # Download
-Install the development version ([devtools](https://github.com/hadley/devtools) package is required):
+Install the development version ([devtools](https://github.com/r-lib/devtools) package is required):
 
     devtools::install_github("zhanxw/seqminer")
 
@@ -89,4 +89,4 @@ Citation:
 
 [Yang, L., Jiang, S., Jiang, B., Liu, D. J., & Zhan, X. (2020). Seqminer2: An Efficient Tool to Query and Retrieve Genotypes for Statistical Genetics Analyses from Biobank Scale Sequence Dataset. Bioinformatics](https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/btaa628/5881355?redirectedFrom=fulltext)
 
-[Zhan, X. and Liu, D. J. (2015), SEQMINER: An R-Package to Facilitate the Functional Interpretation of Sequence-Based Associations. Genet. Epidemiol., 39: 619–623. doi:10.1002/gepi.21918](http://onlinelibrary.wiley.com/doi/10.1002/gepi.21918/abstract)
+[Zhan, X. and Liu, D. J. (2015), SEQMINER: An R-Package to Facilitate the Functional Interpretation of Sequence-Based Associations. Genet. Epidemiol., 39: 619–623. doi:10.1002/gepi.21918](https://onlinelibrary.wiley.com/doi/abs/10.1002/gepi.21918)
