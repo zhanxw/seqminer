@@ -24,5 +24,5 @@ This includes various data extraction scripts.
 2. Abbreviations
 
 va: VariantAnnotation, the Bioconductor package: http://www.bioconductor.org/packages/release/bioc/html/VariantAnnotation.html
-seqminer: SEQMINER software, http://seqminer.genomic.codes
+seqminer: SEQMINER software, http:/zhanxw.github.io/seqminer
 
