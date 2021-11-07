@@ -19,7 +19,7 @@ Copyright: We have used the following software and made minimal
         printf, fprintf ; also changed its un-safe pointer arithmetics.
 	For zstandard, we removed compiler (clang, MSVC) specific preprocessing flags.
 License: GPL | file LICENSE
-URL: http://seqminer.genomic.codes
+URL: http://zhanxw.github.io/seqminer/
 BugReports: https://github.com/zhanxw/seqminer/issues
 Packaged: 2018-12-04 22:14:20 UTC; zhanxw
 Repository: CRAN
