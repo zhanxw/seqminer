@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<style>
+/**
+ * Hatchd Digital Mou Theme
+ * @author: Hatchd
+ * @version: 1.0.0
+ */
+
+/**
+ * Webfonts
+ */
+
+@font-face {
+  font-family: 'vistaslab-bold';
+  src: url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-bold-071211001EmigreWebOnly.eot');
+  src: url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-bold-071211001EmigreWebOnly.eot?#iefix') format('embedded-opentype'), url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-bold-071211001EmigreWebOnly.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'vistaslab';
+  src: url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-light-071211001EmigreWebOnly.eot');
+  src: url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-light-071211001EmigreWebOnly.eot?#iefix') format('embedded-opentype'), url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-light-071211001EmigreWebOnly.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/**
+ * Normalize
+ * (trimmed down)
+ */
+    html {
+      font-size: 100%;
+    }
+
+    a:active,
+    a:hover {
+      outline: 0;
+    }
+
+
+/**
+ * Tables
+ */
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+/**
+ * Typography
+ */
+
+    body {
+      font-size: 100%;
+      line-height: 1.5em;
+      font-family: 'vistaslab', serif;
+      color: #000000;
+    }
+
+    h1,
+    h2,
+    strong,
+    b{
+      font-family: 'vistaslab-bold', serif;
+    }
+
+    p,
+    li,
+    dt,
+    dd {
+      font-size: 1em;
+      line-height: 1.5em;
+    }
+
+    p {
+      margin: 0 0 1em 0;
+    }
+
+    hr {
+      display: block;
+      clear: both;
+      height: 1px;
+      margin: 1em 0;
+      border: none;
+      background: #cccccc;
+    }
+
+    sup,
+    sub {
+      font-size: 75%;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+    }
+
+    sup {
+      top: -0.5em;
+    }
+
+    sub {
+      bottom: -0.25em;
+    }
+
+    ins {
+      background-color: #cccccc;
+    }
+
+    del {
+      text-decoration: line-through;
+    }
+
+    s {
+      color: #cccccc;
+      text-decoration: line-through;
+    }
+
+    mark {
+      background-color: #cccccc;
+      color: inherit;
+      font-weight: normal;
+    }
+
+    small {
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    strong,
+    b {
+      font-weight: normal;
+    }
+
+    em,
+    i {
+      font-style: italic;
+    }
+
+    dfn,
+    abbr {
+      font-style: inherit;
+      position: relative;
+    }
+
+    .feature-text {
+      color: #ef4136;
+    }
+
+    hgroup {
+      position: relative;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      line-height: 1.3em;
+      font-weight: normal;
+      margin: 1em 0 0.5em 0;
+      position: relative;
+      clear: both;
+    }
+
+    h1 {
+      font-size: 1.875em;
+    }
+
+    h2 {
+      font-size: 1.25em;
+    }
+
+    h3 {
+      font-size: 1em;
+      font-weight: bold;
+    }
+
+    ul,
+    ol,
+    dl {
+      margin: 0 0 1em 2em;
+      padding: 0;
+    }
+
+    ul li,
+    ol li {
+      margin: 0 0 0.25em 0;
+    }
+
+    ul {
+      list-style: disc outside;
+    }
+
+    ul ul {
+      margin: 0.25em 0 0.5em 1em;
+    }
+
+    ol {
+      list-style: decimal outside;
+    }
+
+    ol ol {
+      margin: 0.25em 0 0.5em 1.5em;
+      list-style-type: lower-roman;
+    }
+
+    dl {
+      margin-left: 0;
+    }
+
+    dt {
+      font-weight: bold;
+      margin: 0 0 0.5em 0;
+      padding: 1em 0 0 0;
+    }
+
+    dd {
+      margin: 0 0 0.5em 0;
+    }
+
+    blockquote {
+      margin: 0 0 2em 2em;
+      padding: 1em 0 0 0;
+    }
+
+    blockquote > p {
+      padding: 0 1em;
+      font-size: 1.6em;
+      line-height: 1.2em;
+    }
+
+    blockquote > p:first-child:before,
+    blockquote > p:first-child:after {
+      content: '"';
+    }
+
+    q {
+      font-style: italic;
+      color: inherit;
+    }
+
+    cite {
+      font-style: italic;
+    }
+
+    pre {
+      white-space: pre;
+      width: 100%;
+      overflow: auto;
+      margin: 2em 0 2em 0;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+    }
+
+    code,
+    samp,
+    kbd {
+      display: inline-block;
+      padding: 0 0.5em;
+    }
+
+    var {
+      font-style: italic;
+      font-weight: bold;
+    }
+
+/**
+ * Links
+ */
+    a,
+    a:link,
+    a:visited {
+      color: #ef4136;
+      text-decoration: underline;
+    }
+
+    a:hover {
+      color: #ef4136;
+      text-decoration: none;
+    }
+
+    a:active {
+      color: #ef4136;
+      text-decoration: underline;
+    }
+
+    ::selection {
+      color: #ffffff;
+      background: #cccccc;
+    }
+
+    ::-moz-selection {
+      color: #ffffff;
+      background: #cccccc;
+    }
+
+
+/**
+ * Images
+ */
+    img {
+      display: block;
+      border: 0;
+      margin: 0 0 1em 0;
+      width: 100%;
+    }
+
+/**
+ * Layout
+ */
+    body{
+        max-width: 830px;
+        width: 96%;
+        margin:auto;
+        padding:2em 0;
+    }
+
+
+</style>
+<title>Data Set</title>
+<link href="css/toc.css" rel="stylesheet"/><script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script src="js/toc.min.js"></script></head>
+<body>
+<h1>Data Set</h1>
+<p>We list these datasets that are used in benchmarks.
+They are publicly resources so you are welcomed to try out.</p>
+<h2>Chromosome 1 VCF file</h2>
+<p>ALL.chr1.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf.gz</p>
+<p>Chromosome 1 genotype VCF file from the 1000 Genome Project.</p>
+<p>File link:
+<a href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20110521/ALL.chr1.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf.gz">ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20110521/ALL.chr1.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf.gz</a>
+Tabix index link: <a href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20110521/ALL.chr1.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf.gz.tbi">ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20110521/ALL.chr1.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf.gz.tbi</a></p>
+<h2>Whole genome VCF file</h2>
+<ol>
+<li><p>ALL.wgs.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf.gz</p>
+<p>This is whole genome VCF file from the 1000 Genome Project. The file size is 142G. To obtains this file, download per-chromosome VCF from <a href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20110521/">ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20110521/</a>, combine them and use tabix to create its index.</p></li>
+<li><p>ALL.wgs.phase1_release_v3.20101123.snps_indels_svs.genotypes.bcf.gz</p>
+<p>This is whole genome VCF file from the 1000 Genome Project. The file size is 131G. To obtains this file, download per-chromosome VCF from <a href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20110521/">ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20110521/</a>, combine them and use bcftools to create its index.</p></li>
+</ol>
+<h2>dbNSFP data set</h2>
+<p>hg19_ljb_all.txt.gz</p>
+<p>This file is from <a href="https://sites.google.com/site/jpopgen/dbNSFP">dbNSFP</a> database. Its include Polyphen scores and SIFT scores.</p>
+<p>File link: <a href="http://qbrc.swmed.edu/zhanxw/seqminer/data/hg19_ljb_all.txt.gz">http://qbrc.swmed.edu/zhanxw/seqminer/data/hg19_ljb_all.txt.gz</a></p>
+<h2>Human reference genome</h2>
+<ul>
+<li>human.g1k.v37.fa</li>
+</ul>
+<p>Human reference genome build 37 in the FASTA format.</p>
+<p>File link: <a href="http://qbrc.swmed.edu/zhanxw/seqminer/data/human.g1k.v37.fa">http://qbrc.swmed.edu/zhanxw/seqminer/data/human.g1k.v37.fa</a></p>
+<p>Index file link: <a href="http://qbrc.swmed.edu/zhanxw/seqminer/data/human.g1k.v37.fa.fai">http://qbrc.swmed.edu/zhanxw/seqminer/data/human.g1k.v37.fa.fai</a></p>
+<ul>
+<li>hs37d5.fa</li>
+</ul>
+<p>Human reference genome build 37 with decoy sequence in the FASTA format (<a href="http://www.cureffi.org/2013/02/01/the-decoy-genome/">Detail1</a>, <a href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/phase2_reference_assembly_sequence/hs37d5.slides.pdf">Detail2</a>).</p>
+<p>File link: <a href="http://qbrc.swmed.edu/zhanxw/seqminer/data/hs37d5.fa">http://qbrc.swmed.edu/zhanxw/seqminer/data/hs37d5.fa</a></p>
+<p>Index file link: <a href="http://qbrc.swmed.edu/zhanxw/seqminer/data/hs37d5.fa.fai">http://qbrc.swmed.edu/zhanxw/seqminer/data/hs37d5.fa.fai</a></p>
+<h2>UCSC Known Genes</h2>
+<p>knownGene.txt.gz</p>
+<p>UCSC gene definition file in the knownGene format (<a href="http://www.ncbi.nlm.nih.gov/pubmed/16500937">Details</a>) for NCBI genome build 37.</p>
+<p>File link: <a href="http://qbrc.swmed.edu/zhanxw/seqminer/data/knownGene.txt.gz">http://qbrc.swmed.edu/zhanxw/seqminer/data/knownGene.txt.gz</a></p>
+<h2>UCSC RefFlat Genes</h2>
+<p>knownGene.txt.gz</p>
+<p>UCSC gene definition file in the refFlat format (<a href="http://genome.ucsc.edu/goldenpath/gbdDescriptionsOld.html#RefFlat">Details</a>).</p>
+<p>File link: <a href="http://qbrc.swmed.edu/zhanxw/seqminer/data/refFlat_hg19.txt.gz">http://qbrc.swmed.edu/zhanxw/seqminer/data/refFlat_hg19.txt.gz</a></p>
+<h2>Gencode Genes</h2>
+<p>refFlat.gencode.v19.gz</p>
+<p>Gencode gene definition version 19 in the refFlat format (<a href="http://www.gencodegenes.org/releases/19.html">Details</a>). We have also previous versions of gene files and can provide upon request.</p>
+<p>File link: <a href="http://qbrc.swmed.edu/zhanxw/seqminer/data/refFlat.gencode.v19.gz">http://qbrc.swmed.edu/zhanxw/seqminer/data/refFlat.gencode.v19.gz</a></p>
+<h2>Contact</h2>
+<p>Please contact Xiaowei Zhan <a href="mailto:zhanxw@gmail.com">zhanxw@gmail.com</a> or Dajiang Liu <a href="mailto:dajiang.liu@outlook.com">dajiang.liu@outlook.com</a> for comments or suggestions.</p>
+<p>Last update: November 13, 2014</p>
+<script type="text/javascript">
+   var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21871925-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script><div id="toc"></div><script type="text/javascript">$('#toc').toc();</script></body>
+</html>
+

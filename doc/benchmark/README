@@ -1,0 +1,28 @@
+README
+-------------
+Xiaowei Zhan, Dajiang Liu
+November 2014
+-------------
+
+1. Folder
+
+This folder includes the benchmark scripts.
+
+(1) data/ folder
+
+This includes main VCF files used for benchmarking, 
+and METAL format files.
+
+(2) integration/ folder
+
+This includes scripts for the data integration steps.
+
+(3) extraction/ folder
+
+This includes various data extraction scripts.
+
+2. Abbreviations
+
+va: VariantAnnotation, the Bioconductor package: http://www.bioconductor.org/packages/release/bioc/html/VariantAnnotation.html
+seqminer: SEQMINER software, http://seqminer.genomic.codes
+

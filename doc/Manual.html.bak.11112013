@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>SeqMiner Quick Tutorial</title>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- jQuery -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+
+<!-- highlight.js -->
+<link rel="stylesheet" href="http://yandex.st/highlightjs/7.3/styles/vs.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js"></script>
+<script src="http://yandex.st/highlightjs/7.3/languages/r.min.js"></script>
+
+<!-- bootstrap -->
+<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" id="style" media="screen">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+
+<!-- bootstrap-responsive -->
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" media="screen">
+
+<!-- tocify -->
+<link rel="stylesheet" href="http://gregfranko.com/jquery.tocify.js/css/jquery.tocify.css">
+<script src="http://gregfranko.com/jquery.tocify.js/js/jquery.tocify.min.js"></script>
+
+<!-- fancybox -->
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.js"></script>
+
+<script>
+
+/* run scripts when document is ready */
+$(function() {
+
+  /* size of thumbnails */
+  var thumbsize = "span4";
+
+  /* included languages */
+  var languages = {};
+
+  /* Add div wrapping class to code blocks without them */
+  $('pre code').each(function(){
+
+    var block_type, code_type;
+    /* output block */
+    if($(this).hasClass('')){
+      block_type = "output";
+      code_type = "";
+    }
+    /* source code block */
+    else{
+      block_type = "source";
+      code_type = $(this).attr('class');
+    }
+    /* no wrapping div, not using render_html(), so add to wrap */
+    if($(this).closest('div').length < 1){
+      $(this).parent().wrap('<div class="' + [block_type, code_type].join(" ") + '"></div>');
+    }
+    /* just add code type to the parent div */
+    else{
+      $(this).closest('div').addClass(code_type);
+    }
+  });
+
+  /* style tables, set them as output*/
+  $('table').addClass('table table-striped table-bordered table-hover table-condensed')
+    .wrap('<div class="output", style="overflow: auto"/>');
+
+  /* find all code or output blocks which have a class and add toggle */
+  $('div.source, div.output').each(function() {
+    var button = $('<button class="btn-mini btn-link btn toggle " data-toggle="button">+/- </button>');
+
+    /* code block */
+    if($(this).hasClass('source')){
+      var code_block = $(this).find('code');
+      var lang_type = code_block.attr('class');
+      button.text(button.text() + lang_type + ' Code');
+      button.addClass('source ' + lang_type);
+      languages[lang_type]=1;
+      code_block.each(function(i, e) {
+        hljs.highlightBlock(e);
+      });
+    }
+
+    /* output block */
+    else {
+      button.text(button.text() + 'Output');
+      button.addClass('output active');
+    }
+    $(this).before(button);
+  });
+
+  /* syntax highlight code blocks*/
+
+  /* onclick toggle next code block */
+  $('.toggle').click(function() {
+    $(this).button('toggle');
+    $(this).next('div').slideToggle();
+    return false;
+  });
+
+  /* give images a fancybox and thumbnail classes to allow lightbox and thumbnails TODO: make fancybox prev next if grouped */
+  $('p').each(function(){
+    $(this).find('img').unwrap().wrapAll('<div class="row-fluid"><div class="rimage thumbnails"></div></div>');
+  });
+  $('div.rimage').children('img').wrap('<a href="#", class="' + thumbsize + ' thumbnail"></a></li>').addClass('fancybox');
+
+  /* fancybox */
+  $(".fancybox").each( function() {
+    var img = $(this);
+    $(this).fancybox({
+      beforeLoad: function(){
+        <!--img.removeClass('thumbnail');-->
+      },
+      afterClose: function(){
+        <!--img.addClass('thumbnail');-->
+        img.css('display', 'block');
+      },
+    });
+  });
+
+  /* add bootstrap classes */
+  $('body').wrapInner('<div class="container-fluid"><div class="row-fluid"><div class="span9">');
+  $('.container-fluid >.row-fluid').prepend('<div class="span3"><div id="toc"></div></div>');
+
+  create_language_links = function(){
+    var text='';
+    for(language in languages){
+      text += '<li><a href="#" class="source toggle_global btn-link btn" type="source.' + language + '">' + language + '</a></li>\n';
+    }
+    return text;
+  }
+
+  /* add navbar */
+  $('.container-fluid').prepend(
+    '<div id="bottom-navbar" class="navbar-fixed-bottom navbar">\
+      <div class="navbar-inner">\
+        <div class="pull-right">\
+          <span class="navbar-text">Toggle</span>\
+          <div class="btn-group dropup" data-toggle="button-checkbox">\
+            <button type="source" class="toggle_global btn">Code</button>\
+            <button class="btn dropdown-toggle" data-toggle="dropdown">\
+              <span class="caret"></span>\
+            </button>\
+            <ul class="dropdown-menu pull-right">' 
+              + create_language_links() + 
+            '</div>\
+            <button type="output" class="toggle_global btn active">Output</button>\
+            <button type="thumbnails" class="toggle_global btn active">Plots</button>\
+          </div>\
+        </div>\
+      </div>\
+    </div>'
+  );
+
+  /* global toggles FIXME explicitly toggle all on/off using global variables */
+  $('.toggle_global').click(function(){
+    $(this).button('toggle');
+    var type = $(this).attr('type');
+    $('.' + type).button('toggle');
+    $('div.' + type).slideToggle();
+    return false;
+  });
+
+  /* toggle code blocks hidden by default */
+  /* $('div.source').toggle(); */
+
+  /* add table of contents */
+  $('#toc').tocify({extendPage: false});
+
+  /* if using render_html() hook, make functions links to custom R search */
+  /*search in ggplot documentation or inside-r.org */
+  $("span.functioncall").replaceWith(function(){
+
+    return '<a target="_blank" href="http://www.google.com/search?sourceid=navclient&gfns=1&\
+q=site:docs.ggplot2.org/current OR site:inside-r.org ' +
+    $(this).text() + '">' + $(this).text()+'</a>'
+  });
+
+  /* add footer */
+  $('body').wrapInner('<div id="wrap" />');
+  $('body').append('<div id="push" />');
+  var p = $('p:contains("Author:")');
+  var last_p = p.filter(':last');
+  p.detach();
+  last_p.addClass('muted').attr('id','credit');
+  last_p.append('<p>styled with <a href="https://github.com/jimhester/knitr_bootstrap">knitr_bootstrap</a></p>');
+  last_p.appendTo("body");
+  last_p.wrap('<div id="footer"><div class="container" /></div>');
+});
+</script>
+
+<style type="text/css">
+
+/* Knitr_bootstrap styles
+-------------------------------------------------- */
+.container-fluid {
+  padding-left: 0 !important;
+}
+
+.toggle{
+  text-transform: capitalize;
+}
+
+.toggle_global{
+  text-transform: capitalize;
+}
+
+.thumbnails { text-align:center; }
+.thumbnails > .thumbnail { display: inline-block !important; float: none !important; }
+
+/* Sticky footer styles
+-------------------------------------------------- */
+* {
+  margin:0;
+}
+html,
+body {
+    height: 100%;
+    /* The html and body elements cannot have any padding or margin. */
+}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    /* Negative indent footer by it's height */
+    margin: 0 auto -60px;
+}
+
+/* Set the fixed height of the footer here */
+#push,
+#footer {
+    height: 60px;
+    padding-bottom: 60px;
+}
+
+#footer {
+  text-align: center;
+}
+
+/* Twitter Bootstrap Overrides */
+/* -------------------------------------------------- */
+.nav-list > li > a, .nav-list .nav-header {
+    margin: 0px !important;
+}
+.nav-list > li > a {
+    padding: 5px !important;
+}
+
+/* Tocify */
+/* -------------------------------------------------- */
+
+/* Display h2 headers */
+.sub-header {
+  display: block;
+}
+
+/* Hide the rest */
+.sub-header .sub-header {
+  display: none;
+}
+
+ /* Indent h4 elements */
+.sub-header .sub-header .sub-header .sub-header {
+  text-indent: 50px;
+}
+
+</style>
+
+</head>
+
+<body>
+<h1>SeqMiner Quick Tutorial</h1>
+
+<p>(Updated September 5, 2013)</p>
+
+<p><em>To receive email notification of updated manual, please <a href="http://eepurl.com/wg-IT">Sign up</a></em></p>
+
+<p><a href="http://cran.r-project.org/web/packages/seqminer/index.html">SeqMiner</a> (formerly, <a href="http://cran.r-project.org/web/packages/vcf2geno/index.html">vcf2geno</a>) is an R package that helps you efficiently extracting sequencing data in the <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41">VCF format</a> files. SeqMiner is one of the two components in our analysis toolset, <a href="http://zhanxw.com/taser/">TASER</a>, which stands for <em>(TabAnno and SEqmineR): an integrated toolset for next-generation sequence data analysis</em>. The other component in TASER is <a href="https://github.com/zhanxw/anno">TabAnno</a>. It is a very efficient annotation tool.</p>
+
+<p>In this tutorial, we will only introduce SeqMiner (version 1.0) . For annotation purpose, please visit documentation of TabAnno at <a href="https://github.com/zhanxw/anno">link</a>; for integrate these two software packages and perform general analyses, please refer to <a href="http://zhanxw.com/taser/">link</a>.</p>
+
+<p><strong>NOTE1</strong> First thing to note, SeqMiner requires VCF files indexed by Tabix. </p>
+
+<p><strong>NOTE2</strong> To use gene based extraction, VCF need to be annotated by <a href="https://github.com/zhanxw/anno">TabAnno</a>.</p>
+
+<p>We have provided an examplar VCF file in this package. You can use the following command to find its location on your computer:</p>
+
+<pre><code class="r">library(seqminer)
+fileName = system.file(&quot;vcf/all.anno.filtered.extract.vcf.gz&quot;, package = &quot;seqminer&quot;)
+fileName
+</code></pre>
+
+<pre><code>## [1] &quot;/Library/Frameworks/R.framework/Versions/3.0/Resources/library/seqminer/vcf/all.anno.filtered.extract.vcf.gz&quot;
+</code></pre>
+
+<p>This tutorial demonstrates a quick guide of a major set of functaions of SeqMiner.</p>
+
+<h2>Extract gentoype matrix from VCF file</h2>
+
+<p>Extract genotype matrix from 1:196621007-196716634 (the genomic range of CFH gene), and only extract those <em>Nonsynonymous</em> variants:</p>
+
+<pre><code class="r">cfh &lt;- readVCFToMatrixByRange(fileName, &quot;1:196621007-196716634&quot;, &quot;Nonsynonymous&quot;)
+</code></pre>
+
+<pre><code>## 1 region to be extracted.
+</code></pre>
+
+<pre><code class="r">cfh
+</code></pre>
+
+<pre><code>## $`1:196621007-196716634`
+##             NA12286 NA12341 NA12342
+## 1:196642233       1       2       0
+## 1:196659237       0       2       1
+</code></pre>
+
+<p>In this example, we use the <em>fileName</em> for the VCF file path, <em>1:196621007-196716634</em> for the genomic range, and <em>Nonsynonymous</em> for the variants type.
+Extraction results are stored in the variable <em>cfh</em>. Its row names are variant positions, while column names are sample IDs.</p>
+
+<p>Similarly, we can extract genotype matrix for one or more genes. For example, we want to extract both CFH gene (3 variant) and CFHR1 gene (no variant):</p>
+
+<pre><code class="r">geneFile = system.file(&quot;vcf/refFlat_hg19_6col.txt.gz&quot;, package = &quot;seqminer&quot;)
+geneFile
+</code></pre>
+
+<pre><code>## [1] &quot;/Library/Frameworks/R.framework/Versions/3.0/Resources/library/seqminer/vcf/refFlat_hg19_6col.txt.gz&quot;
+</code></pre>
+
+<pre><code class="r">cfh &lt;- readVCFToMatrixByGene(fileName, geneFile, c(&quot;CFH&quot;, &quot;CFHR1&quot;), &quot;Synonymous&quot;)
+</code></pre>
+
+<pre><code>## 2 region to be extracted.
+</code></pre>
+
+<pre><code class="r">cfh
+</code></pre>
+
+<pre><code>## $CFH
+##             NA12286 NA12341 NA12342
+## 1:196654324       1       2       1
+## 1:196682947       2       2       1
+## 1:196654324       1       2       1
+## 
+## $CFHR1
+##      NA12286 NA12341 NA12342
+</code></pre>
+
+<p>Note here we require a gene file in refFlat format. We have prepared several gene definition files in refFlat format using NCBI human build 37.
+From this <a href="https://github.com/zhanxw/anno">website</a> (Resource part), you can obtain these resources files.</p>
+
+<p>The supported annotation variant type are: </p>
+
+<pre><code># large strucutre variant
+StructuralVariation
+
+# indels
+Stop_Gain
+Stop_Loss
+Start_Gain
+Start_Loss
+Frameshift        /* Indel length is not divisible by 3 */                                          
+CodonGain         /* Insertion length is divisible by 3 */                                          
+CodonLoss         /* Deletion length is divisible by 3 */                                           
+CodonRegion       /* Just say the variant is in the Coding Region used in Structrual Varition*/
+Insertion
+Deletion
+
+# single variants
+Nonsynonymous
+Synonymous
+Essential_Splice_Site
+Normal_Splice_Site
+Utr5
+Utr3
+Exon
+Intron
+Upstream
+Downstream
+SNV           
+Noncoding
+Monomorphic
+</code></pre>
+
+<h2>Extract arbitrary fields from VCF file</h2>
+
+<p>For advanced data extraction from VCF file, there are two functions: <em>readVCFToListByRange</em> and <em>readVCFToListByGene</em>.
+Their usage are similar to the previous two functions: <em>readVCFToMatrixByRange</em> and <em>readVCFToMatrixByGene</em> but the results are organized in list.</p>
+
+<pre><code class="r">result &lt;- readVCFToListByGene(fileName, geneFile, &quot;CFH&quot;, &quot;Synonymous&quot;, c(&quot;CHROM&quot;, 
+    &quot;ID&quot;), c(&quot;AC&quot;, &quot;AN&quot;), &quot;GT&quot;)
+result
+</code></pre>
+
+<pre><code>## $CHROM
+## [1] &quot;1&quot; &quot;1&quot; &quot;1&quot;
+## 
+## $ID
+## [1] &quot;.&quot; &quot;.&quot; &quot;.&quot;
+## 
+## $AC
+## [1] &quot;4&quot; &quot;5&quot; &quot;4&quot;
+## 
+## $AN
+## [1] &quot;6&quot; &quot;6&quot; &quot;6&quot;
+## 
+## $GT
+##      [,1]  [,2]  [,3] 
+## [1,] &quot;0/1&quot; &quot;1/1&quot; &quot;0/1&quot;
+## [2,] &quot;1/1&quot; &quot;1/1&quot; &quot;1/1&quot;
+## [3,] &quot;0/1&quot; &quot;0/1&quot; &quot;0/1&quot;
+## 
+## $sampleId
+## [1] &quot;NA12286&quot; &quot;NA12341&quot; &quot;NA12342&quot;
+</code></pre>
+
+<p>There are 7 parameters in <em>readVCFToListByGene</em>: 
+1. VCF file path
+2. Gene definition file (refFlat foramt)
+3. Character array of gene names (can be one gene or more than one gene names)
+4. Annotation type
+5. VCF field to extract (explain later)
+6. VCF tags in the INFO field to extract (explain later)
+7. VCF tags in the individual field to extract (explain later)</p>
+
+<p>The last three parameter are closely related to VCF format.
+In the VCF data lines, there are 8 fixed fields per record: CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO. These field, as well as the FORMAT field can be specifed in the 5th parameter. For example, specify c(&quot;CHROM&quot;, &quot;POS&quot;) will extract the genomic position.</p>
+
+<p>In the VCF INFO field, there may be information including variant depth (DP), variant allele counts (AC), total allele counts (AN). To extract those information, use the 6th paramter. </p>
+
+<p>In the VCF genotype fileds, which are from the 10th column to the last column per record, it contains the individual level information. Mostly commonly used information are genotype (GT), genotype depth (GD) and genotype quality (GQ). To extract these, specify c(&quot;GT&quot;, &quot;GD&quot;, &quot;GQ&quot;) in the 7th parameter.</p>
+
+<p>The extraction results are stored in <em>result</em> in our example. All values are characters for simplicity. 
+The extraction results is a list, and it contains CHROM, ID, AC, AN, GT and sampleId.
+CHROM and ID are speicified in the 5th parameter; AC and AN are speicified by the 6th parameter; GT are specified in the last parameter.
+We also list sample IDs in the sampleId part.</p>
+
+<h2>Applying rare-variant analysis</h2>
+
+<p>SeqMiner can greatly reduce your effort to process huge sequencing files in VCF format. That indicates your valuable time can be spared on more important things (e.g. investigating causal variants).</p>
+
+<p>Here we demonstrate how to apply <a href="http://www.hsph.harvard.edu/skat/">SKAT</a> method to study CFH gene. The genotype file we used is extracted from <a href="http://www.1000genomes.org/">1000 Genomes Project</a>. It contains 85 individuals in <a href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/working/20111108_samples_pedigree/20111108_1000genomes_samples.xls">CEU population</a> and the variants are all located in the CFH gene region.  We will use <em>simulated</em> phenotype in this demonstration.</p>
+
+<pre><code class="r"># Extract genotype matrix
+vcf.1000g &lt;- system.file(&quot;vcf/1000g.phase1.20110521.CFH.var.anno.vcf.gz&quot;, package = &quot;seqminer&quot;)
+geneFile = system.file(&quot;vcf/refFlat_hg19_6col.txt.gz&quot;, package = &quot;seqminer&quot;)
+geneName &lt;- &quot;CFH&quot;
+cfh &lt;- readVCFToMatrixByGene(vcf.1000g, geneFile, geneName, &quot;Nonsynonymous&quot;)
+</code></pre>
+
+<pre><code>## 1 region to be extracted.
+</code></pre>
+
+<pre><code class="r"># now cfh is a marker by people matrix
+dim(cfh)
+</code></pre>
+
+<pre><code>## NULL
+</code></pre>
+
+<pre><code class="r">
+# Simulation phenotype under the null model
+pheno &lt;- rnorm(ncol(cfh))
+</code></pre>
+
+<pre><code>## Error: invalid arguments
+</code></pre>
+
+<pre><code class="r">
+# Apply SKAT method
+library(SKAT)
+obj &lt;- SKAT_Null_Model(pheno ~ 1, out_type = &quot;C&quot;)
+</code></pre>
+
+<pre><code>## Error: object &#39;pheno&#39; not found
+</code></pre>
+
+<pre><code class="r">SKAT(t(cfh), obj)$p.value
+</code></pre>
+
+<pre><code>## Error: object &#39;obj&#39; not found
+</code></pre>
+
+<p>Another way to extract genotype is <code>readVCFToListByGene</code> function, which provides more options to extract genotypical information from VCF file. In the following example, we extract chromosome name, chromosomal position, reference allele, annotation and genotype:</p>
+
+<pre><code class="r"># Extract genotype matrix
+vcf.1000g &lt;- system.file(&quot;vcf/1000g.phase1.20110521.CFH.var.anno.vcf.gz&quot;, package = &quot;seqminer&quot;)
+geneFile = system.file(&quot;vcf/refFlat_hg19_6col.txt.gz&quot;, package = &quot;seqminer&quot;)
+geneName &lt;- &quot;CFH&quot;
+</code></pre>
+
+<pre><code class="r">cfh &lt;- readVCFToListByGene(vcf.1000g, geneFile, geneName, &quot;Nonsynonymous&quot;, c(&quot;CHR&quot;, 
+    &quot;POS&quot;, &quot;REF&quot;, &quot;ALT&quot;), c(&quot;ANNO&quot;), c(&quot;GT&quot;))
+</code></pre>
+
+<pre><code class="r">dim(cfh$GT)
+</code></pre>
+
+<pre><code>## [1] 85 10
+</code></pre>
+
+<pre><code class="r">
+# Convert 0|0, 0|1, 1|1 style genotype to 0, 1, 2 geno is a people by marker
+# matrix
+geno &lt;- matrix(NA, nr = nrow(cfh$GT), ncol(cfh$GT))
+geno[cfh$GT == &quot;0|0&quot;] = 0
+geno[cfh$GT == &quot;0|1&quot;] = 1
+geno[cfh$GT == &quot;1|1&quot;] = 2
+
+# Apply SKAT method
+library(SKAT)
+obj &lt;- SKAT_Null_Model(pheno ~ 1, out_type = &quot;C&quot;)
+</code></pre>
+
+<pre><code>## Error: object &#39;pheno&#39; not found
+</code></pre>
+
+<pre><code class="r">SKAT(geno, obj)$p.value
+</code></pre>
+
+<pre><code>## Error: object &#39;obj&#39; not found
+</code></pre>
+
+<h2>Contact</h2>
+
+<p>SeqMiner is developed by <a href="mailto:zhanxw@gmail.com">Xiaowei Zhan</a> and <a href="mailto:dajiang.liu@gmail.com">Dajiang Liu</a>.
+We welcome your questions and feedbacks.</p>
+
+</body>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21871925-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</html>

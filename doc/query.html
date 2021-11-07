@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>SeqMiner Quick Tutorial</title>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 1200px;
+  margin: auto;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- jQuery -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+
+<!-- highlight.js -->
+<link rel="stylesheet" href="http://yandex.st/highlightjs/7.3/styles/vs.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js"></script>
+<script src="http://yandex.st/highlightjs/7.3/languages/r.min.js"></script>
+
+<!-- bootstrap -->
+<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" id="style" media="screen">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+
+<!-- bootstrap-responsive -->
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" media="screen">
+
+<!-- tocify -->
+<link rel="stylesheet" href="http://gregfranko.com/jquery.tocify.js/css/jquery.tocify.css">
+<script src="http://gregfranko.com/jquery.tocify.js/js/jquery.tocify.min.js"></script>
+
+<!-- fancybox -->
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.js"></script>
+
+<script>
+
+/* run scripts when document is ready */
+$(function() {
+
+  /* size of thumbnails */
+  var thumbsize = "span4";
+
+  /* included languages */
+  var languages = {};
+
+  /* Add div wrapping class to code blocks without them */
+  $('pre code').each(function(){
+
+    var block_type, code_type;
+    /* output block */
+    if($(this).hasClass('')){
+      block_type = "output";
+      code_type = "";
+    }
+    /* source code block */
+    else{
+      block_type = "source";
+      code_type = $(this).attr('class');
+    }
+    /* no wrapping div, not using render_html(), so add to wrap */
+    if($(this).closest('div').length < 1){
+      $(this).parent().wrap('<div class="' + [block_type, code_type].join(" ") + '"></div>');
+    }
+    /* just add code type to the parent div */
+    else{
+      $(this).closest('div').addClass(code_type);
+    }
+  });
+
+  /* style tables, set them as output*/
+  $('table').addClass('table table-striped table-bordered table-hover table-condensed')
+    .wrap('<div class="output", style="overflow: auto"/>');
+
+  /* find all code or output blocks which have a class and add toggle */
+  $('div.source, div.output').each(function() {
+    var button = $('<button class="btn-mini btn-link btn toggle " data-toggle="button">+/- </button>');
+
+    /* code block */
+    if($(this).hasClass('source')){
+      var code_block = $(this).find('code');
+      var lang_type = code_block.attr('class');
+      button.text(button.text() + lang_type + ' Code');
+      button.addClass('source ' + lang_type);
+      languages[lang_type]=1;
+      code_block.each(function(i, e) {
+        hljs.highlightBlock(e);
+      });
+    }
+
+    /* output block */
+    else {
+      button.text(button.text() + 'Output');
+      button.addClass('output active');
+    }
+    $(this).before(button);
+  });
+
+  /* syntax highlight code blocks*/
+
+  /* onclick toggle next code block */
+  $('.toggle').click(function() {
+    $(this).button('toggle');
+    $(this).next('div').slideToggle();
+    return false;
+  });
+
+  /* give images a fancybox and thumbnail classes to allow lightbox and thumbnails TODO: make fancybox prev next if grouped */
+  $('p').each(function(){
+    $(this).find('img').unwrap().wrapAll('<div class="row-fluid"><div class="rimage thumbnails"></div></div>');
+  });
+  $('div.rimage').children('img').wrap('<a href="#", class="' + thumbsize + ' thumbnail"></a></li>').addClass('fancybox');
+
+  /* fancybox */
+  $(".fancybox").each( function() {
+    var img = $(this);
+    $(this).fancybox({
+      beforeLoad: function(){
+        <!--img.removeClass('thumbnail');-->
+      },
+      afterClose: function(){
+        <!--img.addClass('thumbnail');-->
+        img.css('display', 'block');
+      },
+    });
+  });
+
+  /* add bootstrap classes */
+  $('body').wrapInner('<div class="container-fluid"><div class="row-fluid"><div class="span9">');
+  $('.container-fluid >.row-fluid').prepend('<div class="span3"><div id="toc"></div></div>');
+
+  create_language_links = function(){
+    var text='';
+    for(language in languages){
+      text += '<li><a href="#" class="source toggle_global btn-link btn" type="source.' + language + '">' + language + '</a></li>\n';
+    }
+    return text;
+  }
+
+  /* add navbar */
+  $('.container-fluid').prepend(
+    '<div id="bottom-navbar" class="navbar-fixed-bottom navbar">\
+      <div class="navbar-inner">\
+        <div class="pull-right">\
+          <span class="navbar-text">Toggle</span>\
+          <div class="btn-group dropup" data-toggle="button-checkbox">\
+            <button type="source" class="toggle_global btn">Code</button>\
+            <button class="btn dropdown-toggle" data-toggle="dropdown">\
+              <span class="caret"></span>\
+            </button>\
+            <ul class="dropdown-menu pull-right">' 
+              + create_language_links() + 
+            '</div>\
+            <button type="output" class="toggle_global btn active">Output</button>\
+            <button type="thumbnails" class="toggle_global btn active">Plots</button>\
+          </div>\
+        </div>\
+      </div>\
+    </div>'
+  );
+
+  /* global toggles FIXME explicitly toggle all on/off using global variables */
+  $('.toggle_global').click(function(){
+    $(this).button('toggle');
+    var type = $(this).attr('type');
+    $('.' + type).button('toggle');
+    $('div.' + type).slideToggle();
+    return false;
+  });
+
+  /* toggle code blocks hidden by default */
+  /* $('div.source').toggle(); */
+
+  /* add table of contents */
+  $('#toc').tocify({extendPage: false});
+
+  /* if using render_html() hook, make functions links to custom R search */
+  /*search in ggplot documentation or inside-r.org */
+  $("span.functioncall").replaceWith(function(){
+
+    return '<a target="_blank" href="http://www.google.com/search?sourceid=navclient&gfns=1&\
+q=site:docs.ggplot2.org/current OR site:inside-r.org ' +
+    $(this).text() + '">' + $(this).text()+'</a>'
+  });
+
+  /* add footer */
+  $('body').wrapInner('<div id="wrap" />');
+  $('body').append('<div id="push" />');
+  var p = $('p:contains("Author:")');
+  var last_p = p.filter(':last');
+  p.detach();
+  last_p.addClass('muted').attr('id','credit');
+  last_p.append('<p>styled with <a href="https://github.com/jimhester/knitr_bootstrap">knitr_bootstrap</a></p>');
+  last_p.appendTo("body");
+  last_p.wrap('<div id="footer"><div class="container" /></div>');
+});
+</script>
+
+<style type="text/css">
+
+/* Knitr_bootstrap styles
+-------------------------------------------------- */
+.container-fluid {
+  padding-left: 0 !important;
+}
+
+.toggle{
+  text-transform: capitalize;
+}
+
+.toggle_global{
+  text-transform: capitalize;
+}
+
+.thumbnails { text-align:center; }
+.thumbnails > .thumbnail { display: inline-block !important; float: none !important; }
+
+/* Sticky footer styles
+-------------------------------------------------- */
+* {
+  margin:0;
+}
+html,
+body {
+    height: 100%;
+    /* The html and body elements cannot have any padding or margin. */
+}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    /* Negative indent footer by it's height */
+    margin: 0 auto -60px;
+}
+
+/* Set the fixed height of the footer here */
+#push,
+#footer {
+    height: 60px;
+    padding-bottom: 60px;
+}
+
+#footer {
+  text-align: center;
+}
+
+/* Twitter Bootstrap Overrides */
+/* -------------------------------------------------- */
+.nav-list > li > a, .nav-list .nav-header {
+    margin: 0px !important;
+}
+.nav-list > li > a {
+    padding: 5px !important;
+}
+
+/* Tocify */
+/* -------------------------------------------------- */
+
+/* Display h2 headers */
+.sub-header {
+  display: block;
+}
+
+/* Hide the rest */
+.sub-header .sub-header {
+  display: none;
+}
+
+ /* Indent h4 elements */
+.sub-header .sub-header .sub-header .sub-header {
+  text-indent: 50px;
+}
+
+</style>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21871925-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+
+<body>
+<h1>SeqMiner Quick Tutorial</h1>
+
+<p>(Updated May 10, 2014)</p>
+
+<p><em>To receive email notification of updated manual, please <a href="http://eepurl.com/wg-IT">Sign up</a></em></p>
+
+<p><a href="http://cran.r-project.org/web/packages/seqminer/index.html">SeqMiner</a> (formerly, <a href="http://cran.r-project.org/web/packages/vcf2geno/index.html">vcf2geno</a>) is an R package that helps you efficiently extracting sequencing data in the <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41">VCF format</a> files. We hope SeqMiner becomes a valuable tool for bioinformaticians, compuational genetists and statistical genetists. </p>
+
+<p>In this tutorial, we will go over some basic SeqMiner functions of handling VCF files. These include gene-based annotations, GERP-score integration and genetic data extraction. These instructions are also available in SeqMiner demos, which can be invoked by <em>&gt; demo(&quot;workflow&quot;, package = &quot;seqminer&quot;)</em>.</p>
+
+<p><strong>NOTE</strong> First thing to note, SeqMiner requires VCF/BCF files indexed by Tabix. </p>
+
+<h2>Gene-based annotation</h2>
+
+<p>We will need to prepare annotation parameters. At minimal, we need (1) a reference genome files (FASTA format) and its index (.fa.fai) and (2) gene definitation file (refFlat format)</p>
+
+<pre><code class="r">library(seqminer)
+</code></pre>
+
+<pre><code>## Loading required package: stringr
+</code></pre>
+
+<pre><code class="r">param &lt;- list(reference = system.file(&quot;tabanno/test.fa&quot;, package = &quot;seqminer&quot;), 
+    geneFile = system.file(&quot;tabanno/test.gene.txt&quot;, package = &quot;seqminer&quot;))
+param &lt;- makeAnnotationParameter(param)
+</code></pre>
+
+<p>We have an example VCF file <code>input.demo.vcf</code> and we will specify an output file <code>out.vcf.gz</code></p>
+
+<pre><code class="r">input &lt;- system.file(&quot;tabanno/input.demo.vcf&quot;, package = &quot;seqminer&quot;)
+output &lt;- paste0(getwd(), &quot;/&quot;, &quot;out.vcf.gz&quot;)
+annotateVcf(input, output, param)
+</code></pre>
+
+<pre><code>## Output file are written to [ /Library/Frameworks/R.framework/Versions/3.1/Resources/library/seqminer/tabanno/out.vcf.gz ].
+</code></pre>
+
+<pre><code>## NULL
+</code></pre>
+
+<p>The above messages shows the annotation steps finish successfully.</p>
+
+<h2>Annotation and Integration</h2>
+
+<p>We will demonstrate how to perform gene-based annotation, region-based annotation and GERP-score integration in just one step.
+In order to integrate external bioinformatics databas (DB), we use a region-based file as example (BED format).
+Here are relevant parameters:</p>
+
+<ol>
+<li>we use &#39;bed=&#39; option to specify a region-based database;</li>
+<li>we use &#39;tabix=&#39; option to specify a tabix-based resource file;</li>
+<li>we use &#39;indexOutput=TRUE&#39; to index outputted VCF file</li>
+</ol>
+
+<pre><code class="r">setwd(system.file(&quot;tabanno&quot;, package = &quot;seqminer&quot;))
+param &lt;- list(reference = &quot;test.fa&quot;, geneFile = &quot;test.gene.txt&quot;, bed = &quot;REGION=test.bed&quot;, 
+    tabix = &quot;test.dbNSFP.gz(SIFT=9,PolyPhen=10)&quot;, indexOutput = TRUE)
+param &lt;- makeAnnotationParameter(param)
+input &lt;- &quot;input.demo.vcf&quot;
+output &lt;- &quot;out.vcf.gz&quot;
+annotateVcf(input, output, param)
+</code></pre>
+
+<pre><code>## Output file are written to [ out.vcf.gz ].
+</code></pre>
+
+<pre><code>## NULL
+</code></pre>
+
+<h2>Query genetic data</h2>
+
+<p>Now we are able to query the VCF by region or by gene</p>
+
+<h2>Extract by region</h2>
+
+<p>A quick way to obtain gentoype matrix:</p>
+
+<pre><code class="r">genotype &lt;- readVCFToMatrixByRange(fileName = output, range = &quot;1:1-10&quot;, annoType = &quot;&quot;)
+</code></pre>
+
+<pre><code>## 1 region to be extracted.
+</code></pre>
+
+<pre><code class="r">print(genotype)
+</code></pre>
+
+<pre><code>## $`1:1-10`
+##     NA12891 NA12892
+## 1:3       1       0
+## 1:5       1       0
+## 1:7       1       0
+</code></pre>
+
+<p>You can also fine-control what fields from VCFs to extract:</p>
+
+<pre><code class="r">genotypeList &lt;- readVCFToListByRange(fileName = output, range = &quot;1:1-10&quot;, annoType = &quot;&quot;, 
+    vcfColumn = c(&quot;CHROM&quot;, &quot;POS&quot;), vcfInfo = c(&quot;ANNO&quot;, &quot;SIFT&quot;), vcfIndv = &quot;GT&quot;)
+print(genotypeList)
+</code></pre>
+
+<pre><code>## $CHROM
+## [1] &quot;1&quot; &quot;1&quot; &quot;1&quot;
+## 
+## $POS
+## [1] 3 5 7
+## 
+## $ANNO
+## [1] &quot;Normal_Splice_Site:GENE1|GENE3&quot; &quot;Nonsynonymous:GENE1|GENE3&quot;     
+## [3] &quot;Monomorphic&quot;                   
+## 
+## $SIFT
+## [1] &quot;0.0&quot; &quot;NA&quot;  &quot;NA&quot; 
+## 
+## $GT
+##      [,1]  [,2]  [,3] 
+## [1,] &quot;1/0&quot; &quot;1/0&quot; &quot;1/0&quot;
+## [2,] &quot;0/0&quot; &quot;0/0&quot; &quot;0/0&quot;
+## 
+## $sampleId
+## [1] &quot;NA12891&quot; &quot;NA12892&quot;
+</code></pre>
+
+<h2>Extract by gene</h2>
+
+<p>Another useful feature for seqminer is to extract data by gene.
+Similar to &#39;readVCFToMatrixByRange&#39;, we use &#39;readVCFToMatrixByGene&#39;:</p>
+
+<pre><code class="r">geneFile = system.file(&quot;tabanno/test.gene.txt&quot;, package = &quot;seqminer&quot;)
+genotype &lt;- readVCFToMatrixByGene(fileName = output, geneFile = geneFile, geneName = &quot;GENE1&quot;, 
+    annoType = &quot;&quot;)
+</code></pre>
+
+<pre><code>## 1 region to be extracted.
+</code></pre>
+
+<pre><code class="r">print(genotype)
+</code></pre>
+
+<pre><code>## $GENE1
+##      NA12891 NA12892
+## 1:3        1       0
+## 1:5        1       0
+## 1:7        1       0
+## 1:13       1       0
+## 1:14       1       0
+## 1:20       1       0
+## 1:22       1       0
+## 1:25       1       0
+## 1:43       1       0
+## 1:44       1       0
+## 1:50       1       0
+## 1:53       1       0
+## 1:53       1       0
+## 1:53       1       0
+## 1:66       1       0
+</code></pre>
+
+<p>Similar to <em>readVCFToMatrixByRange</em>, we use <em>readVCFToMatrixByGene</em>:</p>
+
+<pre><code class="r">genotypeList &lt;- readVCFToListByGene(fileName = output, geneFile = geneFile, 
+    geneName = &quot;GENE1&quot;, annoType = &quot;&quot;, vcfColumn = c(&quot;CHROM&quot;, &quot;POS&quot;), vcfInfo = &quot;ANNO&quot;, 
+    vcfIndv = &quot;GT&quot;)
+print(genotypeList)
+</code></pre>
+
+<pre><code>## $CHROM
+##  [1] &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot;
+## 
+## $POS
+##  [1]  3  5  7 13 14 20 22 25 43 44 50 53 53 53 66
+## 
+## $ANNO
+##  [1] &quot;Normal_Splice_Site:GENE1|GENE3&quot;       
+##  [2] &quot;Nonsynonymous:GENE1|GENE3&quot;            
+##  [3] &quot;Monomorphic&quot;                          
+##  [4] &quot;Synonymous:GENE1|GENE3&quot;               
+##  [5] &quot;CodonGain:GENE1|GENE3&quot;                
+##  [6] &quot;Frameshift:GENE1|GENE3&quot;               
+##  [7] &quot;Insertion:GENE1|GENE2|GENE3&quot;          
+##  [8] &quot;Stop_Loss:GENE1&quot;                      
+##  [9] &quot;Normal_Splice_Site:GENE1|GENE3&quot;       
+## [10] &quot;Normal_Splice_Site:GENE1|GENE3&quot;       
+## [11] &quot;Essential_Splice_Site:GENE1|GENE3&quot;    
+## [12] &quot;StructuralVariation:GENE1|GENE2|GENE3&quot;
+## [13] &quot;Nonsynonymous:GENE1&quot;                  
+## [14] &quot;Nonsynonymous:GENE1&quot;                  
+## [15] &quot;Utr5:GENE3&quot;                           
+## 
+## $GT
+##      [,1]  [,2]  [,3]  [,4]  [,5]  [,6]  [,7]  [,8]  [,9]  [,10] [,11]
+## [1,] &quot;1/0&quot; &quot;1/0&quot; &quot;1/0&quot; &quot;1/0&quot; &quot;1/0&quot; &quot;1/0&quot; &quot;1/0&quot; &quot;1/0&quot; &quot;1/0&quot; &quot;1/0&quot; &quot;1/0&quot;
+## [2,] &quot;0/0&quot; &quot;0/0&quot; &quot;0/0&quot; &quot;0/0&quot; &quot;0/0&quot; &quot;0/0&quot; &quot;0/0&quot; &quot;0/0&quot; &quot;0/0&quot; &quot;0/0&quot; &quot;0/0&quot;
+##      [,12] [,13] [,14] [,15]
+## [1,] &quot;1/0&quot; &quot;1/0&quot; &quot;1/0&quot; &quot;1/0&quot;
+## [2,] &quot;0/0&quot; &quot;0/0&quot; &quot;0/0&quot; &quot;0/0&quot;
+## 
+## $sampleId
+## [1] &quot;NA12891&quot; &quot;NA12892&quot;
+</code></pre>
+
+<h2>Contact</h2>
+
+<p>SeqMiner is developed by <a href="mailto:zhanxw@gmail.com">Xiaowei Zhan</a> and <a href="mailto:dajiang.liu@gmail.com">Dajiang Liu</a>.
+We welcome your questions and feedbacks.</p>
+
+</body>
+
+</html>

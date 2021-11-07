@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<style>
+/**
+ * Hatchd Digital Mou Theme
+ * @author: Hatchd
+ * @version: 1.0.0
+ */
+
+/**
+ * Webfonts
+ */
+
+@font-face {
+  font-family: 'vistaslab-bold';
+  src: url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-bold-071211001EmigreWebOnly.eot');
+  src: url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-bold-071211001EmigreWebOnly.eot?#iefix') format('embedded-opentype'), url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-bold-071211001EmigreWebOnly.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'vistaslab';
+  src: url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-light-071211001EmigreWebOnly.eot');
+  src: url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-light-071211001EmigreWebOnly.eot?#iefix') format('embedded-opentype'), url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-light-071211001EmigreWebOnly.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/**
+ * Normalize
+ * (trimmed down)
+ */
+    html {
+      font-size: 100%;
+    }
+
+    a:active,
+    a:hover {
+      outline: 0;
+    }
+
+
+/**
+ * Tables
+ */
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+/**
+ * Typography
+ */
+
+    body {
+      font-size: 100%;
+      line-height: 1.5em;
+      font-family: 'vistaslab', serif;
+      color: #000000;
+    }
+
+    h1,
+    h2,
+    strong,
+    b{
+      font-family: 'vistaslab-bold', serif;
+    }
+
+    p,
+    li,
+    dt,
+    dd {
+      font-size: 1em;
+      line-height: 1.5em;
+    }
+
+    p {
+      margin: 0 0 1em 0;
+    }
+
+    hr {
+      display: block;
+      clear: both;
+      height: 1px;
+      margin: 1em 0;
+      border: none;
+      background: #cccccc;
+    }
+
+    sup,
+    sub {
+      font-size: 75%;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+    }
+
+    sup {
+      top: -0.5em;
+    }
+
+    sub {
+      bottom: -0.25em;
+    }
+
+    ins {
+      background-color: #cccccc;
+    }
+
+    del {
+      text-decoration: line-through;
+    }
+
+    s {
+      color: #cccccc;
+      text-decoration: line-through;
+    }
+
+    mark {
+      background-color: #cccccc;
+      color: inherit;
+      font-weight: normal;
+    }
+
+    small {
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    strong,
+    b {
+      font-weight: normal;
+    }
+
+    em,
+    i {
+      font-style: italic;
+    }
+
+    dfn,
+    abbr {
+      font-style: inherit;
+      position: relative;
+    }
+
+    .feature-text {
+      color: #ef4136;
+    }
+
+    hgroup {
+      position: relative;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      line-height: 1.3em;
+      font-weight: normal;
+      margin: 1em 0 0.5em 0;
+      position: relative;
+      clear: both;
+    }
+
+    h1 {
+      font-size: 1.875em;
+    }
+
+    h2 {
+      font-size: 1.25em;
+    }
+
+    h3 {
+      font-size: 1em;
+      font-weight: bold;
+    }
+
+    ul,
+    ol,
+    dl {
+      margin: 0 0 1em 2em;
+      padding: 0;
+    }
+
+    ul li,
+    ol li {
+      margin: 0 0 0.25em 0;
+    }
+
+    ul {
+      list-style: disc outside;
+    }
+
+    ul ul {
+      margin: 0.25em 0 0.5em 1em;
+    }
+
+    ol {
+      list-style: decimal outside;
+    }
+
+    ol ol {
+      margin: 0.25em 0 0.5em 1.5em;
+      list-style-type: lower-roman;
+    }
+
+    dl {
+      margin-left: 0;
+    }
+
+    dt {
+      font-weight: bold;
+      margin: 0 0 0.5em 0;
+      padding: 1em 0 0 0;
+    }
+
+    dd {
+      margin: 0 0 0.5em 0;
+    }
+
+    blockquote {
+      margin: 0 0 2em 2em;
+      padding: 1em 0 0 0;
+    }
+
+    blockquote > p {
+      padding: 0 1em;
+      font-size: 1.6em;
+      line-height: 1.2em;
+    }
+
+    blockquote > p:first-child:before,
+    blockquote > p:first-child:after {
+      content: '"';
+    }
+
+    q {
+      font-style: italic;
+      color: inherit;
+    }
+
+    cite {
+      font-style: italic;
+    }
+
+    pre {
+      white-space: pre;
+      width: 100%;
+      overflow: auto;
+      margin: 2em 0 2em 0;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+    }
+
+    code,
+    samp,
+    kbd {
+      display: inline-block;
+      padding: 0 0.5em;
+    }
+
+    var {
+      font-style: italic;
+      font-weight: bold;
+    }
+
+/**
+ * Links
+ */
+    a,
+    a:link,
+    a:visited {
+      color: #ef4136;
+      text-decoration: underline;
+    }
+
+    a:hover {
+      color: #ef4136;
+      text-decoration: none;
+    }
+
+    a:active {
+      color: #ef4136;
+      text-decoration: underline;
+    }
+
+    ::selection {
+      color: #ffffff;
+      background: #cccccc;
+    }
+
+    ::-moz-selection {
+      color: #ffffff;
+      background: #cccccc;
+    }
+
+
+/**
+ * Images
+ */
+    img {
+      display: block;
+      border: 0;
+      margin: 0 0 1em 0;
+      width: 100%;
+    }
+
+/**
+ * Layout
+ */
+    body{
+        max-width: 830px;
+        width: 96%;
+        margin:auto;
+        padding:2em 0;
+    }
+
+
+</style>
+<title>Data Integration</title>
+<link href="css/toc.css" rel="stylesheet"/><script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script src="js/toc.min.js"></script></head>
+<body>
+<h1>Data Integration</h1>
+<h2>Introduction</h2>
+<p>SEQMINER can integrate data from various sources (e.g. annotation). Annotation information is necessary for determining analysis units (e.g., single variant tests or gene-based tests) and variant priority in statistical analysis. SEQMINER implements an efficient and powerful variant annotator for sequence data in generic TSV files, supporting both gene-based and region-based annotation.</p>
+<p>Our goal is to provide abundant information for genetic variants efficiently.
+Some annotation software output annotations for only one transcript, while SEQMINER
+will provide annotations to all transcripts. SEQMINER supports
+various file format: VCF file, plain text file, plink association output file
+and
+<a href="http://genome.sph.umich.edu/wiki/EPACTS" title="http://genome.sph.umich.edu/wiki/EPACTS">EPACTS</a>
+file.</p>
+<p>We also provide a similar standalone command line tool, TabAnno (short for "Tab-delimited file Annotation"). This tool are best described (<a href="http://zhanxw.github.io/anno">here</a>).</p>
+<h2>Quick tutorial</h2>
+<h3>Gene annotation</h3>
+<p>You first need to install and load seqminer. Under R computation environment, use:</p>
+<pre><code># Installation:
+install.packages("seqminer")
+# Load SEQMINER library:
+library("seqminer")
+</code></pre>
+<p>You have an input file in VCF format, and your goal is to annotate it
+using refFlat gene definition. Then you need the following command:</p>
+<ol>
+<li>Provide necessary annotation resource
+<code>
+reference &lt;-  system.file("tabanno/test.fa", package = "seqminer")
+geneFile &lt;- system.file("tabanno/test.gene.txt", package = "seqminer")
+</code></li>
+<li>Construct annotation parameters
+<code>
+param &lt;- list(reference = reference,
+            geneFile = geneFile)
+param &lt;- makeAnnotationParameter(param)
+</code></li>
+<li>Provide input and output file names
+<code>
+inVcf &lt;- system.file("tabanno/input.test.vcf", package = "seqminer")
+outVcf &lt;- paste0(getwd(), "/", "output.vcf")
+</code></li>
+<li>Perform data integration using annotateVcf()
+<code>
+annotateVcf (inVcf, outVcf, param)
+</code></li>
+</ol>
+<h3>Outputs</h3>
+<p>Annotated VCF will be named <em>output.vcf</em> under current directory. Annotation results have two additional tags:
+ANNO and ANNOFULL. The first tag ANNO showed the most important
+annotation types (determined by priority file); the second tag ANNOFULL
+showed detailed annotations. Let's see one example annotation:</p>
+<pre><code>ANNO=Nonsynonymous:GENE1|GENE3;ANNOFULL=GENE1/CODING_GENE:+:Nonsynonymous(CCT/Pro/P-&gt;CAT/His/H:Base3/30:Codon1/10:Exon1/5):Normal_Splice_Site:Exon|GENE3/CODING_GENE:-:Nonsynonymous(AGG/Arg/R-&gt;ATG/Met/M:Base30/30:Codon10/10:Exon5/5):Normal_Splice_Site:Exon|GENE2/NON_CODING_GENE:+:Upstream
+</code></pre>
+<p>ANNO tag displayed the most important variant type is <em>Nonsynonymous</em>
+and that happened at GENE1 and GENE3; ANNOFULL tag is the full set of
+annotation and it consists of two parts, for GENE1 and GENE3
+respectively. The first part is for GENE1:</p>
+<pre><code>GENE1/CODING_GENE:+:Nonsynonymous(CCT/Pro/P-&gt;CAT/His/H:Base3/30:Codon1/10:Exon1/5):Normal_Splice_Site:Exon
+</code></pre>
+<p>The format can be explained by sections, and we use annotation for GENE1
+as an example:</p>
+<ul>
+<li>GENE1 : gene name</li>
+<li>CODING_GENE : transcript name</li>
+<li><em>+</em> : forward strand</li>
+<li>Nonsynonymous, Normal_Splice_Site, Exon : various annotation types</li>
+<li>CCT/Pro/P-&gt;CAT/His/H : Proline to Histidine mutation</li>
+<li>Base3/30 : mutation happens on the 3rd base of the total 10 bases</li>
+<li>Codon1/10 : mutation happens on the 1st codon of the total 10 codons</li>
+<li>Exon1/5 : mutation happens on the 1st exon of the total 5 exons</li>
+</ul>
+<h2>Usage</h2>
+<p>The workflow of SEQMINER data integration has two steps.
+In the first step, you create annotation parameter (refer to the Parameters section), then you apply the parameter, input file name and output file name in a  annotation related function calls (e.g. annotateVCF).</p>
+<h3>Create parameters</h3>
+<p>Parameter is a R list where you can customize data integration steps.
+In the simplest case, you can use makeAnnotationParameter() to create a default parameter:</p>
+<pre><code>param &lt;- makeAnnotationParameter()
+</code></pre>
+<p>You can optionally change some parameters, for example, change reference genome:</p>
+<pre><code>reference &lt;- "reference.fa"
+param &lt;- makeAnnotationParameter(reference = reference)
+</code></pre>
+<p>Most parameter names are self explanatory, and here we list all of them.</p>
+<ul>
+<li>Reference genome file (reference)</li>
+</ul>
+<!-- -->
+<pre><code>reference: Specify a FASTA format reference genome file.
+</code></pre>
+<p>Specifying <em>reference</em> option will enable SEQMINER to give more nucleotide level information, for
+example, instead of just annotating a variant as exon, it will tell you which
+codon, which exon that variant locates, whether its
+synonymous/non-synonymous and etc.</p>
+<p>SEQMINER requires a FASTA index file and that will save running memory and
+speed up annotation. You can use "samtools faidx FileName.fa" to generate
+Fasta index file.</p>
+<p>For example, you can specify a FASTA file of the whole genome and use <code>param &lt;- list(reference = "/path/to/human.g1k.v37.fa</code></p>
+<ul>
+<li>Gene file and gene file format (geneFile, geneFileFormat)</li>
+</ul>
+<p>Currently, SEQMINER supports gene file in refFlat, knownGene and refGene format. A prepared list of
+all gene obtained of UCSC website is: <a href="http://qbrc.swmed.edu/zhanxw/seqminer/data/refFlat_hg19.txt.gz">refFlat_hg19.txt.gz</a> . To use that file, you need to download it to local hard drive and use the option <em>geneFile</em>.</p>
+<p>As SEQMINER supports refFlat file by default, you can skip specifying the gene file format to be refFlat (no need to specify <em>geneFileFormat</em>). However, to use knownGene or refGene format, you need to specify both <em>geneFile</em> and
+<em>geneFileFormat</em> to tell SEQMINER which gene file path and its format. For example,
+<code>param &lt;- list(geneFile = "/net/fantasia/home/zhanxw/anno/knownGene.txt.gz", geneFileFormat = "knownGene"</code>.</p>
+<ul>
+<li>Codon file (codonFile)</li>
+</ul>
+<p>Codon file can tell the relationship between triplet codons and amino
+acids. A default file (human codon) is provided with the package in:
+<code>system.file("tabanno/codon.txt", package = "seqminer")</code>.
+If you have special codon file, you can specify that using flag <em>codonFile</em>, otherwise, SEQMINER will use the
+default codon file:</p>
+<p><em>default codon file</em></p>
+<pre><code># DNA codon table. Stop codon is coded as: Stp, O, Stop
+#Codon      AminoAcid   Letter   FullName
+AAA     Lys     K       Lysine
+AAC     Asn     N       Asparagine
+AAG     Lys     K       Lysine
+AAT     Asn     N       Asparagine
+ACA     Thr     T       Threonine
+...
+</code></pre>
+<ul>
+<li>Annotation ranges (upstreamRange, downstreamRange, spliceIntoExon, spliceIntoIntron)</li>
+</ul>
+<!-- -->
+<pre><code>upstreamRange: how far apart from 5'-end of the gene are counted as upstream
+downstreamRange: how far apart from 3'-end of the gene are counted as downstream
+</code></pre>
+<p>The <em>upstreamRange</em> and <em>downstreamRange</em> parameters define the range of upstream and
+downstream.</p>
+<pre><code>spliceIntoExon: how far apart from 5'-end of the gene are counted as upstream
+spliceIntoIntron: how far apart from 3'-end of the gene are counted as upstream
+</code></pre>
+<p>The <em>spliceIntoExon</em> and <em>spliceIntoIntron</em> defines the splice region. By default, 3 bases into
+the exon and 8 bases into the introns are defined as splicing sites. If
+mutations happen in these regions, we will annotate it as
+"Normal_Splice_Site" unless the mutations happens in the traditionally
+important "GU...AG" region in the intron, in that case, we will
+"Essential_Splice_Site" as annotation.</p>
+<ul>
+<li>Region-based annotation (bed)</li>
+</ul>
+<!-- -->
+<pre><code>                    bed : Specify the bed file and tag (e.g. ONTARGET1=a1.bed,ONTARGET2=a2.bed)
+</code></pre>
+<p>BED file is commonly used to represent range. Here you will check if
+certain genome position is contained in one or more ranges specified in
+the BED format. An example BED file, example.bed, is as follows:</p>
+<pre><code>1 10 20 a
+1 15 40 b
+</code></pre>
+<p>There are two ranges: range a is from chromsome 1 position 10
+(inclusive) to chromosome 1 position 20 (exclusive); range b is from
+chromsome 1 position 15 (inclusive) to chromosome 1 position 40
+(exclusive).</p>
+<p>When use <code>param &lt;- list(bed="ONTARGET=example.bed)</code> as parameter, the output may look
+like this: <em>ONTARGET=a,b</em> in the VCF INFO field. That means the variant overlap both region <em>a</em>(chromosome 1, base position 10 to 20) and <em>b</em> (chromosome 1, base position 15 to 40).</p>
+<ul>
+<li>Annotate by genome score (genomeScore)</li>
+</ul>
+<!-- -->
+<pre><code>            genomeScore : Specify the folder of genome score (e.g. GERP=dirGerp/,SIFT=dirSift/)
+</code></pre>
+<p>Genome score is a special binary file format (designed by Hyun Ming Kang) storing
+per-position genome score, such as GERP score, SIFT score. You will need
+to pre-process those scores in a directory. To annotate genome score,
+use <code>param &lt;- list(genomeScore="TAG_NAME=DIRECTORY")</code>. In the VCF/BCF output file, you will
+have <em>TAG_NAME=some_value</em> in the INFO field. In output files with other formats, you will see a separate column.</p>
+<ul>
+<li>Annotate by tabix resource file (tabix)</li>
+</ul>
+<!-- -->
+<pre><code>                  tabix : Specify the tabix file and tag (e.g. abc.txt.gz(chrom=1,pos=7,ref=3,alt=4,SIFT=7,PolyPhen=10)
+</code></pre>
+<p>Tabix file can be used in annotation. Here we required you provide
+bgzipped, indexed file. In above example, we use <em>abc.txt.gz</em> as input,
+and column 1,7,3,4 as chromosome, position, reference allele,
+alternative allele. We also use column 7 as SIFT score and column 10 as
+PolyPhen score. Similar syntax as previous, you will get outputs similar
+to 'SIFT=0.110;PolyPhen=0.00' in the VCF INFO field. NOTE, in bash,
+please use quote around parenthesis, otherwise parenthesis is not
+correctly treated. A working example is as follows:</p>
+<pre><code>param &lt;- list(tabix = "hg19_ljb_all.txt.gz(chrom=1,pos=2,ref=4,alt=5,mySift=6,mySC=7,myPP2=8,myPC=9)")
+</code></pre>
+<p>In the above example, hg19_ljb_all.txt.gz is dbNSFP resource file which includes multiple scores and you can refer to <a href="data.set.html">Data Set</a> to download it. The output file will have <em>mySift</em>, <em>mySC</em>, <em>myPP2</em> and <em>myPC</em> tags/columns corresponding to the 6, 7, 8 and 9 columns of file hg19_ljb_all.txt.gz.</p>
+<ul>
+<li>Index output file (indexOutput)</li>
+</ul>
+<!-- -->
+<pre><code>                  indexOutput : Specify whether or not index the output 
+</code></pre>
+<p>Enable this option (<code>param &lt;- list(indexOutput=TRUE)</code>) will let SEQMINER index the output file. You will need to specify <em>.gz</em> as output file name suffix.
+The output file will then be compressed by BGZIP algorithm, and the index file will be calculated using Tabix.</p>
+<ul>
+<li>Check reference alleles (checkReference)</li>
+</ul>
+<!-- -->
+<pre><code>                  indexOutput : Specify whether or not index the output 
+</code></pre>
+<p>Enable this option (<code>param &lt;- list(checkReference=TRUE)</code>) will examine the reference alleles against the reference genome</p>
+<h3>Create parameters</h3>
+<p>After you obtain annotation parameters, you can use one the following annotation functions:</p>
+<ul>
+<li><p>annotateVCF(inputFile, outputFile, param)</p>
+<p>Annotate input VCF file specified by <em>inputFile</em>, and output file is specified by <em>outputFIle</em> using parameter specified by <em>param</em>.</p></li>
+<li><p>annotateVCF(inputPlain, outputFile, param)</p>
+<p>Annotate tab-delimited file specified by <em>inputFile</em>, and output file is specified by <em>outputFIle</em> using parameter specified by <em>param</em>. The first columns of the <em>inputFile</em> are used as chromosome name, position, reference allele and alternative allele. If the beginning lines have the first character '#', then these are treated as header lines and will be not annotated.</p></li>
+</ul>
+<h2>Example</h2>
+<p>SEQMINER can annotate a VCF file and also output statistics of 4 frequency
+table: annotation type; base change; codon change; indel size. We will provides details for the these output files.</p>
+<p>In the tutorial part, we demonstrated commands for gene based annotations:</p>
+<pre><code># 1. Provide necessary annotation resource
+reference &lt;-  system.file("tabanno/test.fa", package = "seqminer")
+geneFile &lt;- system.file("tabanno/test.gene.txt", package = "seqminer")
+# 2. Construct annotation parameters
+param &lt;- list(reference = reference,
+               geneFile = geneFile)
+param &lt;- makeAnnotationParameter(param)
+# 3. Provide input and output file names
+inVcf &lt;- system.file("tabanno/input.test.vcf", package = "seqminer")
+outVcf &lt;- paste0(getwd(), "/", "output.vcf")
+# 4. Perform data integration using annotateVcf()
+annotateVcf (inVcf, outVcf, param)
+</code></pre>
+<p>As <em>outVcf</em> specifies the main output file is <em>output.vcf</em>, and there are several other frequency report files: <em>out.vcf.anno.frq</em>, <em>out.vcf.top.anno.frq</em>, <em>out.vcf.base.frq</em>, <em>out.vcf.indel.frq</em> and <em>out.vcf.codon.frq</em>.</p>
+<h3>Annotated VCF file</h3>
+<p>The annotated VCF file is <em>output.vcf</em></p>
+<pre><code>#VCF_test
+#from http://www.sph.umich.edu/csg/liyanmin/vcfCodingSnps/Tutorial.shtml
+#CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  NA12891 NA12892 NA12878
+1       3       .       A       G       50      depth=20        ANNO=GENE1/CODING_GENE:+:Exon:Utr5:Normal_Splice_Site|GENE3/CODING_GENE:-:Exon:Utr3:Normal_Splice_Site|GENE2/NON_CODING_GENE:+:Upstream GT:GQ:GD        1/0:31:12       0/0:28:14
+1       5       .       C       A       50      depth=20        ANNO=GENE1/CODING_GENE:+:Exon:Nonsynonymous(CCT/Pro/P-&gt;CAT/His/H:Base3/30:Codon1/10:Exon1/5):Normal_Splice_Site|GENE3/CODING_GENE:-:Exon:Nonsynonymous(AGG/Arg/R-&gt;ATG/Met/M:Base30/30:Codon10/10:Exon5/5):Normal_Splice_Site|GENE2/NON_CODING_GENE:+:Upstream   GT:GQ:GD        1/0:31:12       0/0:28:14
+...
+</code></pre>
+<p>The annotation results are stored in the INFO column after ANN= tag. The
+annotation format is defined as following:</p>
+<p>"|" separates different transcripts, e.g. in the first line, chromosome
+1 position 3, there are 3 annotations:
+"GENE1/CODING_GENE:+:Exon:Utr5:Normal_Splice_Site" and
+"GENE3/CODING_GENE:-:Exon:Utr3:Normal_Splice_Site" and
+"GENE2/NON_CODING_GENE:+:Upstream"</p>
+<p>":" separates within gene annotation in the following order: gene,
+strand, exon/intron, details.</p>
+<h3>Summary frequency files</h3>
+<p>Five frequency table will be generated after annotation: <em>out.vcf.anno.frq</em>, <em>out.vcf.top.anno.frq</em>, <em>out.vcf.base.frq</em>, <em>out.vcf.indel.frq</em> and <em>out.vcf.codon.frq</em>.</p>
+<p>Their contents are self explanatory.</p>
+<p><em>out.vcf.top.anno.freq</em></p>
+<pre><code>StructuralVariation     1
+Stop_Loss       1
+Frameshift      1
+CodonGain       1
+Insertion       1
+Synonymous      1
+Essential_Splice_Site   1
+Utr5    1
+Upstream        1
+Intergenic      2
+Nonsynonymous   3
+Normal_Splice_Site      3
+</code></pre>
+<p><em>out.vcf.anno.frq</em></p>
+<pre><code>Stop_Loss       1
+Utr5    2
+Utr3    2
+CodonRegion     2
+CodonGain       2
+Frameshift      2
+Synonymous      3
+StructuralVariation     3
+Noncoding       3
+Nonsynonymous   4
+Deletion        6
+Upstream        6
+Insertion       6
+Essential_Splice_Site   8 
+Downstream      8
+Intron  12
+Exon    21
+Normal_Splice_Site      25
+</code></pre>
+<p><em>out.vcf.base.frq</em></p>
+<pre><code>A-&gt;G    1
+T-&gt;C    1
+T-&gt;G    2
+A-&gt;C    2
+C-&gt;A    5
+</code></pre>
+<p><em>out.vcf.codon.frq</em></p>
+<pre><code>Arg-&gt;Met        1
+Pro-&gt;Thr        1
+Arg-&gt;Arg        1
+Pro-&gt;His        1
+Gly-&gt;Gly        1
+Pro-&gt;Pro        1
+Stp-&gt;Tyr        1
+Leu-&gt;Val        1
+</code></pre>
+<p><em>out.vcf.indel.frq</em></p>
+<pre><code>1       1
+-4      1
+3       1
+-3      1
+</code></pre>
+<h2>Resource</h2>
+<p>We list here some commonly used data sets during annotation.
+For more resources (e.g. other reference genome, gene files et al), please see <a href="data.set.html">Data Set</a>.</p>
+<ul>
+<li><p>Reference genomes</p>
+<p><a href="http://www.sph.umich.edu/csg/zhanxw/software/anno/resources/hs37d5.fa" title="http://www.sph.umich.edu/csg/zhanxw/software/anno/resources/hs37d5.fa">hs37d5.fa</a>
+  Reference genome in NCBI build 37 (you also need to download <a href="http://www.sph.umich.edu/csg/zhanxw/software/anno/resources/hs37d5.fa.fai" title="http://www.sph.umich.edu/csg/zhanxw/software/anno/resources/hs37d5.fa.fai">hs37d5.fa.fai</a></p></li>
+<li><p>Gene file
+  <a href="http://www.sph.umich.edu/csg/zhanxw/software/anno/resources/refFlat_hg19.txt.gz" title="http://www.sph.umich.edu/csg/zhanxw/software/anno/resources/refFlat_hg19.txt.gz">refFlat_hg19.txt.gz</a>
+  Gene database in refFlat format (from UCSC website). You can also use <a href="http://www.sph.umich.edu/csg/zhanxw/software/anno/resources/refFlat.gencode.v7.gz" title="http://www.sph.umich.edu/csg/zhanxw/software/anno/resources/refFlat.gencode.v7.gz">Gencode version 7</a>
+  or <a href="http://www.sph.umich.edu/csg/zhanxw/software/anno/resources/refFlat.gencode.v11.gz" title="http://www.sph.umich.edu/csg/zhanxw/software/anno/resources/refFlat.gencode.v11.gz">Gencode version 11</a>.</p></li>
+<li><p>Annotation configuration files</p>
+<ol>
+<li><a href="http://www.sph.umich.edu/csg/zhanxw/software/anno/codon.txt" title="http://www.sph.umich.edu/csg/zhanxw/software/anno/codon.txt">codon.txt</a> Human codon table.</li>
+<li><a href="http://www.sph.umich.edu/csg/zhanxw/software/anno/priority.txt" title="http://www.sph.umich.edu/csg/zhanxw/software/anno/priority.txt">priority.txt</a>
+Priority file, which determines which annotation type is more important</li>
+</ol>
+</li>
+</ul>
+<h2>Contact</h2>
+<p>Please contact Xiaowei Zhan <a href="mailto:zhanxw@gmail.com">zhanxw@gmail.com</a>, Dajiang Liu <a href="mailto:dajiang.liu@outlook.com">dajiang.liu@outlook.com</a> or Goncalo Abecasis
+(<a href="mailto:goncalo@umich.edu" title="mailto:goncalo@umich.edu">goncalo@umich.edu</a>).</p>
+<p>Authors sincerly appreicate Yanming Li for his wonderful tutorial on gene
+annotation software
+<a href="http://www.sph.umich.edu/csg/liyanmin/vcfCodingSnps/Tutorial.shtml" title="http://www.sph.umich.edu/csg/liyanmin/vcfCodingSnps/Tutorial.shtml">vcfCodingSnps</a>,
+and Hyun Ming Kang for his code related to genome scores and his
+consistent suggestions and feedbacks.</p>
+<p>Last update: November 13, 2014</p>
+<script type="text/javascript">
+   var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21871925-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script><div id="toc"></div><script type="text/javascript">$('#toc').toc();</script></body>
+</html>
+

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<style>
+/**
+ * Hatchd Digital Mou Theme
+ * @author: Hatchd
+ * @version: 1.0.0
+ */
+
+/**
+ * Webfonts
+ */
+
+@font-face {
+  font-family: 'vistaslab-bold';
+  src: url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-bold-071211001EmigreWebOnly.eot');
+  src: url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-bold-071211001EmigreWebOnly.eot?#iefix') format('embedded-opentype'), url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-bold-071211001EmigreWebOnly.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'vistaslab';
+  src: url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-light-071211001EmigreWebOnly.eot');
+  src: url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-light-071211001EmigreWebOnly.eot?#iefix') format('embedded-opentype'), url('http://hatchd.com.au/static/fonts/vistaslab/vistaslab-light-071211001EmigreWebOnly.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/**
+ * Normalize
+ * (trimmed down)
+ */
+    html {
+      font-size: 100%;
+    }
+
+    a:active,
+    a:hover {
+      outline: 0;
+    }
+
+
+/**
+ * Tables
+ */
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+/**
+ * Typography
+ */
+
+    body {
+      font-size: 100%;
+      line-height: 1.5em;
+      font-family: 'vistaslab', serif;
+      color: #000000;
+    }
+
+    h1,
+    h2,
+    strong,
+    b{
+      font-family: 'vistaslab-bold', serif;
+    }
+
+    p,
+    li,
+    dt,
+    dd {
+      font-size: 1em;
+      line-height: 1.5em;
+    }
+
+    p {
+      margin: 0 0 1em 0;
+    }
+
+    hr {
+      display: block;
+      clear: both;
+      height: 1px;
+      margin: 1em 0;
+      border: none;
+      background: #cccccc;
+    }
+
+    sup,
+    sub {
+      font-size: 75%;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+    }
+
+    sup {
+      top: -0.5em;
+    }
+
+    sub {
+      bottom: -0.25em;
+    }
+
+    ins {
+      background-color: #cccccc;
+    }
+
+    del {
+      text-decoration: line-through;
+    }
+
+    s {
+      color: #cccccc;
+      text-decoration: line-through;
+    }
+
+    mark {
+      background-color: #cccccc;
+      color: inherit;
+      font-weight: normal;
+    }
+
+    small {
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    strong,
+    b {
+      font-weight: normal;
+    }
+
+    em,
+    i {
+      font-style: italic;
+    }
+
+    dfn,
+    abbr {
+      font-style: inherit;
+      position: relative;
+    }
+
+    .feature-text {
+      color: #ef4136;
+    }
+
+    hgroup {
+      position: relative;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      line-height: 1.3em;
+      font-weight: normal;
+      margin: 1em 0 0.5em 0;
+      position: relative;
+      clear: both;
+    }
+
+    h1 {
+      font-size: 1.875em;
+    }
+
+    h2 {
+      font-size: 1.25em;
+    }
+
+    h3 {
+      font-size: 1em;
+      font-weight: bold;
+    }
+
+    ul,
+    ol,
+    dl {
+      margin: 0 0 1em 2em;
+      padding: 0;
+    }
+
+    ul li,
+    ol li {
+      margin: 0 0 0.25em 0;
+    }
+
+    ul {
+      list-style: disc outside;
+    }
+
+    ul ul {
+      margin: 0.25em 0 0.5em 1em;
+    }
+
+    ol {
+      list-style: decimal outside;
+    }
+
+    ol ol {
+      margin: 0.25em 0 0.5em 1.5em;
+      list-style-type: lower-roman;
+    }
+
+    dl {
+      margin-left: 0;
+    }
+
+    dt {
+      font-weight: bold;
+      margin: 0 0 0.5em 0;
+      padding: 1em 0 0 0;
+    }
+
+    dd {
+      margin: 0 0 0.5em 0;
+    }
+
+    blockquote {
+      margin: 0 0 2em 2em;
+      padding: 1em 0 0 0;
+    }
+
+    blockquote > p {
+      padding: 0 1em;
+      font-size: 1.6em;
+      line-height: 1.2em;
+    }
+
+    blockquote > p:first-child:before,
+    blockquote > p:first-child:after {
+      content: '"';
+    }
+
+    q {
+      font-style: italic;
+      color: inherit;
+    }
+
+    cite {
+      font-style: italic;
+    }
+
+    pre {
+      white-space: pre;
+      width: 100%;
+      overflow: auto;
+      margin: 2em 0 2em 0;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+    }
+
+    code,
+    samp,
+    kbd {
+      display: inline-block;
+      padding: 0 0.5em;
+    }
+
+    var {
+      font-style: italic;
+      font-weight: bold;
+    }
+
+/**
+ * Links
+ */
+    a,
+    a:link,
+    a:visited {
+      color: #ef4136;
+      text-decoration: underline;
+    }
+
+    a:hover {
+      color: #ef4136;
+      text-decoration: none;
+    }
+
+    a:active {
+      color: #ef4136;
+      text-decoration: underline;
+    }
+
+    ::selection {
+      color: #ffffff;
+      background: #cccccc;
+    }
+
+    ::-moz-selection {
+      color: #ffffff;
+      background: #cccccc;
+    }
+
+
+/**
+ * Images
+ */
+    img {
+      display: block;
+      border: 0;
+      margin: 0 0 1em 0;
+      width: 100%;
+    }
+
+/**
+ * Layout
+ */
+    body{
+        max-width: 830px;
+        width: 96%;
+        margin:auto;
+        padding:2em 0;
+    }
+
+
+</style>
+<title>SEQMINER</title>
+<link href="css/toc.css" rel="stylesheet"/><script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script src="js/toc.min.js"></script></head>
+<body>
+<h1>SEQMINER</h1>
+<h2>Introduction</h2>
+<p>SEQMINER is for sequencing variant annotation, data integration and query. While sequencing data is large, SEQMINER is unique in this efficient design for integrating sequence variants with annotation information, its innovative format for storing information between sequencing variants, and its seamless integration with R.</p>
+<p>In this website, we will provide short introductions. Detailed information can be found in each sections. Please contact us if you have comments/questions.</p>
+<h2>Download</h2>
+<p>SEQMINER is a R package. You can obtained it from its <a href="http://cran.r-project.org/web/packages/seqminer/index.html">CRAN page</a> or download <a href="seqminer_3.2.tar.gz">here</a>.</p>
+<p>In R environment, simply use:</p>
+<pre><code>install.packages("seqminer")
+</code></pre>
+<h2>Workflow</h2>
+<p>SEQMINER workflow starts from generic tab-delimited (TSV) files. In sequence studies, these files include VCF or BCF files.</p>
+<p>Next, you can optionally perform data integration (e.g. annotation). Annotation information is necessary for determining analysis units (e.g., single variant tests or gene-based tests) and variant priority in statistical analysis. SEQMINER implements an efficient and powerful variant annotator for sequence data in generic TSV files, supporting both gene-based and region-based annotation. We provide detailed instructions (<a href="annotation.html">link</a>).</p>
+<p>You can then query these indexed TSV files. SEQMINER allows efficient queries for tabix-indexed sequence datasets (either pre-processed or generic). Built-in functions in SEQMINER implement a variety of frequently used queries, including extracting sequence variants or summary association test statistics by genomic position, gene names or annotation types. A one-line example below shows extracting chromosomal positions, allele frequency, allele counts and genotypes from non-synonymous variatns within CFH gene.</p>
+<pre><code>readVCFToListByGene (fileName, geneFile, geneName="CFH", annoType="Synonymous", vcfColumn=c("CHROM", "POS"), vcfInfo=c("AF", "AC"), vcfIndv=c("GT") )
+</code></pre>
+<p>We also provide detailed tutorial about SEQMINER query function (<a href="query.html">link</a>).</p>
+<p>Last, the extracted data are naive R objects such as matrix or list. They can be used for quality control, association tests or meta-analysis.</p>
+<p><img alt="workflow" src="workflow.png" title="Workflow"/></p>
+<h2>Resource</h2>
+<h3>Datasets</h3>
+<p>We provide several datasets that are helpful in our sequence data analysis.
+This page (<a href="data.set.html">link</a>) provides detailed data descriptions.</p>
+<h3>Benchmark</h3>
+<p>In manuscripts, we provided benchmarks of SEQMINER, VariantAnnotation and GEMINI.
+The relevant codes are provided online (<a href="benchmark.html">link</a>).</p>
+<h2>Citation</h2>
+<p>SEQMINER manuscript is in preparation.
+If it is helpful for your research, please consider contacting us and cite our work.</p>
+<h2>Contact</h2>
+<p>Please contact Xiaowei Zhan <a href="mailto:zhanxw@gmail.com">zhanxw@gmail.com</a> or Dajiang Liu <a href="mailto:dajiang.liu@outlook.com">dajiang.liu@outlook.com</a> for comments or suggestions.</p>
+<p>Last update: November 13, 2014</p>
+<script type="text/javascript">
+   var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21871925-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script><div id="toc"></div><script type="text/javascript">$('#toc').toc();</script></body>
+</html>
+
