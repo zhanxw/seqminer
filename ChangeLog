@@ -1,3 +1,8 @@
+2021-11-07  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
+
+	* Change configure.ac to comply to CRAN policy
+	* Fix broken links
+
 2019-08-23  Xiaowei Zhan  <zhanxw@fantasia.csgstat.sph.umich.edu>
 
 	* Fix a bug related to column names when using single chrom indices
