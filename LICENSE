@@ -11,3 +11,7 @@ Some components have separate license and listed below:
    Heng Li <lh3@live.co.uk> (MIT license). We removed standard IO related
    functions, e.g. printf, fprintf ; also changed its un-safe
    pointer arithmetics.
+
+3. SQLite
+   SQLite is public domain, as stated in sqlite.org on February 3, 20202.
+   We included D. Richard Hipp as a cph author as suggested by Prof. Brian Ripley.

@@ -54,7 +54,7 @@ AC_CHECK_LIB([zstd], [ZSTD_compress], [
              
 
 LIB_SQLITE=""
-AC_CHECK_LIB([sqlite], [sqlite3_open], [
+AC_CHECK_LIB([sqlite3], [sqlite3_open], [
   AC_CHECK_HEADERS([sqlite3.h], [
     HAVE_SQLITE=1
     AC_DEFINE([HAVE_SQLITE], [1], [Define to 1 if you have sqlite library])
