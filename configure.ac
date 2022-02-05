@@ -6,6 +6,10 @@ if test -z "${R_HOME}"; then
    echo "could not determine R_HOME"
    exit 1
 fi
+CC=`"${R_HOME}/bin/R" CMD config CC`
+CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 
 dnl adopted from: https://github.com/cran/dfmta/blob/master/configure.ac
 AC_DEFUN([AX_GET_R_CONF_VAR],[$1=`"${R_HOME}/bin/R" CMD config $1`])
@@ -58,7 +62,7 @@ AC_CHECK_LIB([sqlite3], [sqlite3_open], [
   AC_CHECK_HEADERS([sqlite3.h], [
     HAVE_SQLITE=1
     AC_DEFINE([HAVE_SQLITE], [1], [Define to 1 if you have sqlite library])
-    LIB_SQLITE="-lsqlite"
+    LIB_SQLITE="-lsqlite3"
     AC_MSG_NOTICE([Will use system-wide sqlite library])
   ])                     
 ], [AC_MSG_NOTICE([Will build sqlite library from the package])])

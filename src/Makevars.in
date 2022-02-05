@@ -85,7 +85,7 @@ endif
 
 ifeq (@HAVE_SQLITE@,1)
 SQLITE_OBJ=
-PKG_LIBS+=-lsqlite
+PKG_LIBS+=-lsqlite3
 else
 SQLITE_OBJ = sqlite/sqlite3.o
 endif
