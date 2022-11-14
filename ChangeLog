@@ -1,3 +1,7 @@
+2022-11-14  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
+
+	* Fix warnings when this compiler option is on: [-Wstrict-prototypes]
+
 2021-11-07  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
 
 	* Change configure.ac to comply to CRAN policy

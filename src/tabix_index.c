@@ -16,7 +16,7 @@
 #include "tabix.h"
 
 #include <time.h>
-static char* currentTime() {
+static char* currentTime(void) {
   time_t t = time(NULL);
   char* s = ctime(&t);
   s[strlen(s) - 1] = '\0';
@@ -318,7 +318,8 @@ ti_index_t *ti_index_core(BGZF *fp, const ti_conf_t *conf)
   idx->index = 0;
   idx->index2 = 0;
 
-  save_bin = save_tid = last_tid = last_bin = 0xffffffffu;
+  save_bin = last_bin = 0xffffffffu;
+  save_tid = last_tid = -1;
   save_off = last_off = bgzf_tell(fp); last_coor = 0xffffffffu;
   while ((ret = ti_readline(fp, str)) >= 0) {
     ti_intv_t intv;
@@ -786,7 +787,7 @@ static inline int reg2bins(uint32_t beg, uint32_t end, uint16_t list[MAX_BIN])
   return i;
 }
 
-ti_iter_t ti_iter_first()
+ti_iter_t ti_iter_first(void)
 {
   ti_iter_t iter;
   iter = calloc(1, sizeof(struct __ti_iter_t));

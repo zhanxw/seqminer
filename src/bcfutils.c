@@ -35,7 +35,7 @@ void *bcf_build_refhash(bcf_hdr_t *h)
 	return hash;
 }
 
-void *bcf_str2id_init()
+void *bcf_str2id_init(void)
 {
 	return kh_init(str2id);
 }
