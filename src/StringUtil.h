@@ -3,7 +3,7 @@
 
 #include "R.h"
 #include <string.h>  // for strlen
-#include <stdio.h>
+#include <cstdio>
 #include <stdlib.h>
 #include <math.h>
 
@@ -217,12 +217,12 @@ inline std::string chopChr(const std::string& s) {
 static char _bufferStr[128];
 // convert number to char*
 inline const char* toStr(const int i) {
-  sprintf(_bufferStr, "%d", i);
+  std::snprintf(_bufferStr, 128, "%d", i);
   return _bufferStr;
 }
 
 inline const char* toStr(const double d) {
-  sprintf(_bufferStr, "%g", d);
+  std::snprintf(_bufferStr, 128, "%g", d);
   return _bufferStr;
 }
 

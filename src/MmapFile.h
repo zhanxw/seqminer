@@ -4,12 +4,12 @@
 #ifdef _WIN32
 #include <io.h>
 #include <stdint.h>
-#include <stdio.h>
+#include <cstdio>
 #include <sys/stat.h>
 #include <windows.h>
 #else
 #include <fcntl.h>
-#include <stdio.h>
+#include <cstdio>
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <sys/stat.h>

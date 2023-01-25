@@ -3,7 +3,7 @@
 
 #include "R.h"
 #include <string.h> // for strlen
-#include <stdio.h>
+#include <cstdio>
 #include <stdlib.h>
 #include <math.h>
 

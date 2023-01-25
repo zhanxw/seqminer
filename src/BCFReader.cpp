@@ -3,13 +3,13 @@
 
 #include <zlib.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include <cstdio>
 #include <string.h>
 
 
 #include <zlib.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include <cstdio>
 #include <string.h>
 #include "bcf.h"
 #include "kstring.h"

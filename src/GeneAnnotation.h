@@ -720,7 +720,7 @@ public:
               s += WITHIN_GENE_SEPARATOR;
               // quick patch about codon number
               char buf[128];
-              sprintf(buf, "Base%d/%d",
+              std::snprintf(buf, 128, "Base%d/%d",
                       codonNum, g.getCDSLength());
               s += buf;
               s += WITHIN_GENE_SEPARATOR;

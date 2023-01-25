@@ -1301,7 +1301,7 @@ SEXP impl_rvMetaReadDataByRange(SEXP arg_pvalFile, SEXP arg_covFile,
   OrderedMap<std::string, std::string> geneRange;
   char key[100] = "";
   for (size_t i = 0; i < FLAG_range.size(); ++i) {
-    sprintf(key, "Range%d", (int)(i + 1));
+    std::snprintf(key, 100, "Range%d", (int)(i + 1));
     geneRange[key] = FLAG_range[i];
   }
 

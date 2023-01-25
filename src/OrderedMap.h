@@ -1,7 +1,7 @@
 #ifndef _ORDEREDMAP_H_
 #define _ORDEREDMAP_H_
 
-#include <stdio.h>
+#include <cstdio>
 #include <cassert>
 #include <vector>
 #include <map>

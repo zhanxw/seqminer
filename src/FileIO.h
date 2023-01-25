@@ -2,7 +2,7 @@
 #define _FILEIO_H_
 
 #define UNUSED(x) ((void)(x))
-#include <stdio.h>   //fopen
+#include <cstdio>   //fopen
 #include <stdlib.h>  //malloc
 #include <string.h>  //strchr
 #include <stdarg.h>  // va_list

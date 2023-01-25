@@ -1,7 +1,7 @@
 #ifndef _TABIXREADER_H_
 #define _TABIXREADER_H_
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include <vector>
 #include <map>

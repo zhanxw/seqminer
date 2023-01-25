@@ -9,7 +9,7 @@
 
 #define UNUSED(x) ((void)(x))
 
-BGenFile::BGenFile(const std::string& fn) : var(this->N), autoMergeRange(false) {
+BGenFile::BGenFile(const std::string& fn) : N(0), var(this->N), autoMergeRange(false) {
   this->bgenFileName = fn;
   this->mode = BGEN_LINE_MODE;
 

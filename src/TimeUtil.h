@@ -12,6 +12,6 @@ inline std::string currentTime() {
   std::string s(ctime(&t));
   s = s.substr(0, s.size() - 1);
   return s;
-};
+}
 
 #endif /* _TIME_H_ */

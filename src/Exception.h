@@ -1,7 +1,7 @@
 #ifndef _EXCEPTION_H_
 #define _EXCEPTION_H_
 
-#include <stdio.h>
+#include <cstdio>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>

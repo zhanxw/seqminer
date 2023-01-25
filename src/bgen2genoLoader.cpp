@@ -29,7 +29,7 @@ SEXP readBGEN2Matrix(BGenFile* bin) {
   if (!sm.size()) {
     char buf[1024];
     for (int i = 0; i < N; ++i) {
-      sprintf(buf, "sample_%d", i);
+      std::snprintf(buf, 1024, "sample_%d", i);
       sm.push_back(buf);
     }
   }
@@ -253,7 +253,7 @@ SEXP readBGEN2List(BGenFile* bin) {
   if (!sm.size()) {
     char buf[1024];
     for (int i = 0; i < N; ++i) {
-      sprintf(buf, "sample_%d", i);
+      std::snprintf(buf, 1024, "sample_%d", i);
       sm.push_back(buf);
     }
   }

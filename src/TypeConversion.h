@@ -4,7 +4,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <math.h>  // for HUGE_VALF, HUGE_VALL
-#include <stdio.h>
+#include <cstdio>
 #include <stdlib.h>
 #include <set>
 #include <sstream>

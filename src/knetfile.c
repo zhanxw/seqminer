@@ -271,8 +271,8 @@ static int kftp_pasv_connect(knetFile *ftp)
                 REprintf("[kftp_pasv_connect] kftp_pasv_prep() is not called before hand.\n");
                 return -1;
         }
-        sprintf(host, "%d.%d.%d.%d", ftp->pasv_ip[0], ftp->pasv_ip[1], ftp->pasv_ip[2], ftp->pasv_ip[3]);
-        sprintf(port, "%d", ftp->pasv_port);
+        snprintf(host, 80, "%d.%d.%d.%d", ftp->pasv_ip[0], ftp->pasv_ip[1], ftp->pasv_ip[2], ftp->pasv_ip[3]);
+        snprintf(port, 10, "%d", ftp->pasv_port);
         ftp->fd = socket_connect(host, port);
         if (ftp->fd == -1) return -1;
         return 0;
@@ -320,9 +320,9 @@ knetFile *kftp_parse_url(const char *fn, const char *mode)
         if (strchr(mode, 'c')) fp->no_reconnect = 1;
         strncpy(fp->host, fn + 6, l);
         fp->retr = calloc(strlen(p) + 8, 1);
-        sprintf(fp->retr, "RETR %s\r\n", p);
-    fp->size_cmd = calloc(strlen(p) + 8, 1);
-    sprintf(fp->size_cmd, "SIZE %s\r\n", p);
+        snprintf(fp->retr, strlen(p) + 8, "RETR %s\r\n", p);
+        fp->size_cmd = calloc(strlen(p) + 8, 1);
+        snprintf(fp->size_cmd, strlen(p) + 8, "SIZE %s\r\n", p);
         fp->seek_offset = 0;
         return fp;
 }
@@ -353,7 +353,7 @@ int kftp_connect_file(knetFile *fp)
         if (fp->offset>=0) {
                 char tmp[32];
 #ifndef _WIN32
-                sprintf(tmp, "REST %lld\r\n", (long long)fp->offset);
+                snprintf(tmp, 32, "REST %lld\r\n", (long long)fp->offset);
 #else
                 strcpy(tmp, "REST ");
                 int64tostr(tmp + 5, fp->offset);
@@ -421,15 +421,15 @@ int khttp_connect_file(knetFile *fp)
         if (fp->fd != -1) netclose(fp->fd);
         fp->fd = socket_connect(fp->host, fp->port);
         buf = calloc(0x10000, 1); // FIXME: I am lazy... But in principle, 64KB should be large enough.
-        l += sprintf(buf + l, "GET %s HTTP/1.0\r\nHost: %s\r\n", fp->path, fp->http_host);
+        l += snprintf(buf + l, 0x10000, "GET %s HTTP/1.0\r\nHost: %s\r\n", fp->path, fp->http_host);
 #ifndef _WIN32
-        l += sprintf(buf + l, "Range: bytes=%lld-\r\n", (long long)fp->offset);        
+        l += snprintf(buf + l, 0x10000 - l, "Range: bytes=%lld-\r\n", (long long)fp->offset);        
 #else
         char tmp[32];
         int64tostr(tmp, fp->offset);
-        l += sprintf(buf + l, "Range: bytes=%s-\r\n", tmp);
+        l += snprintf(buf + l, 0x10000 - l, "Range: bytes=%s-\r\n", tmp);
 #endif
-        l += sprintf(buf + l, "\r\n");
+        l += snprintf(buf + l, 0x10000 - l, "\r\n");
         netwrite(fp->fd, buf, l);
         l = 0;
         while (netread(fp->fd, buf + l, 1)) { // read HTTP header; FIXME: bad efficiency
