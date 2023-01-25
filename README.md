@@ -90,4 +90,4 @@ Citation:
 
 [Yang, L., Jiang, S., Jiang, B., Liu, D. J., & Zhan, X. (2020). Seqminer2: An Efficient Tool to Query and Retrieve Genotypes for Statistical Genetics Analyses from Biobank Scale Sequence Dataset. Bioinformatics](https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/btaa628/5881355?redirectedFrom=fulltext)
 
-[Zhan, X. and Liu, D. J. (2015), SEQMINER: An R-Package to Facilitate the Functional Interpretation of Sequence-Based Associations. Genet. Epidemiol., 39: 619–623. doi:10.1002/gepi.21918](https://onlinelibrary.wiley.com/doi/full/10.1002/gepi.21918)
+[Zhan, X. and Liu, D. J. (2015), SEQMINER: An R-Package to Facilitate the Functional Interpretation of Sequence-Based Associations. Genet. Epidemiol., 39: 619–623. doi:10.1002/gepi.21918](https://doi.org/10.1002/gepi.21918)
