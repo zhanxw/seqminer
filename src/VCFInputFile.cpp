@@ -16,14 +16,18 @@ void VCFInputFile::rewriteVCFHeader() {
     s += '\t';
     s += people[i]->getName();
   }
-  this->header[this->header.size()-1] = s;
+  if (this->header.size()) {
+    this->header[this->header.size()-1] = s;
+  } else {
+    REprintf("[ERROR] Cannot rewriteVCFHeader() at %s:%d", __FILE__, __LINE__);
+  }
 }
 
 void VCFInputFile::setRangeMode() {
   if (mode == VCF_LINE_MODE) {
     this->tabixReader = new TabixReader(this->fileName);
     if (!this->tabixReader->good()) {
-      REprintf( "[ERROR] Cannot read VCF by range, please check your have index (or create one use tabix).\nQuitting...");
+      REprintf("[ERROR] Cannot read VCF by range, please check your have index (or create one use tabix).\nQuitting...");
       //abort();
       return;
     } else {

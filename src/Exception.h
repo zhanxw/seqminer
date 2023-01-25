@@ -42,7 +42,7 @@ inline void log_error(const char* s) {
 #endif
 
 inline void REPORT(const char* x) { 
-    REprintf("Report '%s' to zhanxw@umich.edu\n", x ); 
+    REprintf("Report '%s' at https://github.com/zhanxw/seqminer\n", x ); 
 }
 
 inline void FATAL(const char* x) {

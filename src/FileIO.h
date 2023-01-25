@@ -266,6 +266,9 @@ class KnetFileReader : public AbstractFileReader {
   // check eof
   bool isEof() {
     // this is always false, as we don't know the exact file size
+    if (!this->fp) { // probably files are not openned
+      return true;
+    }
     return bgzf_check_EOF(this->fp);
   }
   // open
