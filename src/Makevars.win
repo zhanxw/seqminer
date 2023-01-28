@@ -1,4 +1,4 @@
-CXX_STD = CXX11
+CXX_STD = CXX17
 
 ##PKG_CFLAGS=-I. -DNDEBUG #-D_USE_KNETFILE
 ## don't use -I. => otherwise our IO.h will confuse a system header file

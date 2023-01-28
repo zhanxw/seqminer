@@ -1,3 +1,7 @@
+2023-01-28  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
+
+	* Change CXX11 to CXX17 in configure.ac
+
 2023-01-24  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
 
 	* Fix warnings related to "Compiled code should not call entry points"

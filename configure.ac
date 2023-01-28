@@ -15,16 +15,17 @@ dnl adopted from: https://github.com/cran/dfmta/blob/master/configure.ac
 AC_DEFUN([AX_GET_R_CONF_VAR],[$1=`"${R_HOME}/bin/R" CMD config $1`])
 AX_GET_R_CONF_VAR([CC])
 AX_GET_R_CONF_VAR([CFLAGS])
-AX_GET_R_CONF_VAR([CXX11])
-AX_GET_R_CONF_VAR([CXX11STD])
-AX_GET_R_CONF_VAR([CXX11FLAGS])
-CXX="${CXX11} ${CXX11STD}"
+AX_GET_R_CONF_VAR([CXX17])
+AX_GET_R_CONF_VAR([CXX17STD])
+AX_GET_R_CONF_VAR([CXX17FLAGS])
+CXX="${CXX17} ${CXX17STD}"
+CXXFLAG="${CXX17FLAGS}"
 
 dnl print out flags to ease debugging
 AC_MSG_NOTICE([CC = $CC])
 AC_MSG_NOTICE([CFLAGS = $CFLAGS])
-AC_MSG_NOTICE([CXX = $CXX11 $CXX11STD])
-AC_MSG_NOTICE([CXXFLAGS = $CXX11FLAGS])
+AC_MSG_NOTICE([CXX = $CXX17 $CXX17STD])
+AC_MSG_NOTICE([CXXFLAGS = $CXX17FLAGS])
 
 dnl skip checking C compilers as we also need to check C++ compiler
 dnl AC_LANG(C)
@@ -105,7 +106,7 @@ dnl                    [make -C src/zstd/lib lib CFLAGS="-fPIC ${ZSTD_CFLAGS}"])
 
 
 AC_SUBST([PKG_CFLAGS], ["-D_USE_KNETFILE -I. ${CFLAGS}"])
-AC_SUBST([PKG_CPPFLAGS], ["-D_USE_KNETFILE -I. ${CXX11FLAGS}"])
+AC_SUBST([PKG_CPPFLAGS], ["-D_USE_KNETFILE -I. ${CXX17FLAGS}"])
 AC_SUBST([PKG_LIBS], ["-lz -lm ${LIB_BZIP2} ${LIB_ZSTD} ${LIB_SQLITE}"])
 AC_SUBST([HAVE_BZIP2])
 AC_SUBST([HAVE_ZSTD])

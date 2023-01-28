@@ -1,7 +1,7 @@
 ## CC and CXX are set up by INSTALL, no need to use them here.
 ## CC=@CC@
 ## CXX=@CXX@
-CXX_STD = CXX11
+CXX_STD = CXX17
 
 PKG_CFLAGS=@PKG_CFLAGS@
 PKG_CPPFLAGS=@PKG_CPPFLAGS@
@@ -12,7 +12,7 @@ PKG_LIBS=@PKG_LIBS@
 # ##  type `c` to start R
 # ##  type `library(seqminer)` to load the package
 # ##  type `Ctrl+C` to return to GDB and set breakpoints
-# CXX11FLAGS = -ggdb -O0
+# CXX17FLAGS = -ggdb -O0
 # CXXFLAGS = -ggdb -O0
 # PKG_CFLAGS=-D_USE_KNETFILE -I. -ggdb -O0 -ggdb
 # PKG_CPPFLAGS=-D_USE_KNETFILE -I. -ggdb -O0 -ggdb
