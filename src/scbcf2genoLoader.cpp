@@ -22,7 +22,7 @@ SEXP impl_readSingleChromosomeBCFToMatrixByRange(SEXP arg_fileName,
   if (sc.openIndex()) {
     REprintf("failed to open index!\n");
   }
-  SEXP ans;
+  SEXP ans = R_NilValue;
 
   BGZF* fp = bgzf_open(FLAG_fileName.c_str(), "rb");
   if (!fp) {
