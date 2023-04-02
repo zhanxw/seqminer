@@ -2,7 +2,7 @@ Package: seqminer
 Type: Package
 Title: Efficiently Read Sequence Data (VCF Format, BCF Format, METAL
         Format and BGEN Format) into R
-Version: 8.8
+Version: 8.9
 Date: 2023-4-1
 Authors@R: c(person("Xiaowei", "Zhan", email = "zhanxw@gmail.com", role = c("aut", "cre")),
            person("Dajiang", "Liu", email = "dajiang.liu@gmail.com", role = "aut"),
@@ -15,7 +15,7 @@ Maintainer: Xiaowei Zhan <zhanxw@gmail.com>
 Description: Integrate sequencing data (Variant call format, e.g. VCF or BCF) or meta-analysis results in R. This package can help you (1) read VCF/BCF/BGEN files by chromosomal ranges (e.g. 1:100-200); (2) read RareMETAL summary statistics files; (3) read tables from a tabix-indexed files; (4) annotate VCF/BCF files; (5) create customized workflow based on Makefile.
 Copyright: We have used the following software and made minimal
         necessary changes: tabix, Heng Li <lh3@live.co.uk> (MIT
-        license), SQLite (Public Domain), Zstandard (MIT license).
+        license), SQLite (Public Domain), Zstandard (BSD license).
 	For tabix, we removed standard IO related functions, e.g.
         printf, fprintf ; also changed its un-safe pointer arithmetics.
 	For zstandard, we removed compiler (clang, MSVC) specific preprocessing flags.

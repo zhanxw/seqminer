@@ -15,3 +15,8 @@ Some components have separate license and listed below:
 3. SQLite
    SQLite is public domain, as stated in sqlite.org on February 3, 20202.
    We included D. Richard Hipp as a cph author as suggested by Prof. Brian Ripley.
+
+4. Zstandard
+   Zstandard is BSD license. Its LICENSE file states "Copyright (c) Meta Platforms, Inc. and affiliates. All rights reserved." 
+   Its source directory also contains a COPYING file that states GPLv2. 
+   We keep the COPYING file as it is part of the zstd source codes. 
