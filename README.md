@@ -1,7 +1,7 @@
 SEQMINER2
 ========
 
-[![Build Status](https://travis-ci.org/zhanxw/seqminer.svg?branch=master)](https://travis-ci.org/zhanxw/seqminer)
+![example workflow](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
 [![R-CMD-check](https://github.com/zhanxw/seqminer/workflows/R-CMD-check/badge.svg)](https://github.com/zhanxw/seqminer/actions)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/zhanxw/seqminer?branch=master&svg=true)](https://ci.appveyor.com/project/zhanxw/seqminer)
 ![](https://cranlogs.r-pkg.org/badges/seqminer)
