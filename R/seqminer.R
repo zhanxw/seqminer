@@ -8,11 +8,10 @@
 #' If input files contaians annotation by TabAnno (),
 #' it is possible to extract information at the unit of genes.
 #'
-#' @docType package
-#' @name SeqMiner
+#' @name SEQMINER
 #' @useDynLib seqminer, .registration = TRUE, .fixes = "C_"
 #' @importFrom utils packageVersion
-NULL
+"_PACKAGE"
 
 #' Check if the input is url e.g. http:// or ftp://
 #' @param fileName character vector
