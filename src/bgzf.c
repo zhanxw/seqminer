@@ -700,7 +700,18 @@ int bgzf_getline(BGZF *fp, int delim, kstring_t *str)
                 if (str->l + l + 1 >= str->m) {
                         str->m = str->l + l + 2;
                         kroundup32(str->m);
-                        str->s = (char*)realloc(str->s, str->m);
+                        if (str->m) {
+                            char* p = (char*)realloc(str->s, str->m);
+                            if (!p) { // realloc failed
+                              free(str->s);
+                              str->s = NULL;
+                            } else {
+                              str->s = p;
+                            }
+                        } else {
+                            free(str->s);
+                            str->s = NULL;
+                        }
                 }
                 memcpy(str->s + str->l, buf + fp->block_offset, l);
                 str->l += l;

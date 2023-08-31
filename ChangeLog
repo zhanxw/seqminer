@@ -1,3 +1,8 @@
+2023-08-31  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
+
+	* Fix roxygen2 related issue
+	* Fix realloc(size = 0) issue
+
 2023-04-1  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
 
 	* Remove travis (substituted by GitHub actions)

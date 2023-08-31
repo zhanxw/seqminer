@@ -153,7 +153,14 @@ int bcf_sync(bcf1_t *b)
                 } else if (b->gi[i].fmt == bcf_str2int("GL", 2)) {
                         b->gi[i].len = b->n_alleles * (b->n_alleles + 1) / 2 * 4;
                 }
-                b->gi[i].data = realloc(b->gi[i].data, n_smpl * b->gi[i].len);
+                if (n_smpl != 0 &&  b->gi[i].len != 0) {
+                  b->gi[i].data = realloc(b->gi[i].data, n_smpl * b->gi[i].len);
+                } else {
+                    if (b->gi[i].data) {
+                        free(b->gi[i].data);
+                        b->gi[i].data = NULL;
+                    }
+                }
         }
         return 0;
 }

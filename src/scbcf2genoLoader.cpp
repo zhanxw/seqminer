@@ -139,6 +139,7 @@ SEXP impl_readSingleChromosomeBCFToMatrixByRange(SEXP arg_fileName,
     UNPROTECT(1);
     SET_VECTOR_ELT(ans, i, val);
   }
+  if (fp) {bgzf_close(fp);}
   UNPROTECT(1);
   return ans;
 }
