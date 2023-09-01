@@ -2,6 +2,7 @@
 
 	* Fix roxygen2 related issue
 	* Fix realloc(size = 0) issue
+	* Fix function prototype warning
 
 2023-04-1  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
 

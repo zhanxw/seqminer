@@ -52,8 +52,8 @@ extern "C" {
 #endif
 
 #ifdef _WIN32
-        int knet_win32_init();
-        void knet_win32_destroy();
+        int knet_win32_init(void);
+        void knet_win32_destroy(void);
 #endif
 
         knetFile *knet_open(const char *fn, const char *mode);

@@ -143,12 +143,12 @@ int64_t strtoint64(const char *buf)
         return x;
 }
 /* In windows, the first thing is to establish the TCP connection. */
-int knet_win32_init()
+int knet_win32_init(void)
 {
         WSADATA wsaData;
         return WSAStartup(MAKEWORD(2, 2), &wsaData);
 }
-void knet_win32_destroy()
+void knet_win32_destroy(void)
 {
         WSACleanup();
 }
