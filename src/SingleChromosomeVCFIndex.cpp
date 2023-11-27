@@ -101,7 +101,7 @@ int SingleChromosomeVCFIndex::createIndex() {
         stringTokenize(line, '\t', &fd);
         numSample =
             fd.size() - 9;  // 9 is CHROM POS ID REF ALT QUAL FILTER INFO FORMAT
-        REprintf("header line has %d samples\n", numSample);
+        REprintf("header line has %ld samples\n", numSample);
         pos = 0;
         fwrite(&pos, sizeof(int64_t), 1, fIndex);
         fwrite(&offset, sizeof(int64_t), 1, fIndex);
@@ -136,7 +136,7 @@ int SingleChromosomeVCFIndex::createIndex() {
   // bgzf_close(fp);
   fclose(fIndex);
 
-  REprintf("Indexing finished with %d samples and %d markers\n", numSample,
+  REprintf("Indexing finished with %ld samples and %ld markers\n", numSample,
            numMarker);
   return 0;
 }
@@ -157,7 +157,7 @@ int SingleChromosomeVCFIndex::openIndex() {
   int64_t* d = (int64_t*) data_;
   if (fsize != sizeof(Record)  * (2L + d[1])) {
     REprintf("Check file integrity!\n");
-    REprintf("d = %ld %ld fsize = %ld\n", d[0], d[1], (int)fsize);
+    REprintf("d = %ld %ld fsize = %ld\n", d[0], d[1], (long int)fsize);
     return -1;
   }
   return 0;

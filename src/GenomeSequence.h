@@ -101,7 +101,7 @@ class Chromosome{
     }
     char c;
     if (1 != fread(&c, sizeof(char), 1, this->fp)) {
-      REprintf( "Cannot fread() for base %zu!\n", offset);
+      REprintf( "Cannot fread() for base %u!\n", offset);
       return 'N';
     }
     return c;

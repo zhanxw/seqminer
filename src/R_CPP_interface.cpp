@@ -49,7 +49,7 @@ SEXP getListElement(SEXP list, const char* str) {
 }
 
 void dump(std::vector<std::string>& s) {
-  Rprintf("Dump %u elements:\n", s.size());
+  Rprintf("Dump %zu elements:\n", s.size());
   for (unsigned int i = 0; i != s.size(); i++) {
     Rprintf("s[%u] = \"%s\"\n", i, s[i].c_str());
   }

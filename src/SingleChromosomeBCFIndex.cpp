@@ -184,7 +184,7 @@ int SingleChromosomeBCFIndex::openIndex() {
   int64_t* d = (int64_t*) data_;
   if (fsize != sizeof(Record)  * (2L + d[1])) { // d[0, 1]: number of sample; number of marker
     REprintf("Check file integrity!\n");
-    REprintf("d = %ld %ld fsize = %ld\n", d[0], d[1], (int)fsize);
+    REprintf("d = %ld %ld fsize = %ld\n", d[0], d[1], (long int)fsize);
     return -1;
   }
   return 0;

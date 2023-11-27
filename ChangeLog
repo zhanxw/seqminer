@@ -1,3 +1,7 @@
+2023-11-28  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
+
+	* Fix Rprintf() related issues
+
 2023-09-01  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
 
 	* Change Date field
