@@ -346,7 +346,7 @@ class RangeList{
         positionPair(NULL){
       chromSize = rc.getChromVector().size();
       inChromRegionSize = getRegions(chromIndex)? getRegions(chromIndex)->size() : 0;
-      if (chromSize) {
+      if (chromSize && chromIndex < chromSize) {
         chrom = &(rc.getChromVector()[chromIndex]);
         positionPair = getRegions(chromIndex);
       }
@@ -358,7 +358,7 @@ class RangeList{
         this->inChromRangeIndex = 0;
         chromSize = this->rangeCollection->getChromVector().size();
         inChromRegionSize = getRegions(chromIndex)? getRegions(chromIndex)->size() : 0;
-        chrom = &(this->rangeCollection->getChromVector()[chromIndex]);
+        chrom = chromIndex < chromSize ? &(this->rangeCollection->getChromVector()[chromIndex]) : NULL;
         positionPair = getRegions(chromIndex);
       }
       return (*this);
