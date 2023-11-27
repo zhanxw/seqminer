@@ -108,6 +108,7 @@ int SingleChromosomeBCFIndex::createIndex() {
   int64_t bgzf_offset_before_chrom = bgzf_tell(fp); // the offset to #CHROM
   s.resize(l_text - before_chrom_size);
   int64_t after_chrom_size = bgzf_read(fp, (void*) s.data(), l_text - before_chrom_size);
+  int32_t last_character = s[after_chrom_size - 1];
   // load sample names
   while (s.back() == '\n' || s.back() == '\0') {
     s.resize(s.size() - 1);
@@ -115,7 +116,7 @@ int SingleChromosomeBCFIndex::createIndex() {
   stringTokenize(s, "\t", &bcfHeader.sample_names);
   const int64_t num_sample = (int)bcfHeader.sample_names.size() - 9; // vcf header has 9 columns CHROM...FORMAT before actual sample names
   Rprintf("sample size = %ld\n", num_sample);
-  Rprintf("last character is s[after_chrom_size-1] = %d\n", s[after_chrom_size - 1]); // should be 0, the null terminator character
+  Rprintf("last character is s[after_chrom_size-1] = %d\n", last_character); // should be 0, the null terminator character
   // quality check
   if (bgzf_offset_after_header != bgzf_tell(fp)) {
     REprintf( "Messed up bgzf header\n");
