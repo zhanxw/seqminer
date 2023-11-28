@@ -18,7 +18,9 @@ struct Record {
   bool operator<(Record& o) { return (pos < o.pos); }
 };
 
-static bool comparator(const Record& a, const Record& b) { return a.pos < b.pos; }
+static bool comparator(const Record& a, const Record& b) {
+  return a.pos < b.pos;
+}
 
 SingleChromosomeVCFIndex::SingleChromosomeVCFIndex(
     const std::string& vcfFile, const std::string& indexFile) {
@@ -50,7 +52,7 @@ void SingleChromosomeVCFIndex::closeIndex() {
     data_ = NULL;
   }
   if (data_) {
-    delete[](uint8_t*) data_;
+    delete[] (uint8_t*)data_;
     data_ = NULL;
   }
 }
@@ -101,11 +103,19 @@ int SingleChromosomeVCFIndex::createIndex() {
         stringTokenize(line, '\t', &fd);
         numSample =
             fd.size() - 9;  // 9 is CHROM POS ID REF ALT QUAL FILTER INFO FORMAT
+#ifndef __MINGW64__
         REprintf("header line has %ld samples\n", numSample);
+#else
+        REprintf("header line has %ld samples\n", (unsigned long int)numSample);
+#endif
         pos = 0;
         fwrite(&pos, sizeof(int64_t), 1, fIndex);
         fwrite(&offset, sizeof(int64_t), 1, fIndex);
+#ifndef __MINGW64__
         REprintf("offset = %ld\n", offset);
+#else
+        REprintf("offset = %ld\n", (unsigned long int)offset);
+#endif
         continue;
       } else {
         REprintf("Strange header line!\n");
@@ -136,8 +146,13 @@ int SingleChromosomeVCFIndex::createIndex() {
   // bgzf_close(fp);
   fclose(fIndex);
 
+#ifndef __MINGW64__
   REprintf("Indexing finished with %ld samples and %ld markers\n", numSample,
            numMarker);
+#else
+  REprintf("Indexing finished with %ld samples and %ld markers\n",
+           (unsigned long int)numSample, (unsigned long int)numMarker);
+#endif
   return 0;
 }
 
@@ -154,10 +169,15 @@ int SingleChromosomeVCFIndex::openIndex() {
   }
 
   // verify file integrity
-  int64_t* d = (int64_t*) data_;
-  if (fsize != sizeof(Record)  * (2L + d[1])) {
+  int64_t* d = (int64_t*)data_;
+  if (fsize != sizeof(Record) * (2L + d[1])) {
     REprintf("Check file integrity!\n");
+#ifndef __MINGW64__
     REprintf("d = %ld %ld fsize = %ld\n", d[0], d[1], (long int)fsize);
+#else
+    REprintf("d = %ld %ld fsize = %ld\n", (unsigned long int)d[0],
+             (unsigned long int)d[1], (long int)fsize);
+#endif
     return -1;
   }
   return 0;
@@ -184,7 +204,6 @@ int SingleChromosomeVCFIndex::mapIndex() {
   return 0;
 }
 
-
 int SingleChromosomeVCFIndex::query(int chromPos, int64_t* pVirtualOffset) {
   return this->query(chromPos, chromPos, pVirtualOffset);
 }
@@ -203,7 +222,7 @@ int SingleChromosomeVCFIndex::query(int chromPosBeg, int chromPosEnd,
 
   Record* r = (Record*)data_;
   const int64_t Nrecord = r[0].offset;
-  
+
   ++r;  // skip the first block, as first block is (#sample, #marker)
 
   // binary search for file position
@@ -229,8 +248,13 @@ int SingleChromosomeVCFIndex::query(int chromPosBeg, int chromPosEnd,
     REprintf("Cannot find position!\n");
     return -1;
   } else {
+#ifndef __MINGW64__
     REprintf("found %d position, e.g. %ld %ld\n", (int)(ub - lb), (*lb).pos,
              (*lb).offset);
+#else
+    REprintf("found %d position, e.g. %ld %ld\n", (int)(ub - lb),
+             (unsigned long int)(*lb).pos, (unsigned long int)(*lb).offset);
+#endif
     return ub - lb;
   }
 }

@@ -329,7 +329,11 @@ class RangeList{
     std::string out;
     for (size_t i = 0; i != this->size(); ++i) {
       this->obtainRange(i, &out);
+#ifndef __MINGW64__
       REprintf( "range %zu: %s\n", i, out.c_str());
+#else
+      REprintf( "range %lu: %s\n", (unsigned long int)i, out.c_str());
+#endif 
     }
   };
   class iterator{
@@ -346,7 +350,7 @@ class RangeList{
         positionPair(NULL){
       chromSize = rc.getChromVector().size();
       inChromRegionSize = getRegions(chromIndex)? getRegions(chromIndex)->size() : 0;
-      if (chromSize && chromIndex < chromSize) {
+      if (chromSize && chromIndex < (int) chromSize) {
         chrom = &(rc.getChromVector()[chromIndex]);
         positionPair = getRegions(chromIndex);
       }
@@ -358,7 +362,7 @@ class RangeList{
         this->inChromRangeIndex = 0;
         chromSize = this->rangeCollection->getChromVector().size();
         inChromRegionSize = getRegions(chromIndex)? getRegions(chromIndex)->size() : 0;
-        chrom = chromIndex < chromSize ? &(this->rangeCollection->getChromVector()[chromIndex]) : NULL;
+        chrom = chromIndex < (int) chromSize ? &(this->rangeCollection->getChromVector()[chromIndex]) : NULL;
         positionPair = getRegions(chromIndex);
       }
       return (*this);

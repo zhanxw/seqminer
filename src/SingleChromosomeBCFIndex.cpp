@@ -19,7 +19,9 @@ struct Record {
   bool operator<(Record& o) { return (pos < o.pos); }
 };
 
-static bool comparator(const Record& a, const Record& b) { return a.pos < b.pos; }
+static bool comparator(const Record& a, const Record& b) {
+  return a.pos < b.pos;
+}
 
 SingleChromosomeBCFIndex::SingleChromosomeBCFIndex(
     const std::string& bcfFile, const std::string& indexFile) {
@@ -41,7 +43,7 @@ void SingleChromosomeBCFIndex::close() {
 
 void SingleChromosomeBCFIndex::closeIndex() {
   if (data_) {
-    delete[](uint8_t*) data_;
+    delete[] (uint8_t*)data_;
     data_ = NULL;
   }
 }
@@ -62,65 +64,75 @@ int SingleChromosomeBCFIndex::createIndex() {
   // check magic number
   char magic[5];
   if (5 != bgzf_read(fp, magic, 5)) {
-    return -1; // exit(1);
+    return -1;  // exit(1);
   }
   if (!(magic[0] == 'B' && magic[1] == 'C' && magic[2] == 'F' &&
         magic[3] == 2 && (magic[4] == 1 || magic[4] == 2))) {
-    return -1; // exit(1);
+    return -1;  // exit(1);
   }
 
   // read header
   uint32_t l_text;
   if (4 != bgzf_read(fp, &l_text, 4)) {
-    return -1; // exit(1);
+    return -1;  // exit(1);
   }
   Rprintf("l_text = %d\n", l_text);
 
   std::string s;
-  int64_t bgzf_offset_before_header = bgzf_tell(fp); // the beginning of header block
+  int64_t bgzf_offset_before_header =
+      bgzf_tell(fp);  // the beginning of header block
   s.resize(l_text);
   if (bgzf_read(fp, (void*)s.data(), l_text) != l_text) {
-    REprintf( "Read failed!\n");
+    REprintf("Read failed!\n");
   }
   BCFHeader bcfHeader;
-  if (bcfHeader.parseHeader(s,
-                  &bcfHeader.header_contig_id,
-                  &bcfHeader.header_id,
-                  &bcfHeader.header_number,
-                  &bcfHeader.header_type,
-                  &bcfHeader.header_description)) {
-    REprintf( "Parse header failed!\n");
-    return -1; // exit(1);
+  if (bcfHeader.parseHeader(s, &bcfHeader.header_contig_id,
+                            &bcfHeader.header_id, &bcfHeader.header_number,
+                            &bcfHeader.header_type,
+                            &bcfHeader.header_description)) {
+    REprintf("Parse header failed!\n");
+    return -1;  // exit(1);
   }
 
   // locate #CHROM line
-  int64_t bgzf_offset_after_header = bgzf_tell(fp); // the end of header block
-  size_t ptr_chrom_line = s.find("#CHROM"); // the index of "#CHROM", also the size between beginning of header to '#CHROM'
+  int64_t bgzf_offset_after_header = bgzf_tell(fp);  // the end of header block
+  size_t ptr_chrom_line =
+      s.find("#CHROM");  // the index of "#CHROM", also the size between
+                         // beginning of header to '#CHROM'
   if (ptr_chrom_line == std::string::npos) {
-    REprintf( "Cannot find the \"#CHROM\" line!\n");
-    return -1; // exit(1);
+    REprintf("Cannot find the \"#CHROM\" line!\n");
+    return -1;  // exit(1);
   }
-  Rprintf("offset_header = %d\n", (int) ptr_chrom_line);
+  Rprintf("offset_header = %d\n", (int)ptr_chrom_line);
 
-  bgzf_seek(fp, bgzf_offset_before_header, SEEK_SET); // rewind fp to the beginning of header
+  bgzf_seek(fp, bgzf_offset_before_header,
+            SEEK_SET);  // rewind fp to the beginning of header
   s.resize(ptr_chrom_line);
-  int64_t before_chrom_size = bgzf_read(fp, (void*) s.data(), ptr_chrom_line);
-  int64_t bgzf_offset_before_chrom = bgzf_tell(fp); // the offset to #CHROM
+  int64_t before_chrom_size = bgzf_read(fp, (void*)s.data(), ptr_chrom_line);
+  int64_t bgzf_offset_before_chrom = bgzf_tell(fp);  // the offset to #CHROM
   s.resize(l_text - before_chrom_size);
-  int64_t after_chrom_size = bgzf_read(fp, (void*) s.data(), l_text - before_chrom_size);
+  int64_t after_chrom_size =
+      bgzf_read(fp, (void*)s.data(), l_text - before_chrom_size);
   int32_t last_character = s[after_chrom_size - 1];
   // load sample names
   while (s.back() == '\n' || s.back() == '\0') {
     s.resize(s.size() - 1);
   }
   stringTokenize(s, "\t", &bcfHeader.sample_names);
-  const int64_t num_sample = (int)bcfHeader.sample_names.size() - 9; // vcf header has 9 columns CHROM...FORMAT before actual sample names
+  const int64_t num_sample =
+      (int)bcfHeader.sample_names.size() -
+      9;  // vcf header has 9 columns CHROM...FORMAT before actual sample names
+#ifndef __MINGW64__
   Rprintf("sample size = %ld\n", num_sample);
-  Rprintf("last character is s[after_chrom_size-1] = %d\n", last_character); // should be 0, the null terminator character
+#else
+  Rprintf("sample size = %ld\n", (unsigned long int)num_sample);
+#endif
+  Rprintf("last character is s[after_chrom_size-1] = %d\n",
+          last_character);  // should be 0, the null terminator character
   // quality check
   if (bgzf_offset_after_header != bgzf_tell(fp)) {
-    REprintf( "Messed up bgzf header\n");
-    return -1; // exit(1);
+    REprintf("Messed up bgzf header\n");
+    return -1;  // exit(1);
   }
 
   // create index file
@@ -139,14 +151,15 @@ int SingleChromosomeBCFIndex::createIndex() {
   do {
     offset = bgzf_tell(fp);
     if (4 != bgzf_read(fp, &l_shared, sizeof(uint32_t))) {
-      break; // REprintf( "Wrong read!\n"); exit(1);
+      break;  // REprintf( "Wrong read!\n"); exit(1);
     }
     if (4 != bgzf_read(fp, &l_indiv, sizeof(uint32_t))) {
-      break; // REprintf( "Wrong read!\n"); exit(1);
+      break;  // REprintf( "Wrong read!\n"); exit(1);
     }
     data.resize(l_shared + l_indiv);
-    if (l_shared + l_indiv != bgzf_read(fp, data.data(), (l_shared+l_indiv) * sizeof(char))) {
-      break; // REprintf( "Wrong read!\n"); exit(1);
+    if (l_shared + l_indiv !=
+        bgzf_read(fp, data.data(), (l_shared + l_indiv) * sizeof(char))) {
+      break;  // REprintf( "Wrong read!\n"); exit(1);
     }
     memcpy(&pos, data.data() + 4, 4);
     fwrite(&pos, sizeof(int64_t), 1, fIndex);
@@ -154,18 +167,27 @@ int SingleChromosomeBCFIndex::createIndex() {
 
     num_marker++;
     if (num_marker % 10000 == 0) {
+#ifndef __MINGW64__
       Rprintf("\rprocessed %ld markers", num_marker);
+#else
+      Rprintf("\rprocessed %ld markers", (unsigned long int)num_marker);
+#endif
     }
   } while (true);
 
   if (fseek(fIndex, 0, SEEK_SET)) {
-    REprintf( "fseek failed\n!");
+    REprintf("fseek failed\n!");
   }
   fwrite(&num_sample, sizeof(int64_t), 1, fIndex);
   fwrite(&num_marker, sizeof(int64_t), 1, fIndex);
   fclose(fIndex);
-  Rprintf("Indexing finished with %ld samples and %ld markers\n", num_sample, num_marker);
-
+#ifndef __MINGW64__
+  Rprintf("Indexing finished with %ld samples and %ld markers\n", num_sample,
+          num_marker);
+#else
+  Rprintf("Indexing finished with %ld samples and %ld markers\n",
+          (unsigned long int)num_sample, (unsigned long int)num_marker);
+#endif
   return 0;
 }
 
@@ -180,12 +202,19 @@ int SingleChromosomeBCFIndex::openIndex() {
     REprintf("Read incomplete index\n");
     return -1;
   }
-  
+
   // verify file integrity
-  int64_t* d = (int64_t*) data_;
-  if (fsize != sizeof(Record)  * (2L + d[1])) { // d[0, 1]: number of sample; number of marker
+  int64_t* d = (int64_t*)data_;
+  if (fsize !=
+      sizeof(Record) *
+          (2L + d[1])) {  // d[0, 1]: number of sample; number of marker
     REprintf("Check file integrity!\n");
+#ifndef __MINGW64__
     REprintf("d = %ld %ld fsize = %ld\n", d[0], d[1], (long int)fsize);
+#else
+    REprintf("d = %ld %ld fsize = %ld\n", (unsigned long int)d[0],
+             (unsigned long int)d[1], (long int)fsize);
+#endif
     return -1;
   }
   return 0;
@@ -209,7 +238,7 @@ int SingleChromosomeBCFIndex::query(int chromPosBeg, int chromPosEnd,
 
   Record* r = (Record*)data_;
   const int64_t Nrecord = r[0].offset;
-  
+
   ++r;  // skip the first block, as first block is (#sample, #marker)
 
   // binary search for file position
@@ -226,7 +255,12 @@ int SingleChromosomeBCFIndex::query(int chromPosBeg, int chromPosEnd,
                        comparator);  // r[ub].pos > query.pos = chromPosEnd
   REprintf("Found %d results\n", (int)(ub - lb));
   for (Record* pi = lb; pi != ub; ++pi) {
+#ifndef __MINGW64__
     REprintf("%ld %ld\n", pi->pos, pi->offset);
+#else
+    REprintf("%ld %ld\n", (unsigned long int)pi->pos,
+             (unsigned long int)pi->offset);
+#endif
     // REprintf("%ld %ld\n", ub->pos, ub->offset);
     *voffset = lb->offset;
     break;
@@ -235,43 +269,46 @@ int SingleChromosomeBCFIndex::query(int chromPosBeg, int chromPosEnd,
     REprintf("Cannot find position!\n");
     return -1;
   } else {
+#ifndef __MINGW64__
     REprintf("found %d position, e.g. %ld %ld\n", (int)(ub - lb), (*lb).pos,
              (*lb).offset);
+#else
+    REprintf("found %d position, e.g. %ld %ld\n", (int)(ub - lb),
+             (unsigned long int)(*lb).pos, (unsigned long int)(*lb).offset);
+#endif
     return ub - lb;
   }
 }
 
-int SingleChromosomeBCFIndex::readLine(int64_t offset,
-                                       uint32_t* l_shared,
+int SingleChromosomeBCFIndex::readLine(int64_t offset, uint32_t* l_shared,
                                        uint32_t* l_indiv,
                                        std::vector<char>* line) {
   if (bgzf_seek(fBcfFile_, offset, SEEK_SET)) {
     REprintf("seek error!\n");
   }
-  
+
   if (4 != bgzf_read(fBcfFile_, l_shared, sizeof(uint32_t)) ||
       4 != bgzf_read(fBcfFile_, l_indiv, sizeof(uint32_t))) {
     REprintf("readLine error!\n");
   }
-  uint32_t totalLen =  *l_shared + *l_indiv;
+  uint32_t totalLen = *l_shared + *l_indiv;
   line->resize(totalLen);
-  if ( totalLen != bgzf_read(fBcfFile_, line->data(), totalLen)) {
+  if (totalLen != bgzf_read(fBcfFile_, line->data(), totalLen)) {
     REprintf("readLine bgzf_read error!\n");
   }
 
   return totalLen;
 }
 
-int SingleChromosomeBCFIndex::nextLine(uint32_t* l_shared,
-                                       uint32_t* l_indiv,
+int SingleChromosomeBCFIndex::nextLine(uint32_t* l_shared, uint32_t* l_indiv,
                                        std::vector<char>* line) {
   if (4 != bgzf_read(fBcfFile_, l_shared, sizeof(uint32_t)) ||
       4 != bgzf_read(fBcfFile_, l_indiv, sizeof(uint32_t))) {
     REprintf("readLine error!\n");
   }
-  uint32_t totalLen =  *l_shared + *l_indiv;
+  uint32_t totalLen = *l_shared + *l_indiv;
   line->resize(totalLen);
-  if ( totalLen != bgzf_read(fBcfFile_, line->data(), totalLen)) {
+  if (totalLen != bgzf_read(fBcfFile_, line->data(), totalLen)) {
     REprintf("readLine bgzf_read error!\n");
   }
 

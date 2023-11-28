@@ -97,8 +97,11 @@ public:
       }
     };
     delete lr;
-
+#ifndef __MINGW64__
     REprintf("Finished loading %s. %zu chrom, %zu indv\n", fnPrefix, snp2Idx.size(), indv.size());
+#else
+    REprintf("Finished loading %s. %lu chrom, %lu indv\n", fnPrefix, (unsigned long int) snp2Idx.size(), (unsigned long int) indv.size());
+#endif
   }
   ~PlinkInputFile() {
     fclose(this->fpBed);

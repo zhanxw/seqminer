@@ -151,7 +151,11 @@ int readBedToMatrixByIndex(const std::string& bedFileName,
         *pRet++ = buffer[FLAG_indvIndex[p]];
       }
     }  // loop marker
+#ifndef __MINGW64__
     REprintf("assigned %ld values \n", pRet - REAL(ret));
+#else
+    REprintf("assigned %lld values \n", (long long int) (pRet - REAL(ret)));
+#endif
   } else {
     REprintf("individual-major mode PLINK is not supported yet!");
   }

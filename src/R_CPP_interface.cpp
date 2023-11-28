@@ -1,4 +1,5 @@
 #include "R_CPP_interface.h"
+
 #include "TypeConversion.h"
 
 void extractString(SEXP in, std::string* out) {
@@ -49,7 +50,11 @@ SEXP getListElement(SEXP list, const char* str) {
 }
 
 void dump(std::vector<std::string>& s) {
+#ifndef __MINGW64__
   Rprintf("Dump %zu elements:\n", s.size());
+#else
+  Rprintf("Dump %lu elements:\n", (unsigned long int)s.size());
+#endif
   for (unsigned int i = 0; i != s.size(); i++) {
     Rprintf("s[%u] = \"%s\"\n", i, s[i].c_str());
   }
