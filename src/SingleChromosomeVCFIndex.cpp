@@ -103,16 +103,16 @@ int SingleChromosomeVCFIndex::createIndex() {
         stringTokenize(line, '\t', &fd);
         numSample =
             fd.size() - 9;  // 9 is CHROM POS ID REF ALT QUAL FILTER INFO FORMAT
-#ifndef __MINGW64__
-        REprintf("header line has %ld samples\n", numSample);
+#if defined(__MINGW64__) || ( defined(__APPLE__) && defined(__arm64__))
+        REprintf("header line has %g samples\n", (double)numSample);
 #else
-        REprintf("header line has %ld samples\n", (unsigned long int)numSample);
+        REprintf("header line has %ld samples\n", numSample);
 #endif
         pos = 0;
         fwrite(&pos, sizeof(int64_t), 1, fIndex);
         fwrite(&offset, sizeof(int64_t), 1, fIndex);
-#ifndef __MINGW64__
-        REprintf("offset = %ld\n", offset);
+#if defined(__MINGW64__) || ( defined(__APPLE__) && defined(__arm64__))
+        REprintf("offset = %g\n", (double)offset);
 #else
         REprintf("offset = %ld\n", (unsigned long int)offset);
 #endif
@@ -146,9 +146,10 @@ int SingleChromosomeVCFIndex::createIndex() {
   // bgzf_close(fp);
   fclose(fIndex);
 
-#ifndef __MINGW64__
-  REprintf("Indexing finished with %ld samples and %ld markers\n", numSample,
-           numMarker);
+#if defined(__MINGW64__) || ( defined(__APPLE__) && defined(__arm64__))
+  REprintf("Indexing finished with %g samples and %g markers\n", 
+  (double) numSample,
+  (double) numMarker);
 #else
   REprintf("Indexing finished with %ld samples and %ld markers\n",
            (unsigned long int)numSample, (unsigned long int)numMarker);
@@ -172,8 +173,8 @@ int SingleChromosomeVCFIndex::openIndex() {
   int64_t* d = (int64_t*)data_;
   if (fsize != sizeof(Record) * (2L + d[1])) {
     REprintf("Check file integrity!\n");
-#ifndef __MINGW64__
-    REprintf("d = %ld %ld fsize = %ld\n", d[0], d[1], (long int)fsize);
+#if defined(__MINGW64__) || ( defined(__APPLE__) && defined(__arm64__))
+    REprintf("d = %g %g fsize = %g\n", (double) d[0], (double) d[1], (double) fsize);
 #else
     REprintf("d = %ld %ld fsize = %ld\n", (unsigned long int)d[0],
              (unsigned long int)d[1], (long int)fsize);
@@ -248,9 +249,10 @@ int SingleChromosomeVCFIndex::query(int chromPosBeg, int chromPosEnd,
     REprintf("Cannot find position!\n");
     return -1;
   } else {
-#ifndef __MINGW64__
-    REprintf("found %d position, e.g. %ld %ld\n", (int)(ub - lb), (*lb).pos,
-             (*lb).offset);
+#if defined(__MINGW64__) || ( defined(__APPLE__) && defined(__arm64__))
+    REprintf("found %d position, e.g. %ld %ld\n", (int)(ub - lb), 
+    (double) (*lb).pos,
+    (double) (*lb).offset);
 #else
     REprintf("found %d position, e.g. %ld %ld\n", (int)(ub - lb),
              (unsigned long int)(*lb).pos, (unsigned long int)(*lb).offset);

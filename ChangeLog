@@ -1,3 +1,7 @@
+2024-01-30  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
+
+	* Fix Rprintf() related issues on ARM64 (Mac M1)
+
 2023-11-28  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
 
 	* Fix Rprintf() related issues

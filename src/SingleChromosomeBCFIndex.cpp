@@ -122,8 +122,8 @@ int SingleChromosomeBCFIndex::createIndex() {
   const int64_t num_sample =
       (int)bcfHeader.sample_names.size() -
       9;  // vcf header has 9 columns CHROM...FORMAT before actual sample names
-#ifndef __MINGW64__
-  Rprintf("sample size = %ld\n", num_sample);
+#if defined(__MINGW64__) || ( defined(__APPLE__) && defined(__arm64__))
+  Rprintf("sample size = %g\n", (double) num_sample);
 #else
   Rprintf("sample size = %ld\n", (unsigned long int)num_sample);
 #endif
@@ -167,8 +167,8 @@ int SingleChromosomeBCFIndex::createIndex() {
 
     num_marker++;
     if (num_marker % 10000 == 0) {
-#ifndef __MINGW64__
-      Rprintf("\rprocessed %ld markers", num_marker);
+#if defined(__MINGW64__) || ( defined(__APPLE__) && defined(__arm64__))
+      Rprintf("\rprocessed %g markers", (double) num_marker);
 #else
       Rprintf("\rprocessed %ld markers", (unsigned long int)num_marker);
 #endif
@@ -181,9 +181,10 @@ int SingleChromosomeBCFIndex::createIndex() {
   fwrite(&num_sample, sizeof(int64_t), 1, fIndex);
   fwrite(&num_marker, sizeof(int64_t), 1, fIndex);
   fclose(fIndex);
-#ifndef __MINGW64__
-  Rprintf("Indexing finished with %ld samples and %ld markers\n", num_sample,
-          num_marker);
+#if defined(__MINGW64__) || ( defined(__APPLE__) && defined(__arm64__))
+  Rprintf("Indexing finished with %g samples and %g markers\n", 
+  (double) num_sample,
+  (double) num_marker);
 #else
   Rprintf("Indexing finished with %ld samples and %ld markers\n",
           (unsigned long int)num_sample, (unsigned long int)num_marker);
@@ -209,8 +210,8 @@ int SingleChromosomeBCFIndex::openIndex() {
       sizeof(Record) *
           (2L + d[1])) {  // d[0, 1]: number of sample; number of marker
     REprintf("Check file integrity!\n");
-#ifndef __MINGW64__
-    REprintf("d = %ld %ld fsize = %ld\n", d[0], d[1], (long int)fsize);
+#if defined(__MINGW64__) || ( defined(__APPLE__) && defined(__arm64__))
+    REprintf("d = %g %g fsize = %g\n", (double) d[0], (double) d[1], (double) fsize);
 #else
     REprintf("d = %ld %ld fsize = %ld\n", (unsigned long int)d[0],
              (unsigned long int)d[1], (long int)fsize);
@@ -255,8 +256,8 @@ int SingleChromosomeBCFIndex::query(int chromPosBeg, int chromPosEnd,
                        comparator);  // r[ub].pos > query.pos = chromPosEnd
   REprintf("Found %d results\n", (int)(ub - lb));
   for (Record* pi = lb; pi != ub; ++pi) {
-#ifndef __MINGW64__
-    REprintf("%ld %ld\n", pi->pos, pi->offset);
+#if defined(__MINGW64__) || ( defined(__APPLE__) && defined(__arm64__))
+    REprintf("%g %g\n", (double) pi->pos, (double) pi->offset);
 #else
     REprintf("%ld %ld\n", (unsigned long int)pi->pos,
              (unsigned long int)pi->offset);
@@ -269,9 +270,10 @@ int SingleChromosomeBCFIndex::query(int chromPosBeg, int chromPosEnd,
     REprintf("Cannot find position!\n");
     return -1;
   } else {
-#ifndef __MINGW64__
-    REprintf("found %d position, e.g. %ld %ld\n", (int)(ub - lb), (*lb).pos,
-             (*lb).offset);
+#if defined(__MINGW64__) || ( defined(__APPLE__) && defined(__arm64__))
+    REprintf("found %d position, e.g. %g %g\n", (int)(ub - lb), 
+    (double) (*lb).pos,
+    (double) (*lb).offset);
 #else
     REprintf("found %d position, e.g. %ld %ld\n", (int)(ub - lb),
              (unsigned long int)(*lb).pos, (unsigned long int)(*lb).offset);
