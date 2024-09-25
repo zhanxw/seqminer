@@ -250,7 +250,7 @@ int SingleChromosomeVCFIndex::query(int chromPosBeg, int chromPosEnd,
     return -1;
   } else {
 #if defined(__MINGW64__) || ( defined(__APPLE__) && defined(__arm64__))
-    REprintf("found %d position, e.g. %ld %ld\n", (int)(ub - lb), 
+    REprintf("found %d position, e.g. %g %g\n", (int)(ub - lb), 
     (double) (*lb).pos,
     (double) (*lb).offset);
 #else
