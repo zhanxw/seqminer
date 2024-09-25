@@ -18,10 +18,10 @@
 
 #include "TypeConversion.h"
 
-#define createList(L, ret)  1;PROTECT((*(ret)) = allocVector(VECSXP, (L)));
-#define createIntArray(L, ret)  1;PROTECT((*(ret)) = allocVector(INTSXP, (L)));
-#define createDoubleArray(L, ret)  1;PROTECT((*(ret)) = allocVector(REALSXP, (L)));
-#define createStringArray(L, ret)  1;PROTECT((*(ret)) = allocVector(STRSXP, (L)));
+#define createList(L, ret)  1;PROTECT((*(ret)) = Rf_allocVector(VECSXP, (L)));
+#define createIntArray(L, ret)  1;PROTECT((*(ret)) = Rf_allocVector(INTSXP, (L)));
+#define createDoubleArray(L, ret)  1;PROTECT((*(ret)) = Rf_allocVector(REALSXP, (L)));
+#define createStringArray(L, ret)  1;PROTECT((*(ret)) = Rf_allocVector(STRSXP, (L)));
 
 /**
  * @param out will be a concatenated @param in separated by @param sep
@@ -346,21 +346,21 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
   int nGene = geneLocationMap.size();
   Rprintf("%d gene/region to be extracted.\n", nGene);
 
-  PROTECT(ret = allocVector(VECSXP, nGene));
+  PROTECT(ret = Rf_allocVector(VECSXP, nGene));
   numAllocated++;
   SEXP geneNames;
-  PROTECT(geneNames = allocVector(STRSXP, nGene));
+  PROTECT(geneNames = Rf_allocVector(STRSXP, nGene));
   numAllocated++;
   {
     for (size_t i = 0; i != geneLocationMap.size(); ++i) {
       // for ( GeneLocationMap::iterator iter = geneLocationMap.begin();
       //       iter != geneLocationMap.end() ; ++iter){
       // Rprintf("assign gene name: %s\n", iter->first.c_str());
-      SET_STRING_ELT(geneNames, i, mkChar(geneLocationMap.keyAt(i).c_str()));
+      SET_STRING_ELT(geneNames, i, Rf_mkChar(geneLocationMap.keyAt(i).c_str()));
       geneIndex[geneLocationMap.keyAt(i).c_str()] = i;
     }
   }
-  setAttrib(ret, R_NamesSymbol, geneNames);
+  Rf_setAttrib(ret, R_NamesSymbol, geneNames);
 
   // create n, maf, p, cov...
   // REprintf("create n, maf, p, cov..\n");
@@ -836,12 +836,12 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
         u = VECTOR_ELT(ret, geneIndex[gene]);
         v = VECTOR_ELT(u, RET_REF_INDEX);
         s = VECTOR_ELT(v, study);  // ref
-        SET_STRING_ELT(s, idx, mkChar(fd[PVAL_FILE_REF_COL].c_str()));
+        SET_STRING_ELT(s, idx, Rf_mkChar(fd[PVAL_FILE_REF_COL].c_str()));
 
         // u = VECTOR_ELT(ret, geneIndex[gene]);
         v = VECTOR_ELT(u, RET_ALT_INDEX);
         s = VECTOR_ELT(v, study);  // alt
-        SET_STRING_ELT(s, idx, mkChar(fd[PVAL_FILE_ALT_COL].c_str()));
+        SET_STRING_ELT(s, idx, Rf_mkChar(fd[PVAL_FILE_ALT_COL].c_str()));
 
         if (str2int(fd[PVAL_FILE_NINFORMATIVE_COL], &tempInt)) {
           // u = VECTOR_ELT(ret, geneIndex[gene]);
@@ -1032,14 +1032,14 @@ SEXP impl_rvMetaReadData(SEXP arg_pvalFile, SEXP arg_covFile,
          it != loc2idx.end(); ++it) {
       int idx = it->second;
       // if (locations.count(it->first)) {
-      //   SET_STRING_ELT(pos, idx, mkChar(it->first.c_str()));
+      //   SET_STRING_ELT(pos, idx, Rf_mkChar(it->first.c_str()));
       // }
-      SET_STRING_ELT(pos, idx, mkChar(it->first.c_str()));
+      SET_STRING_ELT(pos, idx, Rf_mkChar(it->first.c_str()));
 
       if (posAnnotationMap.count(it->first)) {
         std::string ret;
         set2string(posAnnotationMap[it->first], &ret, ',');
-        SET_STRING_ELT(anno, idx, mkChar(ret.c_str()));
+        SET_STRING_ELT(anno, idx, Rf_mkChar(ret.c_str()));
       }
     }
   }
@@ -1549,22 +1549,22 @@ SEXP impl_readCovByRange(SEXP arg_covFile, SEXP arg_range) {
   setDim(retDim, retDim, ret);
   // set matrix label
   SEXP rowName;
-  PROTECT(rowName = allocVector(STRSXP, retDim));
+  PROTECT(rowName = Rf_allocVector(STRSXP, retDim));
   numAllocated += 1;
   std::string label;
   for (size_t i = 0; i < position.size(); ++i) {
     label = chrom;
     label += ':';
     label += position[i];
-    SET_STRING_ELT(rowName, i, mkChar(label.c_str()));
+    SET_STRING_ELT(rowName, i, Rf_mkChar(label.c_str()));
   }
 
   SEXP dimnames;
-  PROTECT(dimnames = allocVector(VECSXP, 2));
+  PROTECT(dimnames = Rf_allocVector(VECSXP, 2));
   numAllocated += 1;
   SET_VECTOR_ELT(dimnames, 0, rowName);
   SET_VECTOR_ELT(dimnames, 1, rowName);
-  setAttrib(ret, R_DimNamesSymbol, dimnames);
+  Rf_setAttrib(ret, R_DimNamesSymbol, dimnames);
 
   UNPROTECT(numAllocated);
   return ret;
@@ -1758,7 +1758,7 @@ SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range) {
   } else {
     retListLen = 15;
   }
-  PROTECT(ret = allocVector(VECSXP, retListLen));
+  PROTECT(ret = Rf_allocVector(VECSXP, retListLen));
   numAllocated++;
 
   std::vector<std::string> listNames;
@@ -1803,12 +1803,12 @@ SEXP impl_readScoreByRange(SEXP arg_scoreFile, SEXP arg_range) {
     listNames.push_back("annoFull");
   }
   SEXP sListNames;
-  PROTECT(sListNames = allocVector(STRSXP, listNames.size()));
+  PROTECT(sListNames = Rf_allocVector(STRSXP, listNames.size()));
   numAllocated++;
   for (unsigned int i = 0; i != listNames.size(); ++i) {
-    SET_STRING_ELT(sListNames, i, mkChar(listNames[i].c_str()));
+    SET_STRING_ELT(sListNames, i, Rf_mkChar(listNames[i].c_str()));
   }
-  setAttrib(ret, R_NamesSymbol, sListNames);
+  Rf_setAttrib(ret, R_NamesSymbol, sListNames);
 
   UNPROTECT(numAllocated);
   return ret;
@@ -2008,12 +2008,12 @@ SEXP impl_readSkewByRange(SEXP arg_skewFile, SEXP arg_range) {
     listNames.push_back("annoFull");
   }
   SEXP sListNames;
-  PROTECT(sListNames = allocVector(STRSXP, listNames.size()));
+  PROTECT(sListNames = Rf_allocVector(STRSXP, listNames.size()));
   numAllocated ++;
   for (unsigned int i = 0; i != listNames.size(); ++i){
-    SET_STRING_ELT(sListNames, i, mkChar(listNames[i].c_str()));
+    SET_STRING_ELT(sListNames, i, Rf_mkChar(listNames[i].c_str()));
   }
-  setAttrib(ret, R_NamesSymbol, sListNames);
+  Rf_setAttrib(ret, R_NamesSymbol, sListNames);
 #endif
 
   UNPROTECT(numAllocated);
@@ -2069,20 +2069,20 @@ SEXP impl_rvMetaWriteScoreData(SEXP arg_data, SEXP arg_outPrefix) {
   std::vector<std::string> fd;
   std::vector<std::string> result;
   int nSite = 0;
-  int nGene = length(arg_data);
+  int nGene = LENGTH(arg_data);
   for (int i = 0; i < nGene; ++i) {
     Rprintf("output %s\n",
-            CHAR(STRING_ELT(getAttrib(arg_data, R_NamesSymbol), i)));
+            CHAR(STRING_ELT(Rf_getAttrib(arg_data, R_NamesSymbol), i)));
     SEXP values = VECTOR_ELT(arg_data, i);
-    SEXP rColNames = getAttrib(values, R_NamesSymbol);
-    for (int j = 0; j < length(rColNames); ++j) {
+    SEXP rColNames = Rf_getAttrib(values, R_NamesSymbol);
+    for (int j = 0; j < LENGTH(rColNames); ++j) {
       index[CHAR(STRING_ELT(rColNames, j))] = j;
     }
 
     // record basic info
     if (index.count("pos")) {
       SEXP v = VECTOR_ELT(values, index["pos"]);
-      nSite = length(v);
+      nSite = LENGTH(v);
     }
     if (nSite < 0) {
       REprintf("No sites to output, skipping...\n");
@@ -2090,7 +2090,7 @@ SEXP impl_rvMetaWriteScoreData(SEXP arg_data, SEXP arg_outPrefix) {
     }
     if (index.count("ref")) {
       SEXP v = VECTOR_ELT(values, index["ref"]);
-      int nStudy = length(v);
+      int nStudy = LENGTH(v);
       if (nStudy < 1) {
         REprintf("No studies to output, skipping...\n");
         continue;
@@ -2252,7 +2252,7 @@ SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
 
   // data[gene or range][CHROM or POS or ..][study_i]
   // 1. record all chromosomal positions
-  int numGene = length(arg_data);
+  int numGene = LENGTH(arg_data);
   // int numColumn = -1;
   std::vector<int> column;
   //  int numStudy = -1;
@@ -2264,14 +2264,14 @@ SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
   std::vector<std::string> position;
   for (int i = 0; i < numGene; ++i) {  // loop gene/range
     Rprintf("output %s\n",
-            CHAR(STRING_ELT(getAttrib(arg_data, R_NamesSymbol), i)));
+            CHAR(STRING_ELT(Rf_getAttrib(arg_data, R_NamesSymbol), i)));
 
     SEXP values = VECTOR_ELT(arg_data, i);
-    SEXP rColNames = getAttrib(values, R_NamesSymbol);
+    SEXP rColNames = Rf_getAttrib(values, R_NamesSymbol);
     // extractStringArray(rColNames, &colNames);
     int posIndex = -1;
     int covIndex = -1;
-    for (int i = 0; i < length(rColNames); ++i) {
+    for (int i = 0; i < LENGTH(rColNames); ++i) {
       if (strcmp(CHAR(STRING_ELT(rColNames, i)), "pos") == 0) {
         posIndex = i;
       }
@@ -2287,7 +2287,7 @@ SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
     // int numColumn = length(values); // counts of chrom/pos/...
     // process pos
     SEXP studies = VECTOR_ELT(values, posIndex);
-    int l = length(studies);
+    int l = LENGTH(studies);
     if (l < 1) {
       REprintf("No study read!\n");
       return ret;
@@ -2299,7 +2299,7 @@ SEXP impl_rvMetaWriteCovData(SEXP arg_data, SEXP arg_outPrefix) {
     SEXP pos = studies;
     chrom.clear();
     position.clear();
-    for (int i = 0; i < length(pos); ++i) {
+    for (int i = 0; i < LENGTH(pos); ++i) {
       stringTokenize(CHAR(STRING_ELT(pos, i)), ":", &fd);
       chrom.push_back(fd[0]);
       position.push_back(fd[1]);
@@ -2341,7 +2341,7 @@ SEXP impl_isInRange(SEXP arg_position, SEXP arg_range) {
     return ret;
   }
 
-  PROTECT(ret = allocVector(LGLSXP, n));
+  PROTECT(ret = Rf_allocVector(LGLSXP, n));
   std::string chrom;
   unsigned int beg, end;
 

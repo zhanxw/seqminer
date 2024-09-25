@@ -1,3 +1,7 @@
+2024-09-24  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
+
+	* Add R_NO_REMAP to better support calling R API for C codes
+
 2024-01-30  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
 
 	* Fix Rprintf() related issues on ARM64 (Mac M1)

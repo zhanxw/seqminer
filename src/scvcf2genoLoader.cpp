@@ -35,7 +35,7 @@ SEXP impl_readSingleChromosomeVCFToMatrixByRange(SEXP arg_fileName,
 
   int nGene = FLAG_range.size();
   Rprintf("%d region to be extracted.\n", nGene);
-  PROTECT(ans = allocVector(VECSXP, nGene));
+  PROTECT(ans = Rf_allocVector(VECSXP, nGene));
   setListNames(FLAG_range, &ans);
 
   std::string chromName;
@@ -64,7 +64,7 @@ SEXP impl_readSingleChromosomeVCFToMatrixByRange(SEXP arg_fileName,
 
       // create double array
       // SEXP val;
-      // PROTECT(val = allocVector(REALSXP, numSample * nVariant));
+      // PROTECT(val = Rf_allocVector(REALSXP, numSample * nVariant));
       // double* pVal = REAL(val);
 
       if (sc.readLine(offset, &line) < 0) {
@@ -103,7 +103,7 @@ SEXP impl_readSingleChromosomeVCFToMatrixByRange(SEXP arg_fileName,
       cumNumVariant += nVariant;
     }
     SEXP val;
-    PROTECT(val = allocVector(REALSXP, numSample * cumNumVariant));
+    PROTECT(val = Rf_allocVector(REALSXP, numSample * cumNumVariant));
     memcpy(REAL(val), buf.data(), sizeof(double) * numSample * cumNumVariant);
     setDim(numSample, cumNumVariant, val);
     setDimNames(sampleNames, markerNames, val);

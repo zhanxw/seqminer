@@ -148,7 +148,7 @@ SEXP impl_annotateGene(SEXP s_param,
   // store results
   REprintf("store results\n");
   int numAllocated = 0;
-  PROTECT(ret = allocVector(VECSXP, 2));
+  PROTECT(ret = Rf_allocVector(VECSXP, 2));
   numAllocated ++;
   storeResult(anno, ret, 0);
   storeResult(annoFull, ret, 1);
@@ -337,7 +337,7 @@ SEXP impl_getRefBase(SEXP reference,
     seq[i] = gs.getBase(_chrom, _pos, _pos + _len);
   }
   int numAllocated = 0;
-  PROTECT((ret) = allocVector(STRSXP, n));
+  PROTECT((ret) = Rf_allocVector(STRSXP, n));
   numAllocated ++;
   initStringArray(ret);
   storeResult(seq, &ret);

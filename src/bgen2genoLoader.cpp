@@ -9,7 +9,7 @@
 #include "R_CPP_interface.h"
 
 #include <R.h>
-
+#include <Rinternals.h>
 #include "GeneLoader.h"
 
 /**
@@ -67,7 +67,7 @@ SEXP readBGEN2Matrix(BGenFile* bin) {
 
   SEXP ans = R_NilValue;
 
-  PROTECT(ans = allocMatrix(REALSXP, nx, ny));
+  PROTECT(ans = Rf_allocMatrix(REALSXP, nx, ny));
   double* rans = REAL(ans);
   int idx = 0;
   for (int i = 0; i < nx; i++) {
@@ -85,25 +85,25 @@ SEXP readBGEN2Matrix(BGenFile* bin) {
 
   // set row and col names
   SEXP dim;
-  PROTECT(dim = allocVector(INTSXP, 2));
+  PROTECT(dim = Rf_allocVector(INTSXP, 2));
   INTEGER(dim)[0] = nx;
   INTEGER(dim)[1] = ny;
-  setAttrib(ans, R_DimSymbol, dim);
+  Rf_setAttrib(ans, R_DimSymbol, dim);
 
   SEXP rowName;
-  PROTECT(rowName = allocVector(STRSXP, nx));
+  PROTECT(rowName = Rf_allocVector(STRSXP, nx));
   for (int i = 0; i < nx; i++)
-    SET_STRING_ELT(rowName, i, mkChar(posVec[i].c_str()));
+    SET_STRING_ELT(rowName, i, Rf_mkChar(posVec[i].c_str()));
   SEXP colName;
-  PROTECT(colName = allocVector(STRSXP, ny));
+  PROTECT(colName = Rf_allocVector(STRSXP, ny));
   for (int i = 0; i < ny; i++)
-    SET_STRING_ELT(colName, i, mkChar(idVec[i].c_str()));
+    SET_STRING_ELT(colName, i, Rf_mkChar(idVec[i].c_str()));
 
   SEXP dimnames;
-  PROTECT(dimnames = allocVector(VECSXP, 2));
+  PROTECT(dimnames = Rf_allocVector(VECSXP, 2));
   SET_VECTOR_ELT(dimnames, 0, rowName);
   SET_VECTOR_ELT(dimnames, 1, colName);
-  setAttrib(ans, R_DimNamesSymbol, dimnames);
+  Rf_setAttrib(ans, R_DimNamesSymbol, dimnames);
 
   // finish up
   UNPROTECT(5);
@@ -124,11 +124,11 @@ SEXP impl_readBGENToMatrixByRange(SEXP arg_fileName, SEXP arg_range) {
   extractStringArray(arg_range, &FLAG_range);
 
   if (FLAG_fileName.size() == 0) {
-    error("Please provide BGEN file name");
+    Rf_error("Please provide BGEN file name");
     return ans;
   }
   if (FLAG_range.empty()) {
-    error("Please provide a given range, e.g. '1:100-200'");
+    Rf_error("Please provide a given range, e.g. '1:100-200'");
     return ans;
   }
 
@@ -137,7 +137,7 @@ SEXP impl_readBGENToMatrixByRange(SEXP arg_fileName, SEXP arg_range) {
   int numAllocated = 0;
 
   // allocate return value
-  PROTECT(ans = allocVector(VECSXP, nGene));
+  PROTECT(ans = Rf_allocVector(VECSXP, nGene));
   numAllocated++;
   setListNames(FLAG_range, &ans);
 
@@ -169,10 +169,10 @@ SEXP impl_readBGENToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile,
   extractStringArray(arg_geneName, &FLAG_geneName);
 
   if (FLAG_fileName.size() == 0) {
-    error("Please provide BGEN file name");
+    Rf_error("Please provide BGEN file name");
   }
   if (FLAG_geneName.size() && FLAG_geneFile.size() == 0) {
-    error("Please provide gene file name when extract genotype by gene");
+    Rf_error("Please provide gene file name when extract genotype by gene");
   }
 
   int nGene = FLAG_geneName.size();
@@ -180,7 +180,7 @@ SEXP impl_readBGENToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile,
   int numAllocated = 0;
 
   // allocate return value
-  PROTECT(ans = allocVector(VECSXP, nGene));
+  PROTECT(ans = Rf_allocVector(VECSXP, nGene));
   numAllocated++;
   setListNames(FLAG_geneName, &ans);
 
@@ -195,7 +195,7 @@ SEXP impl_readBGENToMatrixByGene(SEXP arg_fileName, SEXP arg_geneFile,
     if (range.size())
       bin.setRangeList(range.c_str());
     else {
-      warning("Gene name [ %s ] does not exists in provided gene file",
+      Rf_warning("Gene name [ %s ] does not exists in provided gene file",
               FLAG_geneName[i].c_str());
       UNPROTECT(numAllocated);
       return (ans);
@@ -226,7 +226,7 @@ SEXP readBGEN2List(BGenFile* bin) {
   int numAllocated =
       0;  // record how many times we allocate (using PROTECT in R);
   SEXP ret;
-  PROTECT(ret = allocVector(VECSXP, retListLen));
+  PROTECT(ret = Rf_allocVector(VECSXP, retListLen));
   numAllocated++;
 
   //  store results
@@ -341,12 +341,12 @@ SEXP readBGEN2List(BGenFile* bin) {
 
   // Rprintf("set list names\n");
   SEXP sListNames;
-  PROTECT(sListNames = allocVector(STRSXP, listNames.size()));
+  PROTECT(sListNames = Rf_allocVector(STRSXP, listNames.size()));
   numAllocated++;
   for (unsigned int i = 0; i != listNames.size(); ++i) {
-    SET_STRING_ELT(sListNames, i, mkChar(listNames[i].c_str()));
+    SET_STRING_ELT(sListNames, i, Rf_mkChar(listNames[i].c_str()));
   }
-  setAttrib(ret, R_NamesSymbol, sListNames);
+  Rf_setAttrib(ret, R_NamesSymbol, sListNames);
 
   // finish up
   UNPROTECT(numAllocated);
@@ -368,7 +368,7 @@ SEXP impl_readBGENToListByRange(SEXP arg_fileName, SEXP arg_range) {
   if (FLAG_range.size())
     bin.setRangeList(FLAG_range.c_str());
   else {
-    error("Please provide a range before we can continue.\n");
+    Rf_error("Please provide a range before we can continue.\n");
   }
   return readBGEN2List(&bin);
 }  // impl_readBGENToListByRange
@@ -402,7 +402,7 @@ SEXP impl_readBGENToListByGene(SEXP arg_fileName, SEXP arg_geneFile,
   if (range.size())
     bin.setRangeList(range.c_str());
   else {
-    error("Please provide a valid gene name before we can continue.\n");
+    Rf_error("Please provide a valid gene name before we can continue.\n");
   };
 
   return readBGEN2List(&bin);

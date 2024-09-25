@@ -40,6 +40,8 @@ PKG_CPPFLAGS+=-I. \
 
 ## for zstd
 PKG_CPPFLAGS+=-Izstd/lib -Izstd/lib/common -DXXH_NAMESPACE=ZSTD_ -Izstd/lib/legacy -DZSTD_LEGACY_SUPPORT=5
+## use R_NO_REMAP
+PKG_CPPFLAGS+=-DR_NO_REMAP
 
 ifeq (@HAVE_BZIP2@,1)
 $(info have bzip2)
