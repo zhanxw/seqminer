@@ -1,3 +1,7 @@
+2024-09-30  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
+
+	* Revise URL used in README
+
 2024-09-24  Xiaowei Zhan  <zhanxw@bunny.swmed.edu>
 
 	* Add R_NO_REMAP to better support calling R API for C codes
