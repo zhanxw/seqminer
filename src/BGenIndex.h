@@ -3,7 +3,11 @@
 
 #include <string>
 
+#ifdef HAVE_SQLITE
+#include "sqlite3.h"
+#else
 #include "sqlite/sqlite3.h"
+#endif
 
 #include "RangeList.h"
 
