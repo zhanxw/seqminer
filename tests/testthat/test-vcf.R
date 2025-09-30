@@ -164,7 +164,7 @@ if (file.exists(outFile) && systemTestable) {
     cat("--------------- test createSingleChromosomeVCFIndex ---------------\n")
     fileName = system.file("vcf/all.anno.filtered.extract.vcf.gz", package = "seqminer")
     cfh <- createSingleChromosomeVCFIndex(fileName, indexFileName = tempfile())
-    expect(nchar(cfh) > 0)
+    expect_true(nchar(cfh) > 0)
   })
 
   test_that("readSingleChromosomeBCFToMatrixByRange", {
@@ -178,7 +178,7 @@ if (file.exists(outFile) && systemTestable) {
     cat("--------------- test createSingleChromosomeBCFIndex ---------------\n")
     fileName = system.file("vcf/all.anno.filtered.extract.headerFixed.bcf.gz", package = "seqminer")
     cfh <- createSingleChromosomeBCFIndex(fileName, indexFileName = tempfile())
-    expect(nchar(cfh) > 0)
+    expect_true(nchar(cfh) > 0)
   })
 }
 
